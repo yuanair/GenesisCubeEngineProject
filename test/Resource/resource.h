@@ -4,5 +4,12 @@
 
 #pragma once
 
-// 图标
-#define IDI_ProgramIcon 101
+///
+/// 图标
+///
+#define IDI_ICON_ProgramIcon 101
+
+///
+/// 小图标
+///
+#define IDI_ICON_ProgramIconSm 102

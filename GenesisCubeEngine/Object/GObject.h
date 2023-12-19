@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "../Core/Core.h"
+
 namespace GenesisCubeEngine
 {
     //
@@ -11,12 +13,118 @@ namespace GenesisCubeEngine
     //
     class GObject
     {
+        
+        template<class T>
+        friend class TPtr;
+        
     public:
         
         GObject() noexcept;
         
-        virtual ~GObject() noexcept;
+        virtual ~GObject() noexcept(false);
+        
+        GObject(const GObject&) = delete;
+        
+        GObject& operator=(const GObject&) = delete;
+        
+    public:
+        
+        /// 
+        /// 相等运算符
+        /// 
+        /// \param _other 比较对象
+        /// \return 结果
+        inline virtual bool operator==(const GObject& _other) const { return this == &_other; }
+        
+        /// 
+        /// 不相等运算符
+        /// 
+        /// \param _other 比较对象
+        /// \return 结果
+        inline virtual bool operator!=(const GObject& _other) const { return this != &_other; }
+        
+        /// 
+        /// 克隆
+        /// 
+        /// \return 克隆体
+        [[nodiscard]]
+        inline virtual GObject* Clone() const noexcept { return new GObject(); }
+        
+        /// 
+        /// 转换为字符串
+        /// 
+        /// \return 字符串
+        [[nodiscard]]
+        virtual TString ToString() const noexcept;
+        
+        /// 
+        /// 转换为显示字符串
+        /// 
+        /// \return 字符串
+        [[nodiscard]]
+        virtual TString ToShowString() const noexcept;
+    
+    private:
+        
+        /// 
+        /// 添加引用，无需手动调用
+        /// 
+        /// \return 引用计数
+        size_t AddRef() noexcept;
+        
+        /// 
+        /// 释放，无需手动调用
+        /// 
+        /// \return 引用计数
+        size_t Release() noexcept;
+    
+    public:
+        
+        /// 
+        /// 获取引用计数
+        /// 
+        /// \return 引用计数
+        [[nodiscard]]
+        inline size_t GetRef() const noexcept { return this->ref; }
+    
+    private:
+        
+        size_t ref;
         
     };
+    
+    /// 
+    /// 转换为字符串
+    /// 
+    /// \param obj 指针
+    /// \return 字符串
+    inline TString ToString(const GObject* obj)
+    {
+        return obj == nullptr ? TEXT("nullptr") : obj->ToString();
+    }
+    
+    /// 
+    /// 转换为显示字符串
+    /// 
+    /// \param obj" 指针
+    /// \return 字符串
+    inline TString ToShowString(const GObject* obj)
+    {
+        return obj == nullptr ? TEXT("nullptr") : obj->ToShowString();
+    }
+    
+    ///
+    /// \tparam T
+    /// \param value
+    /// \return
+    template <class T>
+    inline TString ToTString(T value)
+    {
+#if defined(UNICODE)
+        return std::to_wstring(value);
+#else
+        return std::to_string(value);
+#endif
+    }
     
 } // GenesisCubeEngine
