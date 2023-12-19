@@ -1,0 +1,8 @@
+
+
+# cmake build directorys
+/cmake-build-editordebug/
+/cmake-build-editorrelease/
+/cmake-build-gamedebug/
+/cmake-build-gamerelease/
+
