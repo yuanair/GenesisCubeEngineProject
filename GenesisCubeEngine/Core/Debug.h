@@ -9,10 +9,7 @@
 #include "FTimer.h"
 #include "../Exception/Exception.h"
 #include "../Object/GObject.h"
-#include "../IO/GDirectory.h"
-
-#include <fstream>
-#include <utility>
+#include "../IO/GDirectoryName.h"
 
 namespace GenesisCubeEngine
 {
@@ -42,9 +39,9 @@ namespace GenesisCubeEngine
         /// MessageBox 可与ODS连用
         MBox = 0x20,
     };
-
-
-/// 日志输出格式类
+    
+    
+    /// 日志输出格式类
     class FLoggerFormat
     {
     public:
@@ -58,6 +55,7 @@ namespace GenesisCubeEngine
         ///
         /// 日志输出格式化
         ///
+        [[nodiscard]]
         virtual TString Format(const TString &message, LoggerLevel loggerLevel, const TString &file, int32_t line,
                                const TString &func) const;
         
@@ -119,7 +117,7 @@ namespace GenesisCubeEngine
         
         /// 写入nullptr
         /// ptr - nullptr
-        FLogger &operator<<(const std::nullptr_t ptr);
+        FLogger &operator<<(std::nullptr_t ptr);
         
         /// 写入字符串
         /// str - 字符串
@@ -161,10 +159,6 @@ namespace GenesisCubeEngine
         /// value 数字
         FLogger &operator<<(double_t value);
         
-        /// 写入Json
-        /// json Json
-        FLogger &operator<<(const GObject &object);
-        
         /// 写入指针地址
         /// ptr - 指针
         FLogger &operator<<(const void *ptr);
@@ -190,25 +184,20 @@ namespace GenesisCubeEngine
         /// 清除当前行缓冲区
         void Clear();
         
-        /// 获取日志文件是否打开
-        bool IsOpen() const;
-        
         /// 删除过老创建的文件
-        static void RemoveOldFile(GDirectory::ConstForeachEventArgs args);
+        static void RemoveOldFile(GDirectoryName::ConstForeachEventArgs args);
         
         /// 在文件夹下，删除过老创建的文件
         /// dirName - 要删除文件的目录
         /// _time - 文件创建时间到现在的时间超过此数值则删除
-        /// return 返回0为正常
-        void RemoveOldLogFile(time_t _time);
+        /// return 是否成功
+        bool RemoveOldLogFile(time_t _time);
+        
+        bool WriteClose();
     
     private:
         
         static TString FormatFirstCallTime();
-        
-        bool ReOpen();
-        
-        bool WriteClose();
     
     public:
         
@@ -221,9 +210,11 @@ namespace GenesisCubeEngine
     public:
         
         /// 获取缓冲数据
+        [[nodiscard]]
         inline const TString &GetLineBuffer() const { return lineBuffer; }
         
         /// 获取缓冲数据
+        [[nodiscard]]
         inline const TString &GetBuffer() const { return buffer; }
     
     private:
@@ -235,8 +226,6 @@ namespace GenesisCubeEngine
         TString lineBuffer;
         
         TString buffer;
-        
-        std::basic_ofstream<TCHAR, std::char_traits<TCHAR>> ofs;
         
         const FLoggerFormat *formatter;
         
@@ -288,13 +277,13 @@ namespace GenesisCubeEngine
     };
     
     /// 日志可打印的异常
-    class LoggerException : public GException
+    class LoggerException : public EException
     {
     public:
         
         LoggerException(const TString &message, const LoggerLevel &loggerLevel, TString file, const int32_t line,
                         TString func)
-            : GException(message), loggerLevel(loggerLevel), file(std::move(file)), line(line), func(std::move(func))
+            : EException(message), loggerLevel(loggerLevel), file(std::move(file)), line(line), func(std::move(func))
         {
         
         }
@@ -323,10 +312,10 @@ namespace GenesisCubeEngine
 
 #if defined(DEBUG) || defined(_DEBUG)
 
-#define LOG_DEBUG									LOG_LEVEL(GenesisCubeEngine::LoggerLevel::Debug)
-#define LOG_DEBUG_ODS								LOG_LEVEL(GenesisCubeEngine::LoggerLevel::Debug | GenesisCubeEngine::LoggerLevel::ODS)
-#define LOG_DEBUG_M(hWnd, mBoxCaption)				LOG_LEVEL_M(GenesisCubeEngine::LoggerLevel::Debug | GenesisCubeEngine::LoggerLevel::MBox, hWnd, mBoxCaption)
-#define LOG_DEBUG_ODS_M(hWnd, mBoxCaption)			LOG_LEVEL_M(GenesisCubeEngine::LoggerLevel::Debug | GenesisCubeEngine::LoggerLevel::ODS | GenesisCubeEngine::LoggerLevel::MBox, hWnd, mBoxCaption)
+#define LOG_DEBUG                                    LOG_LEVEL(GenesisCubeEngine::LoggerLevel::Debug)
+#define LOG_DEBUG_ODS                                LOG_LEVEL(GenesisCubeEngine::LoggerLevel::Debug | GenesisCubeEngine::LoggerLevel::ODS)
+#define LOG_DEBUG_M(hWnd, mBoxCaption)                LOG_LEVEL_M(GenesisCubeEngine::LoggerLevel::Debug | GenesisCubeEngine::LoggerLevel::MBox, hWnd, mBoxCaption)
+#define LOG_DEBUG_ODS_M(hWnd, mBoxCaption)            LOG_LEVEL_M(GenesisCubeEngine::LoggerLevel::Debug | GenesisCubeEngine::LoggerLevel::ODS | GenesisCubeEngine::LoggerLevel::MBox, hWnd, mBoxCaption)
 
 #else
 

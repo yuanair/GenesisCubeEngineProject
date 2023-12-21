@@ -5,14 +5,14 @@ namespace GenesisCubeEngine
     
     String FFormatter::GbkToUtf8(const String &src_str)
     {
-        int32_t len = MultiByteToWideChar(CP_ACP, 0, src_str.c_str(), -1, NULL, 0);
-        wchar_t *wstr = new wchar_t[len + 1];
+        int32_t len = MultiByteToWideChar(CP_ACP, 0, src_str.c_str(), -1, nullptr, 0);
+        auto *wstr = new WChar[len + 1];
         memset(wstr, 0, len + 1LL);
         MultiByteToWideChar(CP_ACP, 0, src_str.c_str(), -1, wstr, len);
-        len = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, NULL, NULL);
-        char *str = new char[len + 1];
+        len = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, nullptr, 0, nullptr, nullptr);
+        auto *str = new Char[len + 1];
         memset(str, 0, len + 1LL);
-        WideCharToMultiByte(CP_UTF8, 0, wstr, -1, str, len, NULL, NULL);
+        WideCharToMultiByte(CP_UTF8, 0, wstr, -1, str, len, nullptr, nullptr);
         String strTemp = str;
         delete[] wstr;
         delete[] str;
@@ -21,14 +21,14 @@ namespace GenesisCubeEngine
     
     String FFormatter::Utf8ToGbk(const String &src_str)
     {
-        int32_t len = MultiByteToWideChar(CP_UTF8, 0, src_str.c_str(), -1, NULL, 0);
-        wchar_t *wszGBK = new wchar_t[len + 1];
+        int32_t len = MultiByteToWideChar(CP_UTF8, 0, src_str.c_str(), -1, nullptr, 0);
+        auto *wszGBK = new WChar[len + 1];
         memset(wszGBK, 0, len * 2LL + 2LL);
         MultiByteToWideChar(CP_UTF8, 0, src_str.c_str(), -1, wszGBK, len);
-        len = WideCharToMultiByte(CP_ACP, 0, wszGBK, -1, NULL, 0, NULL, NULL);
-        char *szGBK = new char[len + 1];
+        len = WideCharToMultiByte(CP_ACP, 0, wszGBK, -1, nullptr, 0, nullptr, nullptr);
+        auto *szGBK = new Char[len + 1];
         memset(szGBK, 0, len + 1LL);
-        WideCharToMultiByte(CP_ACP, 0, wszGBK, -1, szGBK, len, NULL, NULL);
+        WideCharToMultiByte(CP_ACP, 0, wszGBK, -1, szGBK, len, nullptr, nullptr);
         String strTemp(szGBK);
         delete[] wszGBK;
         delete[] szGBK;
@@ -39,8 +39,8 @@ namespace GenesisCubeEngine
     WString FFormatter::StringToWString(const String &s, UINT m_encode)
     {
         WString str;
-        int32_t len = MultiByteToWideChar(m_encode, 0, s.c_str(), (int32_t) s.size(), NULL, 0);
-        wchar_t *m_wchar = new wchar_t[len + 1];
+        int32_t len = MultiByteToWideChar(m_encode, 0, s.c_str(), (int32_t) s.size(), nullptr, 0);
+        auto *m_wchar = new WChar[len + 1];
         MultiByteToWideChar(m_encode, 0, s.c_str(), (int32_t) s.size(), m_wchar, len);
         m_wchar[len] = L'\0';
         str = m_wchar;
@@ -51,9 +51,9 @@ namespace GenesisCubeEngine
     String FFormatter::WStringToString(const WString &s, UINT m_encode)
     {
         String str;
-        int32_t len = WideCharToMultiByte(m_encode, 0, s.c_str(), (int32_t) s.size(), NULL, 0, NULL, NULL);
-        char *m_char = new char[len + 1];
-        WideCharToMultiByte(m_encode, 0, s.c_str(), (int32_t) s.size(), m_char, len, NULL, NULL);
+        int32_t len = WideCharToMultiByte(m_encode, 0, s.c_str(), (int32_t) s.size(), nullptr, 0, nullptr, nullptr);
+        Char *m_char = new Char[len + 1];
+        WideCharToMultiByte(m_encode, 0, s.c_str(), (int32_t) s.size(), m_char, len, nullptr, nullptr);
         m_char[len] = '\0';
         str = m_char;
         delete[] m_char;

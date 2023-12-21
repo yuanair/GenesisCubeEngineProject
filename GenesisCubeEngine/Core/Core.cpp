@@ -4,7 +4,7 @@
 
 #include "Core.h"
 #include "Debug.h"
-#include "../Game/GWindow.h"
+#include "../Game/FWindow.h"
 
 namespace GenesisCubeEngine
 {
@@ -54,7 +54,6 @@ namespace GenesisCubeEngine
     {
         // 定义
         MSG msg = {};
-        FTimer timer;
         
         // 当为DEBUG模式时，内存泄漏检测
         if (GenesisCubeEngine::bIsDebug)
@@ -63,8 +62,8 @@ namespace GenesisCubeEngine
         }
         
         // 获取程序
-        GCProgram();
-        timer.Reset();
+        GProgram *program = GCProgram();
+        if (program == nullptr) throw ENullptrException(__FUNCSIG__ TEXT(":: program is nullptr"));
         
         // 消息循环
         while (msg.message != WM_QUIT)
@@ -76,9 +75,12 @@ namespace GenesisCubeEngine
             }
             else
             {
-                GWindow::Tick();
+                program->Tick();
             }
         }
+        
+        // 删除程序
+        delete program;
         
         // 删除日志实例
         GenesisCubeEngine::FLogger::DeleteInstance();

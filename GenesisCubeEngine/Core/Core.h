@@ -5,7 +5,6 @@
 #pragma once
 
 #include "GenesisCubeEngine.h"
-#include "FTimer.h"
 
 namespace GenesisCubeEngine
 {
@@ -70,6 +69,26 @@ namespace GenesisCubeEngine
         // 显示
         //
         static int GetShowCmd();
+        
+    };
+    
+    ///
+    /// 程序类
+    ///
+    class GProgram
+    {
+    public:
+        
+        GProgram() noexcept(false) = default;
+        
+        virtual ~GProgram() noexcept(false) = default;
+    
+    public:
+        
+        ///
+        /// 每帧调用
+        ///
+        virtual void Tick() = 0;
         
     };
 
@@ -181,4 +200,4 @@ namespace GenesisCubeEngine
 //
 // 程序入口
 //
-void GCProgram();
+GenesisCubeEngine::GProgram *GCProgram();

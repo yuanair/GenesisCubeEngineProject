@@ -48,7 +48,7 @@ namespace GenesisCubeEngine
         ///
         inline T *operator->()
         {
-            if (this->ptr == nullptr) throw GNullptrException(TEXT(__FUNCSIG__) ":: nullptr");
+            if (this->ptr == nullptr) throw ENullptrException(TEXT(__FUNCSIG__) ":: nullptr");
             return this->ptr;
         }
         
@@ -59,7 +59,7 @@ namespace GenesisCubeEngine
         inline T *operator->() const
         {
             if (this->ptr == nullptr)
-                throw GNullptrException(
+                throw ENullptrException(
                     TEXT(__FUNCSIG__) ":: nullptr"
                 );
             return this->ptr;

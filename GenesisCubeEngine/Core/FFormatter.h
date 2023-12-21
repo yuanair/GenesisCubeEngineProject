@@ -139,7 +139,7 @@ namespace GenesisCubeEngine
         while (true)
         {
             if (index >= format.size() - 1)
-                throw GInvalidArgumentException(
+                throw EInvalidArgumentException(
                     TEXT(__FUNCSIG__) TEXT(":: \"{}\" not found")
                 );
             
@@ -150,7 +150,7 @@ namespace GenesisCubeEngine
                     dest += TEXT('}');
                     continue;
                 }
-                throw GInvalidArgumentException(TEXT(__FUNCSIG__) TEXT(":: '{' not found"));
+                throw EInvalidArgumentException(TEXT(__FUNCSIG__) TEXT(":: '{' not found"));
             }
             
             if (format[index] == TEXT('{'))
@@ -173,9 +173,9 @@ namespace GenesisCubeEngine
                 index++;
                 break;
             }
-            if (index >= format.size()) throw GInvalidArgumentException(TEXT(__FUNCSIG__) TEXT(":: '}' not found"));
+            if (index >= format.size()) throw EInvalidArgumentException(TEXT(__FUNCSIG__) TEXT(":: '}' not found"));
             if (format[index] == L'{')
-                throw GInvalidArgumentException(
+                throw EInvalidArgumentException(
                     TEXT(__FUNCSIG__) TEXT(":: '{' shouldn't be here")
                 );
             buffer += format[index];

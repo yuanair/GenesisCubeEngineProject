@@ -2,16 +2,13 @@
 // Created by admin on 2023/12/19.
 //
 
-#include "GWindow.h"
+#include "FWindow.h"
 
 namespace GenesisCubeEngine
 {
     
-    std::vector<GWindow *> GWindow::windows;
-    
-    GWindow::GWindow()
+    FWindow::FWindow()
     {
-        windows.push_back(this);
         this->windowSizeClamp =
             {
                 .minSize=
@@ -34,21 +31,13 @@ namespace GenesisCubeEngine
             };
     }
     
-    GWindow::~GWindow()
+    FWindow::~FWindow()
     {
         Destroy();
-        for (auto iter = windows.begin(); iter != windows.end(); iter++)
-        {
-            if (*iter == this)
-            {
-                windows.erase(iter);
-                break;
-            }
-        }
     }
     
     
-    bool GWindow::Create(const TString &className, const TString &windowName, DWORD dwStyle, DWORD dwExStyle,
+    bool FWindow::Create(const TString &className, const TString &windowName, DWORD dwStyle, DWORD dwExStyle,
                          HWND hWndParent, HMENU hMenu)
     {
         this->hWnd = CreateWindowEx
@@ -67,13 +56,13 @@ namespace GenesisCubeEngine
                 this
             );
         if (!this->hWnd)
-            throw GBadException(
-                (__FUNCSIG__ TEXT(":: GWindow::Create(")) + windowName + TEXT(") Failed")
+            throw EBadException(
+                (__FUNCSIG__ TEXT(":: FWindow::Create(")) + windowName + TEXT(") Failed")
             );
         return true;
     }
     
-    bool GWindow::SubWindowCreate(
+    bool FWindow::SubWindowCreate(
         const TString &className, HWND hWndParent, const TString &windowName, DWORD dwStyle, DWORD dwExStyle,
         HMENU hMenu)
     {
@@ -93,22 +82,22 @@ namespace GenesisCubeEngine
                 this
             );
         if (!this->hWnd)
-            throw GBadException(
-                (__FUNCSIG__ TEXT(":: GWindow::Create(")) + windowName + TEXT(") Failed")
+            throw EBadException(
+                (__FUNCSIG__ TEXT(":: FWindow::Create(")) + windowName + TEXT(") Failed")
             );
         return true;
     }
     
-    bool GWindow::Register(const TString &className, HICON hIcon, HICON hIconSm, UINT style,
+    bool FWindow::Register(const TString &className, HICON hIcon, HICON hIconSm, UINT style,
                            HCURSOR hCursor, HBRUSH hbrBackground, const TString &menuName)
     {
         WNDCLASSEX wnd
             {
                 .cbSize = sizeof(wnd),
                 .style = style,
-                .lpfnWndProc = GWindow::WindowProc,
+                .lpfnWndProc = FWindow::WindowProc,
                 .cbClsExtra = 0,
-                .cbWndExtra = sizeof(GWindow *),
+                .cbWndExtra = sizeof(FWindow *),
                 .hInstance = Core::GetInstance(),
                 .hIcon = hIcon,
                 .hCursor = hCursor,
@@ -118,27 +107,27 @@ namespace GenesisCubeEngine
                 .hIconSm = hIconSm
             };
         if (!RegisterClassEx(&wnd))
-            throw GBadException(
-                (__FUNCSIG__ TEXT(":: GWindow::Register(")) + className + TEXT(") Failed")
+            throw EBadException(
+                (__FUNCSIG__ TEXT(":: FWindow::Register(")) + className + TEXT(") Failed")
             );
         return true;
     }
     
-    LRESULT GWindow::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+    LRESULT FWindow::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     {
-        GWindow *pThis;
+        FWindow *pThis;
         
         if (msg == WM_NCCREATE)
         {
             auto *pCreate = reinterpret_cast<CREATESTRUCT *>(lParam);
-            pThis = reinterpret_cast<GWindow *>(pCreate->lpCreateParams);
+            pThis = reinterpret_cast<FWindow *>(pCreate->lpCreateParams);
             ::SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pThis));
             
             pThis->hWnd = hWnd;
         }
         else
         {
-            pThis = reinterpret_cast<GWindow *>(::GetWindowLongPtr(hWnd, GWLP_USERDATA));
+            pThis = reinterpret_cast<FWindow *>(::GetWindowLongPtr(hWnd, GWLP_USERDATA));
         }
         
         if (pThis) return pThis->OnMessage(msg, wParam, lParam);
@@ -146,7 +135,7 @@ namespace GenesisCubeEngine
         return ::DefWindowProc(hWnd, msg, wParam, lParam);
     }
     
-    LRESULT GWindow::OnMessage(UINT message, WPARAM wParam, LPARAM lParam)
+    LRESULT FWindow::OnMessage(UINT message, WPARAM wParam, LPARAM lParam)
     {
         switch (message)
         {
@@ -230,69 +219,69 @@ namespace GenesisCubeEngine
         }
     }
     
-    int GWindow::SubMBox(const TString &text, const TString &caption, UINT uType, WORD wLanguageId)
+    int FWindow::SubMBox(const TString &text, const TString &caption, UINT uType, WORD wLanguageId)
     {
         return ::MessageBoxEx(this->hWnd, text.c_str(), caption.c_str(), uType, wLanguageId);
     }
     
-    int GWindow::MBox(const TString &text, const TString &caption, UINT uType, HWND hWnd, WORD wLanguageId)
+    int FWindow::MBox(const TString &text, const TString &caption, UINT uType, HWND hWnd, WORD wLanguageId)
     {
         return ::MessageBoxEx(hWnd, text.c_str(), caption.c_str(), uType, wLanguageId);
     }
     
-    void GWindow::ShowAndUpdate()
+    void FWindow::ShowAndUpdate()
     {
         this->timer.Reset();
         ::ShowWindow(this->hWnd, Core::GetShowCmd());
         ::UpdateWindow(this->hWnd);
     }
     
-    void GWindow::Show() const
+    void FWindow::Show() const
     {
         ::ShowWindow(this->hWnd, SW_SHOW);
     }
     
-    void GWindow::Hide() const
+    void FWindow::Hide() const
     {
         ::ShowWindow(this->hWnd, SW_HIDE);
     }
     
-    void GWindow::Minimize() const
+    void FWindow::Minimize() const
     {
         ::ShowWindow(this->hWnd, SW_MINIMIZE);
     }
     
-    void GWindow::Maximize() const
+    void FWindow::Maximize() const
     {
         ::ShowWindow(this->hWnd, SW_MAXIMIZE);
     }
     
-    void GWindow::Destroy() const
+    void FWindow::Destroy() const
     {
         ::DestroyWindow(this->hWnd);
     }
     
-    void GWindow::SetWindowSize(FSize<int32_t> size)
+    void FWindow::SetWindowSize(FSize<int32_t> size)
     {
         ::MoveWindow(this->hWnd, this->windowRect.x, this->windowRect.y, size.width, size.height, true);
     }
     
-    void GWindow::SetWindowRect(FRect<int32_t> rect)
+    void FWindow::SetWindowRect(FRect<int32_t> rect)
     {
         ::MoveWindow(this->hWnd, rect.x, rect.y, rect.width, rect.height, true);
     }
     
-    void GWindow::DestroyOnClose(GWindow::EventArgs args)
+    void FWindow::DestroyOnClose(FWindow::EventArgs args)
     {
         args.window.Destroy();
     }
     
-    void GWindow::ExitOnDestroy(GWindow::EventArgs args)
+    void FWindow::ExitOnDestroy(FWindow::EventArgs args)
     {
         Core::Exit();
     }
     
-    TString GWindow::GetWindowName() const
+    TString FWindow::GetWindowName() const
     {
         if (this->hWnd == nullptr) return TEXT("nullptr");
         int length = ::GetWindowTextLength(this->hWnd) + 1;
@@ -303,39 +292,36 @@ namespace GenesisCubeEngine
         return result;
     }
     
-    void GWindow::SetWindowName(const TString &name) const
+    void FWindow::SetWindowName(const TString &name) const
     {
         if (this->hWnd == nullptr) return;
         ::SetWindowText(this->hWnd, name.c_str());
     }
     
-    HICON GWindow::GetIcon(const TString &iconName, HINSTANCE hInstance)
+    HICON FWindow::GetIcon(const TString &iconName, HINSTANCE hInstance)
     {
         return ::LoadIcon(hInstance, iconName.c_str());
     }
     
-    HICON GWindow::GetIcon(short iconId, HINSTANCE hInstance)
+    HICON FWindow::GetIcon(short iconId, HINSTANCE hInstance)
     {
         return ::LoadIcon(hInstance, MAKEINTRESOURCE(iconId));
     }
     
-    HICON GWindow::GetIcon(const TString &iconName)
+    HICON FWindow::GetIcon(const TString &iconName)
     {
         return GetIcon(iconName, Core::GetInstance());
     }
     
-    HICON GWindow::GetIcon(short iconId)
+    HICON FWindow::GetIcon(short iconId)
     {
         return GetIcon(iconId, Core::GetInstance());
     }
     
-    void GWindow::Tick()
+    void FWindow::Tick()
     {
-        for (auto window: windows)
-        {
-            window->timer.Tick();
-            window->eOnTick.Trigger({*window, (float) window->timer.GetDeltaTime()});
-        }
+        this->timer.Tick();
+        this->eOnTick.Trigger({*this, (float) this->timer.GetDeltaTime()});
     }
     
 } // GenesisCubeEngine

@@ -1,0 +1,1 @@
+add_executable(ConsoleTest "Main.cpp")

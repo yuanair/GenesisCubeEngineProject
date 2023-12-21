@@ -1,8 +1,7 @@
-#include "GException.h"
+#include "EException.h"
 
 namespace GenesisCubeEngine
 {
-
 
 
 }

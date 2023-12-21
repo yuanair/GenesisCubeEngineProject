@@ -15,6 +15,9 @@ namespace GenesisCubeEngine
     
     typedef std::map<TString, GLanguageString> GStringList;
     
+    ///
+    /// 语言
+    ///
     class GLanguage
     {
     public:
@@ -23,8 +26,14 @@ namespace GenesisCubeEngine
     
     public:
         
+        ///
+        /// zh_cn, en_us, ...
+        ///
         const TString name;
         
+        ///
+        /// 简体中文, English, ...
+        ///
         const TString displayName;
         
     };

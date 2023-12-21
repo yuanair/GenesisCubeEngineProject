@@ -8,6 +8,8 @@
 #include <windowsx.h>
 
 #include <typeinfo>
+#include <fstream>
+#include <format>
 #include <string>
 #include <vector>
 #include <map>

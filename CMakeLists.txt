@@ -21,3 +21,6 @@ add_subdirectory("./GenesisCubeEngine")
 
 # test
 add_subdirectory("test")
+
+# console test
+add_subdirectory("ConsoleTest")

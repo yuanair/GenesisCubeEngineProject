@@ -8,7 +8,7 @@ aux_source_directory("./Source" test_source)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../")
 
 # executable
-add_executable(test WIN32 ${test_source} "../GenesisCubeEngine/Resource/reource.rc"
+add_executable(test WIN32 ${test_source} "../GenesisCubeEngine/Resource/resource.rc"
         ../GenesisCubeEngine/Resource/resource.h)
 
 # include

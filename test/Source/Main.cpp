@@ -2,82 +2,125 @@
 // Created by admin on 2023/12/19.
 //
 #include <GenesisCubeEngine/Core/Core.h>
-#include <GenesisCubeEngine/Game/GWindow.h>
+#include <GenesisCubeEngine/Game/FWindow.h>
 #include <GenesisCubeEngine/Core/Debug.h>
 #include <GenesisCubeEngine/Resource/resource.h>
 #include <GenesisCubeEngine/Localization/Localization.h>
-#include <GenesisCubeEngine/IO/GFile.h>
+#include <GenesisCubeEngine/IO/GFileName.h>
 
 #define Text(key) TText(TEXT(key))
 
 using namespace std;
 using namespace GenesisCubeEngine;
 
-/// 中文
-GLanguage zh_cn(TEXT("zh_cn"), TEXT("简体中文"));
 
-/// 英文
-GLanguage en_us(TEXT("en_us"), TEXT("English"));
-
-/// 当前语言
-GLanguage *nowLanguage = &zh_cn;
-
-/// 游戏文字
-GStringList gameText =
-    {
-        {TEXT("Language"),       {{&zh_cn, TEXT("语言 (Language)")}, {&en_us, TEXT("Language（语言）")}}},
-        {TEXT("MainWindowName"), {{&zh_cn, TEXT("主窗口")},          {&en_us, TEXT("main window")}}},
-        {TEXT("AddWindowName"),  {{&zh_cn, TEXT("附加窗口")},        {&en_us, TEXT("add window")}}}
-    };
-
-TString TText(const TString &key)
+class MyProgram : public GProgram
 {
-    return GLanguage::Find(gameText, key, nowLanguage);
-}
-
-// 主窗口类名
-constexpr TCHAR mainWndClassName[] = TEXT("main window class");
-
-
-GWindow mainWindow;
-GWindow addWindow;
-
-void OnDropFiles(GWindow::EventOnDropFilesArgs args)
-{
-    std::vector<TPtr<GFileName>> files;
-    GFile::DragQuery(args.hDropInfo, files);
-    for (size_t i = 0; i < files.size(); i++)
+public:
+    
+    MyProgram()
     {
-        FLogger::GetInstance() << files[i]->GetFileName() << TEXT("\n");
-        if (auto *ptr = files[i].Cast<GDirectory>()) ptr->Find(files);
+        FLogger::GetInstance().RemoveOldLogFile(time_t(0));
+        
+        // 注册窗口类
+        FWindow::Register(mainWndClassName, FWindow::GetIcon(IDI_ICON_Main), FWindow::GetIcon(IDI_ICON_MainSm));
+        
+        // 创建窗口
+        mainWindow.Create(mainWndClassName, Text("MainWindowName"));
+        addWindow.Create(mainWndClassName, Text("AddWindowName"));
+        
+        // 销毁窗口函数
+        mainWindow.eOnClose += FWindow::DestroyOnClose;
+        addWindow.eOnClose += FWindow::DestroyOnClose;
+        
+        // 退出程序函数
+        mainWindow.eOnDestroy += FWindow::ExitOnDestroy;
+        
+        // 拖放文件函数
+        mainWindow.eOnDropFiles += OnDropFiles;
+        
+        // 显示窗口
+        mainWindow.ShowAndUpdate();
+        addWindow.ShowAndUpdate();
+        
+        addWindow.SubMBox(std::format(TEXT("Test: |{:.3f}|"), 42.48978), Core::name);
+        
     }
-    LOG_INFO_ODS_M(nullptr, Core::name) FLogger::GetInstance();
-}
+    
+    ~MyProgram() override
+    {
+        LOG_INFO FLogger::GetInstance() << TEXT("~MyProgram()");
+    }
 
-void GCProgram()
+public:
+    
+    TString TText(const TString &key)
+    {
+        return GLanguage::Find(gameText, key, nowLanguage);
+    }
+    
+    static void OnDropFiles(FWindow::EventOnDropFilesArgs args)
+    {
+        std::vector<TPtr<GFileName>> files;
+        GFileName::DragQuery(args.hDropInfo, files);
+        for (size_t i = 0; i < files.size(); i++)
+        {
+            FLogger::GetInstance() << files[i]->GetFileName() << TEXT("\n");
+            if (auto *ptr = files[i].Cast<GDirectoryName>()) ptr->Find(files);
+        }
+        LOG_INFO_ODS_M(nullptr, Core::name) FLogger::GetInstance();
+    }
+    
+    void Tick() override
+    {
+        // addWindow.SubMBox(std::format(TEXT("{}"), addWindow.GetWindowRect()), Core::name);
+    }
+
+public:
+    
+    // 主窗口类名
+    static constexpr TCHAR mainWndClassName[] = TEXT("main window class");
+
+private:
+    
+    FWindow mainWindow;
+    
+    FWindow addWindow;
+    
+    GLanguage zh_cn = GLanguage(TEXT("zh_cn"), TEXT("简体中文"));
+    
+    GLanguage en_us = GLanguage(TEXT("en_us"), TEXT("English"));
+    
+    GLanguage language_debug = GLanguage(TEXT("debug"), TEXT("调试语言"));
+    
+    GLanguage *nowLanguage = &zh_cn;
+    
+    GStringList gameText =
+        {
+            {
+                TEXT("Language"),       {{&zh_cn, TEXT("语言 (Language)")}, {
+                                                                                &en_us, TEXT("Language（语言）")
+                                                                            }, {
+                                                                                   &language_debug, TEXT("Language")
+                                                                               }}},
+            {
+                TEXT("MainWindowName"), {{&zh_cn, TEXT("主窗口")},          {
+                                                                                &en_us, TEXT("main window")
+                                                                            }, {
+                                                                                   &language_debug, TEXT("mainWindow")
+                                                                               }}},
+            {
+                TEXT("AddWindowName"),  {{&zh_cn, TEXT("附加窗口")},        {
+                                                                                &en_us, TEXT("add window")
+                                                                            }, {
+                                                                                   &language_debug, TEXT("addWindow")
+                                                                               }}}
+        };
+    
+};
+
+GProgram *GCProgram()
 {
-    FLogger::GetInstance().RemoveOldLogFile(time_t(0));
-    
-    // 注册窗口类
-    GWindow::Register(mainWndClassName, GWindow::GetIcon(IDI_ICON_Main), GWindow::GetIcon(IDI_ICON_MainSm));
-    
-    // 创建窗口
-    mainWindow.Create(mainWndClassName, Text("MainWindowName"));
-    addWindow.Create(mainWndClassName, Text("AddWindowName"));
-    
-    // 销毁窗口函数
-    mainWindow.eOnClose += GWindow::DestroyOnClose;
-    addWindow.eOnClose += GWindow::DestroyOnClose;
-    
-    // 退出程序函数
-    mainWindow.eOnDestroy += GWindow::ExitOnDestroy;
-    
-    // 拖放文件函数
-    mainWindow.eOnDropFiles += OnDropFiles;
-    
-    // 显示窗口
-    mainWindow.ShowAndUpdate();
-    addWindow.ShowAndUpdate();
-    
+    return new MyProgram();
 }
 

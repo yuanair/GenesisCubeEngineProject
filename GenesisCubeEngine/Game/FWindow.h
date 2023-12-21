@@ -18,7 +18,7 @@ namespace GenesisCubeEngine
     //
     // 窗口
     //
-    class GWindow : public GObject
+    class FWindow
     {
         
         friend int Run();
@@ -33,9 +33,9 @@ namespace GenesisCubeEngine
             //
             // 事件发生的窗口
             //
-            GWindow &window;
+            FWindow &window;
             
-            explicit EventArgs(GWindow &window) : window(window) {}
+            explicit EventArgs(FWindow &window) : window(window) {}
         };
         
         //
@@ -48,7 +48,7 @@ namespace GenesisCubeEngine
             //
             float deltaTime;
             
-            EventOnTickArgs(GWindow &window, float deltaTime) : EventArgs(window), deltaTime(deltaTime) {}
+            EventOnTickArgs(FWindow &window, float deltaTime) : EventArgs(window), deltaTime(deltaTime) {}
         };
         
         //
@@ -66,7 +66,7 @@ namespace GenesisCubeEngine
             //
             int32_t deltaY;
             
-            EventOnMouseMoveArgs(GWindow &window, int32_t deltaX, int32_t deltaY) : EventArgs(window), deltaX(deltaX),
+            EventOnMouseMoveArgs(FWindow &window, int32_t deltaX, int32_t deltaY) : EventArgs(window), deltaX(deltaX),
                                                                                     deltaY(deltaY) {}
         };
         
@@ -85,7 +85,7 @@ namespace GenesisCubeEngine
             //
             int32_t height;
             
-            EventOnResizeArgs(GWindow &window, int32_t width, int32_t height) : EventArgs(window), width(width),
+            EventOnResizeArgs(FWindow &window, int32_t width, int32_t height) : EventArgs(window), width(width),
                                                                                 height(height) {}
         };
         
@@ -99,14 +99,14 @@ namespace GenesisCubeEngine
             //
             HDROP hDropInfo;
             
-            EventOnDropFilesArgs(GWindow &window, HDROP hDropInfo) : EventArgs(window), hDropInfo(hDropInfo) {}
+            EventOnDropFilesArgs(FWindow &window, HDROP hDropInfo) : EventArgs(window), hDropInfo(hDropInfo) {}
         };
     
     public:
         
-        GWindow();
+        FWindow();
         
-        ~GWindow() override;
+        ~FWindow();
     
     public:
         
@@ -260,6 +260,11 @@ namespace GenesisCubeEngine
         void Destroy() const;
         
         ///
+        /// 每帧调用
+        ///
+        void Tick();
+        
+        ///
         /// 获取窗口名字
         ///
         [[nodiscard]]
@@ -383,12 +388,6 @@ namespace GenesisCubeEngine
         /// 窗口大小限制
         ///
         FSizeClamp<int32_t> windowSizeClamp = {};
-    
-    private:
-        
-        static std::vector<GWindow *> windows;
-        
-        static void Tick();
     
     private:
         

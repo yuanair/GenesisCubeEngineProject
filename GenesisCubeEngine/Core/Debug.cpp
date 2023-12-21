@@ -32,41 +32,56 @@ namespace GenesisCubeEngine
         this->file += TEXT("\\");
         this->file += filename;
         this->file += TEXT(".log");
-        ofs.open(this->file, std::ios::out | std::ios::app);
         
-        if (IsOpen())
-        {
-            
-            ofs
-                << TEXT(
-                    "\n\n----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- Start ")
-                << FLoggerFormat::Format(FTimer::LocalTime())
-                << TEXT(
-                    "  ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- \n");
-            
-            LOG_INFO_ODS *this
-                << TEXT("[") << Core::name << TEXT(" ") << Core::versionString << TEXT("(code: ") << Core::version_code
-                << TEXT(")]\n")
-                << TEXT(" - [logger file: \"") << this->file << TEXT("\"]\n")
-                << TEXT(" - [build time: ") << Core::buildTime << TEXT("]\n")
-                << TEXT(" - [build type: ") << buildType << TEXT("]\n")
-                << TEXT(" - [running path: ") << GDirectory::CurrentDirectory().GetFileName() << TEXT("]\n");
-            
-        }
+        buffer += std::format(
+            TEXT("\n\n{1} Start {0}  {1}\n"), FLoggerFormat::Format(FTimer::LocalTime()),
+            TEXT("----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----")
+        );
+        LOG_INFO_ODS *this << TEXT("[") << Core::name << TEXT(" ") << Core::versionString << TEXT("(code: ")
+                           << Core::version_code
+                           << TEXT(")]\n")
+                           << TEXT(" - [logger file: \"") << this->file << TEXT("\"]\n")
+                           << TEXT(" - [build time: ") << Core::buildTime << TEXT("]\n")
+                           << TEXT(" - [build type: ") << buildType << TEXT("]\n")
+                           << TEXT(" - [running path: ") << GDirectoryName::ModuleFile().GetFileName() << TEXT("]\n");
+    }
+    
+    bool FLogger::WriteClose()
+    {
+        FILE *fp;
+#ifdef UNICODE
+        _wfopen_s
+#else
+            fopen_s
+#endif
+            (&fp, this->file.c_str(), TEXT("a"));
+        
+        if (fp == nullptr) return false;
+
+#ifdef UNICODE
+        fputws
+#else
+            fputs
+#endif
+            (buffer.c_str(), fp);
+        fclose(fp);
+        buffer.clear();
+        return true;
     }
     
     FLogger::~FLogger()
     {
         WriteClose();
-        if (IsOpen() || ReOpen())
+        TOFStream ofs(this->file, std::ios::out | std::ios::app);
+        if (ofs.is_open())
         {
             ofs << TEXT(
                 "\n----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----  End ")
                 << FLoggerFormat::Format(FTimer::LocalTime())
                 << TEXT(
                     "  ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- \n\n");
+            ofs.close();
         }
-        WriteClose();
         delete this->formatter;
     }
     
@@ -175,12 +190,6 @@ namespace GenesisCubeEngine
         return *this;
     }
     
-    FLogger &FLogger::operator<<(const GObject &object)
-    {
-        lineBuffer.append(object.ToShowString());
-        return *this;
-    }
-    
     FLogger &FLogger::operator<<(const void *ptr)
     {
         lineBuffer.append(ptr == nullptr ? TEXT("nullptr") : ToTString((uintptr_t) ptr));
@@ -256,31 +265,7 @@ namespace GenesisCubeEngine
         lineBuffer.clear();
     }
     
-    bool FLogger::IsOpen() const
-    {
-        return ofs.is_open();
-    }
-    
-    bool FLogger::ReOpen()
-    {
-        if (IsOpen()) return true;
-        ofs.open(file, std::ios::out | std::ios::app);
-        return IsOpen();
-    }
-    
-    bool FLogger::WriteClose()
-    {
-        if (!ReOpen())
-        {
-            return false;
-        }
-        ofs << buffer;
-        buffer.clear();
-        ofs.close();
-        return true;
-    }
-    
-    void FLogger::RemoveOldFile(GDirectory::ConstForeachEventArgs args)
+    void FLogger::RemoveOldFile(GDirectoryName::ConstForeachEventArgs args)
     {
         
         LOG_INFO GetInstance()
@@ -306,9 +291,9 @@ namespace GenesisCubeEngine
         }
     }
     
-    void FLogger::RemoveOldLogFile(time_t _time)
+    bool FLogger::RemoveOldLogFile(time_t _time)
     {
-        GDirectory(TEXT(".\\log")).FindForeach(TEvent<GDirectory::ConstForeachEventArgs>(RemoveOldFile));
+        return GDirectoryName(TEXT(".\\log")).FindForeach(TEvent<GDirectoryName::ConstForeachEventArgs>(RemoveOldFile));
     }
 
 #pragma endregion

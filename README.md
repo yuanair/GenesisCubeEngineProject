@@ -12,41 +12,68 @@
 
 ## 使用
 
+> 编译时定义UNICODE宏
+
 ```c++
 #include <GenesisCubeEngine/Core/Core.h>
+#include <GenesisCubeEngine/Game/FWindow.h>
 
-class MyProgram : public GenesisCubeEngine::GProgram
+using namespace GenesisCubeEngine;
+
+///
+/// 定义程序类
+///
+class MyProgram : public GProgram
 {
 public:
-
-    MyProgram() noexcept = default;
     
-    ~MyProgram() noexcept override = default;
+    MyProgram()
+    {
+        // 注册窗口类
+        FWindow::Register(wndClassName);
+        
+        // 创建窗口
+        window.Create(wndClassName, wndName);
+        
+        // 当窗口关闭时销毁窗口
+        window.eOnClose += FWindow::DestroyOnClose;
+        
+        // 当窗口销毁时退出程序
+        window.eOnDestroy += FWindow::ExitOnDestroy;
+        
+        // do some works ...
+        
+        // 显示窗口
+        window.ShowAndUpdate();
+    }
+    
+    ~MyProgram() override
+    {
+        // do some works ...
+    }
 
 public:
+    
+    void Tick() override
+    {
+        window.Tick();
+    }
 
-    void Init() override
-    {
-        // do some work...
-    }
+public:
     
-    void Tick(double deltaTime) override
-    {
-        // do some work...
-    }
+    // 窗口类名
+    static constexpr TCHAR wndClassName[] = TEXT("main window class");
     
-    void End() override
-    {
-        // do some work...
-    }
+    // 窗口名
+    static constexpr TCHAR wndName[] = TEXT("main window");
 
 private:
+    
+    FWindow window;
+    
+}
 
-    // do some work...
-
-};
-
-GenesisCubeEngine::GProgram *GCProgram()
+GProgram* GCProgram()
 {
     return new MyProgram();
 }
