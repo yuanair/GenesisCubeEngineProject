@@ -4,6 +4,7 @@
 
 #include "Core.h"
 #include "Debug.h"
+#include "../Game/GWindow.h"
 
 namespace GenesisCubeEngine
 {
@@ -16,61 +17,76 @@ namespace GenesisCubeEngine
     
     const int Core::version_code = 1;
     
-    HINSTANCE Core::hInstance = nullptr;
+    static HINSTANCE hInstance = nullptr;
     
-    HINSTANCE Core::hPrevInstance = nullptr;
+    static HINSTANCE hPrevInstance = nullptr;
     
-    LPSTR Core::cmdLine = nullptr;
+    static LPSTR cmdLine = nullptr;
     
-    int Core::nShowCmd = 0;
-    
-    void Core::TestGenesisCubeEngine()
-    {
-        MessageBox(nullptr, buildType, TEXT("GCE编译类型"), MB_OK);
-        MessageBox(nullptr, TEXT("<Test field测试字段>"), TEXT("GCE测试"), MB_OK);
-    }
+    static int nShowCmd = 0;
     
     void Core::Exit(int nExitCode)
     {
         PostQuitMessage(nExitCode);
     }
     
+    HINSTANCE Core::GetInstance()
+    {
+        return hInstance;
+    }
+    
+    HINSTANCE Core::GetPrevInstance()
+    {
+        return hPrevInstance;
+    }
+    
+    LPSTR Core::GetCmdLine()
+    {
+        return cmdLine;
+    }
+    
+    int Core::GetShowCmd()
+    {
+        return nShowCmd;
+    }
+    
+    int Run()
+    {
+        // 定义
+        MSG msg = {};
+        FTimer timer;
+        
+        // 当为DEBUG模式时，内存泄漏检测
+        if (GenesisCubeEngine::bIsDebug)
+        {
+            _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+        }
+        
+        // 获取程序
+        GCProgram();
+        timer.Reset();
+        
+        // 消息循环
+        while (msg.message != WM_QUIT)
+        {
+            if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
+            else
+            {
+                GWindow::Tick();
+            }
+        }
+        
+        // 删除日志实例
+        GenesisCubeEngine::FLogger::DeleteInstance();
+        
+        return (int) msg.wParam;
+    }
     
 } // GenesisCubeEngine
-
-int Run()
-{
-    // 定义
-    MSG msg = {};
-    
-    // 当为DEBUG模式时，内存泄漏检测
-    if (GenesisCubeEngine::bIsDebug)
-    {
-        _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-    }
-    
-    // 获取程序
-    GCProgram();
-    
-    // 消息循环
-    while (msg.message != WM_QUIT)
-    {
-        if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-        else
-        {
-            GCTick();
-        }
-    }
-    
-    // 删除日志实例
-    GenesisCubeEngine::FLogger::DeleteInstance();
-    
-    return (int) msg.wParam;
-}
 
 int WINAPI WinMain
     (
@@ -80,9 +96,9 @@ int WINAPI WinMain
         int nShowCmd
     )
 {
-    GenesisCubeEngine::Core::hInstance = hInstance;
-    GenesisCubeEngine::Core::hPrevInstance = hPrevInstance;
-    GenesisCubeEngine::Core::cmdLine = lpCmdLine;
-    GenesisCubeEngine::Core::nShowCmd = nShowCmd;
-    return Run();
+    GenesisCubeEngine::hInstance = hInstance;
+    GenesisCubeEngine::hPrevInstance = hPrevInstance;
+    GenesisCubeEngine::cmdLine = lpCmdLine;
+    GenesisCubeEngine::nShowCmd = nShowCmd;
+    return GenesisCubeEngine::Run();
 }

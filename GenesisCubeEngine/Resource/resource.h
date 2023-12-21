@@ -7,9 +7,9 @@
 ///
 /// 图标
 ///
-#define IDI_ICON_ProgramIcon 101
+#define IDI_ICON_Main 101
 
 ///
 /// 小图标
 ///
-#define IDI_ICON_ProgramIconSm 102
+#define IDI_ICON_MainSm 102

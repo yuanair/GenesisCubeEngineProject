@@ -21,11 +21,6 @@ namespace GenesisCubeEngine
         /// \param nExitCode 退出码
         ///
         static void Exit(int nExitCode = 0);
-        
-        //
-        // 测试
-        //
-        static void TestGenesisCubeEngine();
     
     public:
         
@@ -59,22 +54,22 @@ namespace GenesisCubeEngine
         //
         // 应用实例
         //
-        static HINSTANCE hInstance;
+        static HINSTANCE GetInstance();
         
         //
         // 应用实例
         //
-        static HINSTANCE hPrevInstance;
+        static HINSTANCE GetPrevInstance();
         
         //
         // 运行参数
         //
-        static LPSTR cmdLine;
+        static LPSTR GetCmdLine();
         
         //
         // 显示
         //
-        static int nShowCmd;
+        static int GetShowCmd();
         
     };
 
@@ -180,37 +175,6 @@ namespace GenesisCubeEngine
     
     typedef std::basic_ofstream<NTChar> NTOFStream;
     
-    ///
-    /// 程序类
-    ///
-    class GProgram
-    {
-    public:
-        
-        GProgram() noexcept = default;
-        
-        virtual ~GProgram() noexcept = default;
-    
-    public:
-        
-        ///
-        /// 程序初始化时
-        ///
-        virtual void Init() = 0;
-        
-        ///
-        /// 每帧调用
-        ///
-        /// \param deltaTime 帧间隔时间，以秒记
-        virtual void Tick(double deltaTime) = 0;
-        
-        ///
-        /// 结束
-        ///
-        virtual void End() = 0;
-        
-    };
-    
 } // GenesisCubeEngine
 
 
@@ -218,8 +182,3 @@ namespace GenesisCubeEngine
 // 程序入口
 //
 void GCProgram();
-
-//
-// 每帧调用
-//
-void GCTick();
