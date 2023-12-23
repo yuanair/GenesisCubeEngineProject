@@ -125,6 +125,69 @@ namespace GenesisCubeEngine
 		}
 	}
 	
+	
+	TString FLogger::TraceStack(uint16_t frameToSkip, uint16_t framesToCapture)
+	{
+		auto pStack = new PVOID[framesToCapture];
+		TString szStackInfo;
+		
+		HANDLE process = GetCurrentProcess();
+		SymInitialize(process, nullptr, TRUE);
+		WORD frames = CaptureStackBackTrace(frameToSkip, framesToCapture, pStack, nullptr);
+		
+		if (frames > framesToCapture) frames = framesToCapture;
+		
+		for (WORD i = 0; i < frames; ++i)
+		{
+			auto address = (DWORD64) (pStack[i]);
+			
+			DWORD64 displacementSym = 0;
+#ifdef UNICODE
+			TChar buffer[sizeof(SYMBOL_INFOW) + MAX_SYM_NAME * sizeof(TChar)];
+			auto pSymbol = (PSYMBOL_INFOW) buffer;
+			pSymbol->SizeOfStruct = sizeof(SYMBOL_INFOW);
+			
+			pSymbol->MaxNameLen = MAX_SYM_NAME;
+			
+			DWORD displacementLine = 0;
+			IMAGEHLP_LINEW64 line;
+			line.SizeOfStruct = sizeof(IMAGEHLP_LINEW64);
+#else
+			TChar buffer[sizeof(SYMBOL_INFO) + MAX_SYM_NAME * sizeof(TChar)];
+			auto pSymbol = (PSYMBOL_INFO) buffer;
+			pSymbol->SizeOfStruct = sizeof(SYMBOL_INFO);
+			
+			pSymbol->MaxNameLen = MAX_SYM_NAME;
+			
+			DWORD displacementLine = 0;
+			IMAGEHLP_LINE64 line;
+			line.SizeOfStruct = sizeof(IMAGEHLP_LINE64);
+#endif
+
+#ifdef UNICODE
+			if (SymFromAddrW(process, address, &displacementSym, pSymbol) &&
+				SymGetLineFromAddrW64(process, address, &displacementLine, &line))
+#else
+				if (SymFromAddr(process, address, &displacementSym, pSymbol) && SymGetLineFromAddr64(process, address, &displacementLine, &line))
+#endif
+			{
+				szStackInfo.append(
+					std::format(
+						TEXT("\t{}() at {}({})(0x{:016X})\n"), pSymbol->Name, line.FileName,
+						line.LineNumber, pSymbol->Address
+					));
+			}
+			else
+			{
+				auto lastError = GetLastError();
+				szStackInfo.append(std::format(TEXT("\terror(0x{:08X}): {}"), lastError, GFormatMessage(lastError)));
+			}
+		}
+		delete[] pStack;
+		
+		return szStackInfo;
+	}
+	
 	FLogger &FLogger::operator<<(const std::nullptr_t)
 	{
 		lineBuffer.append(TEXT("nullptr"));
@@ -277,66 +340,6 @@ namespace GenesisCubeEngine
 	{
 		return GDirectoryName(TEXT(".\\log")).FindForeach(TEvent<GDirectoryName::ConstForeachEventArgs>(RemoveOldFile));
 	}
-	
-	TString FLogger::TraceStack(uint16_t frameToSkip, uint16_t framesToCapture)
-	{
-		auto *pStack = new PVOID[framesToCapture];
-		TString szStackInfo;
-		
-		HANDLE process = GetCurrentProcess();
-		SymInitialize(process, nullptr, TRUE);
-		WORD frames = CaptureStackBackTrace(frameToSkip, framesToCapture, pStack, nullptr);
-		
-		for (WORD i = 0; i < frames; ++i)
-		{
-			auto address = (DWORD64) (pStack[i]);
-			
-			DWORD64 displacementSym = 0;
-#ifdef UNICODE
-			TChar buffer[sizeof(SYMBOL_INFOW) + MAX_SYM_NAME * sizeof(TChar)];
-			auto pSymbol = (PSYMBOL_INFOW) buffer;
-			pSymbol->SizeOfStruct = sizeof(SYMBOL_INFOW);
-#else
-			TChar buffer[sizeof(SYMBOL_INFO) + MAX_SYM_NAME * sizeof(TChar)];
-			auto pSymbol = (PSYMBOL_INFO) buffer;
-			pSymbol->SizeOfStruct = sizeof(SYMBOL_INFO);
-#endif
-			pSymbol->MaxNameLen = MAX_SYM_NAME;
-			
-			DWORD displacementLine = 0;
-			IMAGEHLP_LINE64 line;
-			line.SizeOfStruct = sizeof(IMAGEHLP_LINE64);
-			
-			if (
-#ifdef UNICODE
-SymFromAddrW
-#else
-					SymFromAddr
-#endif
-					(process, address, &displacementSym, pSymbol) &&
-SymGetLineFromAddr64(process, address, &displacementLine, &line))
-			{
-				szStackInfo.append(
-					std::format(
-						TEXT("\t{}() at {}: {}(0x{:016X})\n"), pSymbol->Name,
-#ifdef UNICODE
-						FFormatter::StringToWString(line.FileName),
-#else
-						line.FileName,
-#endif
-						line.LineNumber, pSymbol->Address
-					));
-			}
-			else
-			{
-				auto lastError = GetLastError();
-				szStackInfo.append(std::format(TEXT("\terror(0x{:08X}): {}"), lastError, GFormatMessage(lastError)));
-			}
-		}
-		delete[] pStack;
-		
-		return szStackInfo;
-	}
 
 #pragma endregion
 
@@ -348,11 +351,15 @@ SymGetLineFromAddr64(process, address, &displacementLine, &line))
 		TString buffer;
 		buffer.append(TEXT("[")).append(Format(loggerLevel));
 		buffer.append(TEXT("] [")).append(Format(FTimer::LocalTime()));
-		buffer.append(TEXT("] [")).append(FLogger::TraceStack(3, 16));
-		buffer.append(TEXT("]\n"));
+		if (bIsEditor || bIsDebug) buffer.append(TEXT("] [")).append(FLogger::TraceStack(3, 16));
+		buffer.append(TEXT("]"));
 		
-		if (message.empty()) return buffer;
-		buffer.append(TEXT("\t"));
+		if (message.empty())
+		{
+			buffer.push_back(TEXT('\n'));
+			return buffer;
+		}
+		buffer.push_back(TEXT('\t'));
 		for (TCHAR ch: message)
 		{
 			if (ch == TEXT('\n'))

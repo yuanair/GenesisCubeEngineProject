@@ -49,10 +49,10 @@ public:
 		
 		mainWindow.eOnTick += [](FWindow::EventOnTickArgs args) -> void
 		{
-			LOG_INFO FLogger::GetInstance() <<
-											std::format(
-												TEXT("deltaTime:{:.7f}\nnowTime:{}"), args.deltaTime,
-												FTimer::LocalTime());
+//			LOG_INFO FLogger::GetInstance() <<
+//											std::format(
+//												TEXT("deltaTime:{:.7f}\nnowTime:{}"), args.deltaTime,
+//												FTimer::LocalTime());
 			
 		};
 		

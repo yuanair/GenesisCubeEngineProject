@@ -102,7 +102,7 @@ namespace GenesisCubeEngine
 		static void DeleteInstance();
 		
 		///
-		/// 获取栈帧
+		/// 获取栈帧（只在Debug模式编译有效）
 		/// \param frameToSkip 跳过的栈帧
 		/// \param framesToCapture 需要捕获的栈帧数量
 		/// \return 栈帧格式化字符串
@@ -239,8 +239,7 @@ namespace GenesisCubeEngine
 	
 	public:
 		
-		inline FLoggerLine(LoggerLevel loggerLevel, TString file, int32_t line, TString func, HWND hWnd = nullptr,
-						   TString mBoxCaption = FCore::name)
+		inline explicit FLoggerLine(LoggerLevel loggerLevel, HWND hWnd = nullptr, TString mBoxCaption = FCore::name)
 			: loggerLevel(loggerLevel), hWnd(hWnd),
 			  mBoxCaption(std::move(mBoxCaption)) {}
 		
@@ -304,14 +303,15 @@ namespace GenesisCubeEngine
 	/// \param dwLanguageId 语言ID
 	/// \param dwBufferSize 缓冲区大小，包括'\0'字符，以TChar为单位
 	/// \return 字符串
-	TString GFormatMessage(DWORD dwMessageId, DWORD dwLanguageId = MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+	TString GFormatMessage(DWORD dwMessageId, DWORD dwLanguageId = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),
 						   DWORD dwBufferSize = 256);
+	
 	
 }
 
 
-#define LOG_LEVEL(loggerLevel)                      GenesisCubeEngine::FLoggerLine((GenesisCubeEngine::LoggerLevel)(loggerLevel), TEXT(__FILE__), __LINE__, TEXT(__FUNCSIG__)) ==
-#define LOG_LEVEL_M(loggerLevel, hWnd, mBoxCaption) GenesisCubeEngine::FLoggerLine((GenesisCubeEngine::LoggerLevel)(loggerLevel), TEXT(__FILE__), __LINE__, TEXT(__FUNCSIG__), hWnd, mBoxCaption) ==
+#define LOG_LEVEL(loggerLevel)                      GenesisCubeEngine::FLoggerLine((GenesisCubeEngine::LoggerLevel)(loggerLevel)) ==
+#define LOG_LEVEL_M(loggerLevel, hWnd, mBoxCaption) GenesisCubeEngine::FLoggerLine((GenesisCubeEngine::LoggerLevel)(loggerLevel), hWnd, mBoxCaption) ==
 
 #if defined(DEBUG) || defined(_DEBUG)
 

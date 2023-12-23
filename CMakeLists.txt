@@ -14,7 +14,7 @@ elseif (${GenesisCubeBuildType} STREQUAL "Editor")
     add_definitions(-DGenesisCubeEditor)
 endif ()
 
-add_definitions(-DUNICODE -utf-8)
+add_definitions(-utf-8 -DUNICODE)
 
 # GenesisCubeEngine
 add_subdirectory("./GenesisCubeEngine")

@@ -4,8 +4,6 @@
 > 使用DirectX渲染的轻量化游戏引擎
 >
 
-> IDE: CLion
-
 > 编译器：MSVC
 
 > C++ 20
