@@ -45,7 +45,7 @@ public:
 		mainWindow.ShowAndUpdate();
 		addWindow.ShowAndUpdate();
 		
-		addWindow.SubMBox(std::format(TEXT("Test: |{:.3f}|"), 42.48978), FCore::name);
+		// addWindow.SubMBox(std::format(TEXT("Test: |{:.3f}|"), 42.48978), FCore::name);
 		
 		mainWindow.eOnTick += [](FWindow::EventOnTickArgs args) -> void
 		{
@@ -79,7 +79,7 @@ public:
 			FLogger::GetInstance() << files[i]->GetFileName() << TEXT("\n");
 			if (auto *ptr = files[i].Cast<GDirectoryName>()) ptr->Find(files);
 		}
-		LOG_INFO_ODS_M(nullptr, FCore::name) FLogger::GetInstance();
+		LOG_INFO_ODS FLogger::GetInstance();
 	}
 	
 	void Tick() override

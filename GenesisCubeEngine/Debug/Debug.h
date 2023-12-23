@@ -32,10 +32,8 @@ namespace GenesisCubeEngine
 		/// 致命
 		Fatal = 0x05,
 		
-		/// OutputDebugString 可与MBox连用
+		/// OutputDebugString
 		ODS = 0x10,
-		/// MessageBox 可与ODS连用
-		MBox = 0x20,
 	};
 	
 	
@@ -108,10 +106,38 @@ namespace GenesisCubeEngine
 		/// \return 栈帧格式化字符串
 		static TString TraceStack(uint16_t frameToSkip = 1, uint16_t framesToCapture = 16);
 		
-		/// 不支持写入char*字符串
+		///
+		/// LOG DEBUG
+		/// \param message 消息
+		void LogDebug(const TString &message);
+		
+		///
+		/// LOG TEST
+		/// \param message 消息
+		void LogTest(const TString &message);
+		
+		///
+		/// LOG INFO
+		/// \param message 消息
+		void Log(const TString &message);
+		
+		///
+		/// LOG WARNING
+		/// \param message 消息
+		void LogWarning(const TString &message);
+		
+		///
+		/// LOG ERROR
+		/// \param message 消息
+		void LogError(const TString &message);
+		
+		///
+		/// LOG FATAL
+		/// \param message 消息
+		void LogFatal(const TString &message);
+		
 		FLogger &operator<<(const NTChar *str) = delete;
 		
-		/// 不支持写入char字符
 		FLogger &operator<<(NTChar c) = delete;
 		
 		/// 写入nullptr
@@ -130,52 +156,13 @@ namespace GenesisCubeEngine
 		/// c - 字符
 		FLogger &operator<<(TCHAR c);
 		
-		/// 写入布尔
-		/// value - 布尔
-		FLogger &operator<<(bool value);
-		
-		/// 写入数字
-		/// value - 数字
-		FLogger &operator<<(int32_t value);
-		
-		/// 写入数字
-		/// value - 数字
-		FLogger &operator<<(uint32_t value);
-		
-		/// 写入数字
-		/// value - 数字
-		FLogger &operator<<(int64_t value);
-		
-		/// 写入数字
-		/// value - 数字
-		FLogger &operator<<(uint64_t value);
-		
-		/// 写入数字
-		/// value - 数字
-		FLogger &operator<<(float_t value);
-		
-		/// 写入数字
-		/// value 数字
-		FLogger &operator<<(double_t value);
-		
-		/// 写入指针地址
-		/// ptr - 指针
-		FLogger &operator<<(const void *ptr);
-		
 		/// 结束一行写入
 		/// loggerLevel - 日志级别
-		/// hWnd - 窗口句柄（可为nullptr）
-		/// mBoxCaption - 消息框标题
-		bool EndLine(LoggerLevel loggerLevel, HWND hWnd = nullptr,
-					 const TString &mBoxCaption = FCore::name);
+		bool EndLine(LoggerLevel loggerLevel);
 		
 		/// 写入一行
 		/// exception - 异常
-		/// hWnd - 窗口句柄（可为nullptr）
-		/// mBoxCaption - 消息框标题
-		void
-		Write(const class ELoggerLevelException &exception, HWND hWnd = nullptr,
-			  const TString &mBoxCaption = FCore::name);
+		void Write(const class ELoggerLevelException &exception);
 		
 		/// 删除文件
 		static void RemoveOldFile(GDirectoryName::ConstForeachEventArgs args);
@@ -239,9 +226,8 @@ namespace GenesisCubeEngine
 	
 	public:
 		
-		inline explicit FLoggerLine(LoggerLevel loggerLevel, HWND hWnd = nullptr, TString mBoxCaption = FCore::name)
-			: loggerLevel(loggerLevel), hWnd(hWnd),
-			  mBoxCaption(std::move(mBoxCaption)) {}
+		inline explicit FLoggerLine(LoggerLevel loggerLevel)
+			: loggerLevel(loggerLevel) {}
 		
 		inline ~FLoggerLine() = default;
 	
@@ -254,17 +240,13 @@ namespace GenesisCubeEngine
 		inline bool operator==(class FLogger &_logger) const
 		{
 			return _logger.EndLine(
-				loggerLevel, hWnd, mBoxCaption
+				loggerLevel
 			);
 		}
 	
 	private:
 		
 		const LoggerLevel loggerLevel;
-		
-		HWND hWnd;
-		
-		const TString mBoxCaption;
 		
 	};
 	
@@ -311,21 +293,16 @@ namespace GenesisCubeEngine
 
 
 #define LOG_LEVEL(loggerLevel)                      GenesisCubeEngine::FLoggerLine((GenesisCubeEngine::LoggerLevel)(loggerLevel)) ==
-#define LOG_LEVEL_M(loggerLevel, hWnd, mBoxCaption) GenesisCubeEngine::FLoggerLine((GenesisCubeEngine::LoggerLevel)(loggerLevel), hWnd, mBoxCaption) ==
 
 #if defined(DEBUG) || defined(_DEBUG)
 
 #define LOG_DEBUG                                   LOG_LEVEL(GenesisCubeEngine::LoggerLevel::Debug)
 #define LOG_DEBUG_ODS                               LOG_LEVEL(GenesisCubeEngine::LoggerLevel::Debug | GenesisCubeEngine::LoggerLevel::ODS)
-#define LOG_DEBUG_M(hWnd, mBoxCaption)              LOG_LEVEL_M(GenesisCubeEngine::LoggerLevel::Debug | GenesisCubeEngine::LoggerLevel::MBox, hWnd, mBoxCaption)
-#define LOG_DEBUG_ODS_M(hWnd, mBoxCaption)          LOG_LEVEL_M(GenesisCubeEngine::LoggerLevel::Debug | GenesisCubeEngine::LoggerLevel::ODS | GenesisCubeEngine::LoggerLevel::MBox, hWnd, mBoxCaption)
 
 #else
 
 #define LOG_DEBUG                                   false && LOG_LEVEL(GenesisCubeEngine::LoggerLevel::Debug)
 #define LOG_DEBUG_ODS                               false && LOG_LEVEL(GenesisCubeEngine::LoggerLevel::Debug | GenesisCubeEngine::LoggerLevel::ODS)
-#define LOG_DEBUG_M(hWnd, mBoxCaption)              false && LOG_LEVEL_M(GenesisCubeEngine::LoggerLevel::Debug | GenesisCubeEngine::LoggerLevel::MBox, hWnd, mBoxCaption)
-#define LOG_DEBUG_ODS_M(hWnd, mBoxCaption)          false && LOG_LEVEL_M(GenesisCubeEngine::LoggerLevel::Debug | GenesisCubeEngine::LoggerLevel::ODS | GenesisCubeEngine::LoggerLevel::MBox, hWnd, mBoxCaption)
 
 #endif
 
@@ -340,18 +317,6 @@ namespace GenesisCubeEngine
 #define LOG_WARNING_ODS                             LOG_LEVEL(GenesisCubeEngine::LoggerLevel::Warning | GenesisCubeEngine::LoggerLevel::ODS)
 #define LOG_ERROR_ODS                               LOG_LEVEL(GenesisCubeEngine::LoggerLevel::Error | GenesisCubeEngine::LoggerLevel::ODS)
 #define LOG_FATAL_ODS                               LOG_LEVEL(GenesisCubeEngine::LoggerLevel::Fatal | GenesisCubeEngine::LoggerLevel::ODS)
-
-#define LOG_TEST_M(hWnd, mBoxCaption)               LOG_LEVEL_M(GenesisCubeEngine::LoggerLevel::Test | GenesisCubeEngine::LoggerLevel::MBox, hWnd, mBoxCaption)
-#define LOG_INFO_M(hWnd, mBoxCaption)               LOG_LEVEL_M(GenesisCubeEngine::LoggerLevel::Info | GenesisCubeEngine::LoggerLevel::MBox, hWnd, mBoxCaption)
-#define LOG_WARNING_M(hWnd, mBoxCaption)            LOG_LEVEL_M(GenesisCubeEngine::LoggerLevel::Warning | GenesisCubeEngine::LoggerLevel::MBox, hWnd, mBoxCaption)
-#define LOG_ERROR_M(hWnd, mBoxCaption)              LOG_LEVEL_M(GenesisCubeEngine::LoggerLevel::Error | GenesisCubeEngine::LoggerLevel::MBox, hWnd, mBoxCaption)
-#define LOG_FATAL_M(hWnd, mBoxCaption)              LOG_LEVEL_M(GenesisCubeEngine::LoggerLevel::Fatal | GenesisCubeEngine::LoggerLevel::MBox, hWnd, mBoxCaption)
-
-#define LOG_TEST_ODS_M(hWnd, mBoxCaption)           LOG_LEVEL_M(GenesisCubeEngine::LoggerLevel::Test | GenesisCubeEngine::LoggerLevel::ODS | GenesisCubeEngine::LoggerLevel::MBox, hWnd, mBoxCaption)
-#define LOG_INFO_ODS_M(hWnd, mBoxCaption)           LOG_LEVEL_M(GenesisCubeEngine::LoggerLevel::Info | GenesisCubeEngine::LoggerLevel::ODS | GenesisCubeEngine::LoggerLevel::MBox, hWnd, mBoxCaption)
-#define LOG_WARNING_ODS_M(hWnd, mBoxCaption)        LOG_LEVEL_M(GenesisCubeEngine::LoggerLevel::Warning | GenesisCubeEngine::LoggerLevel::ODS | GenesisCubeEngine::LoggerLevel::MBox, hWnd, mBoxCaption)
-#define LOG_ERROR_ODS_M(hWnd, mBoxCaption)          LOG_LEVEL_M(GenesisCubeEngine::LoggerLevel::Error | GenesisCubeEngine::LoggerLevel::ODS | GenesisCubeEngine::LoggerLevel::MBox, hWnd, mBoxCaption)
-#define LOG_FATAL_ODS_M(hWnd, mBoxCaption)          LOG_LEVEL_M(GenesisCubeEngine::LoggerLevel::Fatal | GenesisCubeEngine::LoggerLevel::ODS | GenesisCubeEngine::LoggerLevel::MBox, hWnd, mBoxCaption)
 
 #define LOG_EXCEPTION(message, loggerLevel)         GenesisCubeEngine::LoggerException(message, (GenesisCubeEngine::LoggerLevel)(loggerLevel), GenesisCubeEngine::FLogger::TraceStack(1, 16))
 

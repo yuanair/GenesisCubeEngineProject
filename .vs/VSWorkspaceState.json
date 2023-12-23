@@ -10,5 +10,13 @@
       "out\\build\\GameRelease",
       "out\\install\\GameRelease"
     ]
-  }
+  },
+  "ExpandedNodes": [
+    "",
+    "\\GenesisCubeEngine",
+    "\\test",
+    "\\test\\Source"
+  ],
+  "SelectedNode": "\\CMakeLists.txt",
+  "PreviewInSolutionExplorer": false
 }

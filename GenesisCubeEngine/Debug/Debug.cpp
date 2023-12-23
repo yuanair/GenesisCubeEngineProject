@@ -38,7 +38,7 @@ namespace GenesisCubeEngine
 			TEXT("----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----")
 		);
 		LOG_INFO_ODS *this << TEXT("[") << FCore::name << TEXT(" ") << FCore::versionString << TEXT("(code: ")
-						   << FCore::version_code
+						   << ToTString(FCore::version_code)
 						   << TEXT(")]\n")
 						   << TEXT(" - [logger file: \"") << this->file << TEXT("\"]\n")
 						   << TEXT(" - [build time: ") << FCore::buildTime << TEXT("]\n")
@@ -212,56 +212,7 @@ namespace GenesisCubeEngine
 		return *this;
 	}
 	
-	FLogger &FLogger::operator<<(bool value)
-	{
-		lineBuffer.append(value ? TEXT("true") : TEXT("false"));
-		return *this;
-	}
-	
-	FLogger &FLogger::operator<<(int32_t value)
-	{
-		lineBuffer.append(ToTString(value));
-		return *this;
-	}
-	
-	FLogger &FLogger::operator<<(uint32_t value)
-	{
-		lineBuffer.append(ToTString(value));
-		return *this;
-	}
-	
-	FLogger &FLogger::operator<<(int64_t value)
-	{
-		lineBuffer.append(ToTString(value));
-		return *this;
-	}
-	
-	FLogger &FLogger::operator<<(uint64_t value)
-	{
-		lineBuffer.append(ToTString(value));
-		return *this;
-	}
-	
-	FLogger &FLogger::operator<<(float_t value)
-	{
-		lineBuffer.append(ToTString(value));
-		return *this;
-	}
-	
-	FLogger &FLogger::operator<<(double_t value)
-	{
-		lineBuffer.append(ToTString(value));
-		return *this;
-	}
-	
-	FLogger &FLogger::operator<<(const void *ptr)
-	{
-		lineBuffer.append(ptr == nullptr ? TEXT("nullptr") : ToTString((uintptr_t) ptr));
-		return *this;
-	}
-	
-	bool FLogger::EndLine(LoggerLevel loggerLevel, HWND hWnd,
-						  const TString &mBoxCaption)
+	bool FLogger::EndLine(LoggerLevel loggerLevel)
 	{
 		loggerTimer.Tick();
 		
@@ -287,38 +238,13 @@ namespace GenesisCubeEngine
 			OutputDebugString(sBuffer.c_str());
 		}
 		
-		// MBox
-		if ((loggerLevel & MBox) != 0)
-		{
-			UINT uType;
-			switch (loggerLevel & 0x000F)
-			{
-				case LoggerLevel::Debug:
-				case LoggerLevel::Test:
-					uType = MB_OK;
-					break;
-				case LoggerLevel::Info:
-					uType = MB_OK | MB_ICONINFORMATION;
-					break;
-				case LoggerLevel::Warning:
-					uType = MB_OK | MB_ICONWARNING;
-					break;
-				case LoggerLevel::Error:
-				case LoggerLevel::Fatal:
-				default:
-					uType = MB_OK | MB_ICONERROR;
-					break;
-			}
-			MessageBox(hWnd, sBuffer.c_str(), mBoxCaption.c_str(), uType);
-		}
-		
 		return true;
 	}
 	
-	void FLogger::Write(const class ELoggerLevelException &exception, HWND hWnd, const TString &mBoxCaption)
+	void FLogger::Write(const class ELoggerLevelException &exception)
 	{
 		this->operator<<(exception.What());
-		EndLine(exception.loggerLevel, hWnd, mBoxCaption);
+		EndLine(exception.loggerLevel);
 	}
 	
 	void FLogger::RemoveOldFile(GDirectoryName::ConstForeachEventArgs args)
@@ -339,6 +265,36 @@ namespace GenesisCubeEngine
 	bool FLogger::RemoveOldLogFile()
 	{
 		return GDirectoryName(TEXT(".\\log")).FindForeach(TEvent<GDirectoryName::ConstForeachEventArgs>(RemoveOldFile));
+	}
+	
+	void FLogger::LogDebug(const TString &message)
+	{
+		EndLine(LoggerLevel::Debug);
+	}
+	
+	void FLogger::LogTest(const TString &message)
+	{
+	
+	}
+	
+	void FLogger::Log(const TString &message)
+	{
+	
+	}
+	
+	void FLogger::LogWarning(const TString &message)
+	{
+	
+	}
+	
+	void FLogger::LogError(const TString &message)
+	{
+	
+	}
+	
+	void FLogger::LogFatal(const TString &message)
+	{
+	
 	}
 
 #pragma endregion
@@ -404,8 +360,6 @@ namespace GenesisCubeEngine
 		}
 		
 		if (loggerLevel & LoggerLevel::ODS) result += TEXT(" ODS");
-		if (loggerLevel & LoggerLevel::MBox) result += TEXT(" MB");
-		
 		
 		return result;
 	}
@@ -459,8 +413,7 @@ namespace GenesisCubeEngine
 			throw GenesisCubeEngine::ELoggerLevelException(
 				strBufferHr,
 				(GenesisCubeEngine::LoggerLevel) (
-					GenesisCubeEngine::LoggerLevel::Fatal | GenesisCubeEngine::LoggerLevel::ODS |
-					GenesisCubeEngine::LoggerLevel::MBox
+					GenesisCubeEngine::LoggerLevel::Fatal | GenesisCubeEngine::LoggerLevel::ODS
 				),
 				FLogger::TraceStack(2, 16)
 			);
