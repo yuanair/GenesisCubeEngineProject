@@ -1,0 +1,44 @@
+﻿{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"type": "object",
+	"additionalProperties": false,
+	"description": "命令",
+	"required": [
+		"$schema",
+		"name",
+		"version",
+		"commands"
+	],
+	"properties": {
+		"$schema": {
+			"type": "string",
+			"description": "必需的架构"
+		},
+		"name": {
+			"type": "string",
+			"description": "必需的显示名称字符串"
+		},
+		"version": {
+			"type": "string",
+			"description": "必需的架构版本字符串"
+		},
+		"commands": {
+			"type": "array",
+			"description": "必需的执行命令数组",
+			"items": {
+				"type": "object",
+				"additionalProperties": true,
+				"description": "执行命令对象",
+				"required": [
+					"command"
+				],
+				"properties": {
+					"command": {
+						"type": "string",
+						"description": "必需的命令字符串"
+					}
+				}
+			}
+		}
+	}
+}

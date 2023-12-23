@@ -9,6 +9,8 @@
 #include <GenesisCubeEngine/Resource/resource.h>
 #include <GenesisCubeEngine/Localization/Localization.h>
 #include <GenesisCubeEngine/IO/GFileName.h>
+#include <GenesisCubeEngine/JSON/Json.h>
+#include <GenesisCubeEngine/JSON/JsonReader.h>
 
 #define Text(key) TText(TEXT(key))
 
@@ -80,6 +82,32 @@ public:
 //												FTimer::LocalTime());
 		
 		};
+		
+		TString jsonBuffer;
+		{
+			std::locale::global(std::locale("zh_CN.UTF-8"));
+			TFStream fstream(TEXT("Test.json"), std::ios::in);
+			if (!fstream.is_open())
+			{
+				FWindow::MBox(TEXT("can not open Test.json"), Text("MainWindowName"));
+			}
+			else
+			{
+				TString buffer;
+				while (std::getline(fstream, buffer))
+				{
+					jsonBuffer.append(buffer);
+					jsonBuffer.push_back(TEXT('\n'));
+				}
+				fstream.close();
+			}
+		}
+		
+		JSON::JsonReader jsonReader(jsonBuffer);
+		TPtr<JSON::Json> json = jsonReader.Next();
+		
+		FLogger::Inst().LogInfoODS(json->ToString());
+		
 	}
 	
 	void Tick() override

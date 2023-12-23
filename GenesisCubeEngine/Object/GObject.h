@@ -49,6 +49,12 @@ namespace GenesisCubeEngine
 		/// \return 克隆体
 		[[nodiscard]]
 		inline virtual GObject *Clone() const noexcept = 0;
+		
+		///
+		/// 转换为字符串
+		/// \return 字符串
+		[[nodiscard]]
+		virtual TString ToString() const noexcept;
 	
 	private:
 		

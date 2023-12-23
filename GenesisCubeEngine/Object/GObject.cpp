@@ -37,4 +37,13 @@ namespace GenesisCubeEngine
 		return this->ref;
 	}
 	
+	TString GObject::ToString() const noexcept
+	{
+#ifdef UNICODE
+		return std::format(TEXT("{}(0x{:016X})"), FFormatter::StringToWString(typeid(*this).name()), (uintptr_t) this);
+#else
+		return std::format(TEXT("{}(0x{:016X})"), typeid(*this).name(), (uintptr_t) this);
+#endif
+	}
+	
 } // GenesisCubeEngine

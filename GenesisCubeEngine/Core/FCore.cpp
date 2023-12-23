@@ -4,7 +4,6 @@
 
 #include "FCore.h"
 #include "../Debug/Debug.h"
-#include "../Game/FWindow.h"
 
 namespace GenesisCubeEngine
 {

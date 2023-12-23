@@ -16,7 +16,7 @@ namespace GenesisCubeEngine
 	GFileName GFileName::ModuleFile()
 	{
 		TCHAR lpFileName[MAX_PATH];
-		::GetModuleFileName(NULL, lpFileName, MAX_PATH);
+		::GetModuleFileName(nullptr, lpFileName, MAX_PATH);
 		return GFileName(lpFileName);
 	}
 	
@@ -49,7 +49,7 @@ namespace GenesisCubeEngine
 	
 	bool GFileName::DragQuery(HDROP hDrop, std::vector<TPtr<GFileName>> &fileNames)
 	{
-		UINT nFileCount = ::DragQueryFile(hDrop, (UINT) -1, NULL, 0);
+		UINT nFileCount = ::DragQueryFile(hDrop, (UINT) -1, nullptr, 0);
 		TCHAR szFileName[MAX_PATH] = {};
 		DWORD dwAttribute;
 		
