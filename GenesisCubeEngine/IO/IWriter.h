@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../Core/GenesisCubeEngine.h"
+#include "../Core/Header.h"
 
 #include "../Object/GObject.h"
 

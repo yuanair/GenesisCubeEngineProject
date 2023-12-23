@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "../Core/GenesisCubeEngine.h"
-#include "../Core/Core.h"
+#include "../Core/Header.h"
+#include "../Core/FCore.h"
 
 namespace GenesisCubeEngine
 {
@@ -88,31 +88,32 @@ namespace std
 {
     
     
-    
     template<class T>
-    struct std::formatter<GenesisCubeEngine::FSize < T>, GenesisCubeEngine::TChar>: formatter<T, GenesisCubeEngine::TChar>
-{
-    
-    template<class C>
-    constexpr auto format(const GenesisCubeEngine::FSize <T> &rect, C &context)
-    {
-        typename C::iterator Ite = format_to(context.out(), TEXT("("));
-        Ite = formatter<T, GenesisCubeEngine::TChar>::format(rect.width, context);
-        Ite = TEXT(',');
-        Ite = TEXT(' ');
-        Ite = formatter<T, GenesisCubeEngine::TChar>::format(rect.height, context);
-        Ite = TEXT(')');
-        return Ite;
-    }
-    
-};
-    
-    template<class T>
-    struct std::formatter<GenesisCubeEngine::FRect < T>, GenesisCubeEngine::TChar>: formatter<T, GenesisCubeEngine::TChar>
+    struct std::formatter<GenesisCubeEngine::FSize<T>, GenesisCubeEngine::TChar>
+        : formatter<T, GenesisCubeEngine::TChar>
     {
         
         template<class C>
-        constexpr auto format(const GenesisCubeEngine::FRect <T> &rect, C &context)
+        constexpr auto format(const GenesisCubeEngine::FSize<T> &rect, C &context)
+        {
+            typename C::iterator Ite = format_to(context.out(), TEXT("("));
+            Ite = formatter<T, GenesisCubeEngine::TChar>::format(rect.width, context);
+            Ite = TEXT(',');
+            Ite = TEXT(' ');
+            Ite = formatter<T, GenesisCubeEngine::TChar>::format(rect.height, context);
+            Ite = TEXT(')');
+            return Ite;
+        }
+        
+    };
+    
+    template<class T>
+    struct std::formatter<GenesisCubeEngine::FRect<T>, GenesisCubeEngine::TChar>
+        : formatter<T, GenesisCubeEngine::TChar>
+    {
+        
+        template<class C>
+        constexpr auto format(const GenesisCubeEngine::FRect<T> &rect, C &context)
         {
             typename C::iterator Ite = format_to(context.out(), TEXT("("));
             Ite = formatter<T, GenesisCubeEngine::TChar>::format(rect.x, context);

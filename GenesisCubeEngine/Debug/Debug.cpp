@@ -37,16 +37,16 @@ namespace GenesisCubeEngine
             TEXT("\n\n{1} Start {0}  {1}\n"), FLoggerFormat::Format(FTimer::LocalTime()),
             TEXT("----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----")
         );
-        LOG_INFO_ODS *this << TEXT("[") << Core::name << TEXT(" ") << Core::versionString << TEXT("(code: ")
-                           << Core::version_code
+        LOG_INFO_ODS *this << TEXT("[") << FCore::name << TEXT(" ") << FCore::versionString << TEXT("(code: ")
+                           << FCore::version_code
                            << TEXT(")]\n")
                            << TEXT(" - [logger file: \"") << this->file << TEXT("\"]\n")
-                           << TEXT(" - [build time: ") << Core::buildTime << TEXT("]\n")
+                           << TEXT(" - [build time: ") << FCore::buildTime << TEXT("]\n")
                            << TEXT(" - [build type: ") << buildType << TEXT("]\n")
                            << TEXT(" - [running path: ") << GDirectoryName::ModuleFile().GetFileName() << TEXT("]\n");
     }
     
-    bool FLogger::WriteClose()
+    bool FLogger::Flush()
     {
         FILE *fp;
 #ifdef UNICODE
@@ -71,7 +71,7 @@ namespace GenesisCubeEngine
     
     FLogger::~FLogger()
     {
-        WriteClose();
+        Flush();
         TOFStream ofs(this->file, std::ios::out | std::ios::app);
         if (ofs.is_open())
         {
@@ -87,21 +87,22 @@ namespace GenesisCubeEngine
     
     TString FLogger::FormatFirstCallTime()
     {
-        static TCHAR file[32] = {};
-        static time_t firstCallTime = time(nullptr);
-        static tm tm_t = {};
-        localtime_s(&tm_t, &firstCallTime);
-        wsprintf(
-            file,
-            TEXT("%.4d%.2d%.2d%.2d%.2d%.2d"),
-            tm_t.tm_year + 1900,
-            tm_t.tm_mon + 1,
-            tm_t.tm_mday,
-            tm_t.tm_hour,
-            tm_t.tm_min,
-            tm_t.tm_sec
-        );
-        return file;
+//        static TCHAR file[32] = {};
+//        static time_t firstCallTime = time(nullptr);
+//        static tm tm_t = {};
+//        localtime_s(&tm_t, &firstCallTime);
+//        wsprintf(
+//            file,
+//            TEXT("%.4d%.2d%.2d%.2d%.2d%.2d"),
+//            tm_t.tm_year + 1900,
+//            tm_t.tm_mon + 1,
+//            tm_t.tm_mday,
+//            tm_t.tm_hour,
+//            tm_t.tm_min,
+//            tm_t.tm_sec
+//        );
+        auto localTime = FTimer::LocalTime();
+        return std::format(TEXT("{:0<4}{:0<2}{:0<2}"), localTime.wYear, localTime.wMonth, localTime.wDay);
     }
     
     static FLogger *logger;
@@ -199,25 +200,22 @@ namespace GenesisCubeEngine
     bool FLogger::EndLine(LoggerLevel loggerLevel, const TString &_file, int32_t line, const TString &func, HWND hWnd,
                           const TString &mBoxCaption)
     {
-        static FTimer loggerTimer;
         loggerTimer.Tick();
         
         TString sBuffer = formatter->Format(lineBuffer, loggerLevel, _file, line, func);
         lineBuffer.clear();
-        sBuffer.push_back(TEXT('\n'));
-        
         
         buffer.append(sBuffer);
         
         // Write
         if ((loggerLevel & 0x000F) >= LoggerLevel::Warning)
         {
-            WriteClose();
+            Flush();
         }
         else if (loggerTimer.TotalTime() > writeDeltaTime)
         {
             loggerTimer.Reset();
-            WriteClose();
+            Flush();
         }
         
         // ODS
@@ -260,11 +258,6 @@ namespace GenesisCubeEngine
         EndLine(exception.loggerLevel, exception.file, exception.line, exception.func, hWnd, mBoxCaption);
     }
     
-    void FLogger::Clear()
-    {
-        lineBuffer.clear();
-    }
-    
     void FLogger::RemoveOldFile(GDirectoryName::ConstForeachEventArgs args)
     {
         
@@ -276,24 +269,20 @@ namespace GenesisCubeEngine
             << TEXT("\t - [Last Accessed Times: ") << FLoggerFormat::Format(args.lastAccessTime) << TEXT("]\n")
             << TEXT("\t - [Last Modified Times: ") << FLoggerFormat::Format(args.lastWriteTime) << TEXT("]");
         
-        FILETIME nowft;
-        GetSystemTimeAsFileTime(&nowft);
-        
-        ULARGE_INTEGER creationTime = {args.creationTime.dwLowDateTime, args.creationTime.dwHighDateTime};
-        ULARGE_INTEGER nowTime = {nowft.dwLowDateTime, nowft.dwHighDateTime};
-        
-        ULARGE_INTEGER u3;
-        u3.QuadPart = max(nowTime.QuadPart, nowTime.QuadPart) - min(creationTime.QuadPart, creationTime.QuadPart);
-        if (u3.QuadPart > 100000)
-        {
-            DeleteFile(args.fileName->GetFileName().c_str());
-            LOG_INFO_ODS GetInstance() << TEXT("> Remove file : \"") << args.fileName->GetFileName() << TEXT("\"");
-        }
+        DeleteFile(args.fileName->GetFileName().c_str());
+        LOG_INFO_ODS GetInstance() << TEXT("> Remove file : \"") << args.fileName->GetFileName() << TEXT("\"");
     }
     
-    bool FLogger::RemoveOldLogFile(time_t _time)
+    bool FLogger::RemoveOldLogFile()
     {
         return GDirectoryName(TEXT(".\\log")).FindForeach(TEvent<GDirectoryName::ConstForeachEventArgs>(RemoveOldFile));
+    }
+    
+    FLogger &FLogger::Write(const TString &value)
+    {
+        FLogger &fLogger = GetInstance();
+        fLogger.lineBuffer.append(value);
+        return fLogger;
     }
 
 #pragma endregion
@@ -310,10 +299,10 @@ namespace GenesisCubeEngine
         buffer.append(TEXT("] [")).append(file);
         buffer.append(TEXT("(")).append(ToTString(line));
         buffer.append(TEXT(")] [")).append(func);
-        buffer.append(TEXT("]"));
+        buffer.append(TEXT("]\n"));
         
         if (message.empty()) return buffer;
-        buffer.append(TEXT("\n\t"));
+        buffer.append(TEXT("\t"));
         for (TCHAR ch: message)
         {
             if (ch == TEXT('\n'))
@@ -325,6 +314,7 @@ namespace GenesisCubeEngine
                 buffer.push_back(ch);
             }
         }
+        buffer.push_back(TEXT('\n'));
         return buffer;
     }
     
@@ -365,20 +355,30 @@ namespace GenesisCubeEngine
     
     TString FLoggerFormat::Format(SYSTEMTIME time)
     {
-        TCHAR microseconds[45];
-        wsprintf
-            (
-                microseconds,
-                TEXT("%d-%d-%d %d:%d:%d.%d"),
-                time.wYear,
-                time.wMonth,
-                time.wDay,
-                time.wHour,
-                time.wMinute,
-                time.wSecond,
-                time.wMilliseconds
-            );
-        return microseconds;
+        return std::format(
+            TEXT("{:0>4}-{:0>2}-{:0>2} {:0>2}:{:0>2}:{:0>2}.{:0>3}"),
+            time.wYear,
+            time.wMonth,
+            time.wDay,
+            time.wHour,
+            time.wMinute,
+            time.wSecond,
+            time.wMilliseconds
+        );
+//        TCHAR microseconds[45];
+//        wsprintf
+//            (
+//                microseconds,
+//                TEXT("%d-%d-%d %d:%d:%d.%d"),
+//                time.wYear,
+//                time.wMonth,
+//                time.wDay,
+//                time.wHour,
+//                time.wMinute,
+//                time.wSecond,
+//                time.wMilliseconds
+//            );
+//        return microseconds;
         
     }
     
@@ -389,30 +389,11 @@ namespace GenesisCubeEngine
         return Format(st);
         
     }
-    
-    TString FLoggerFormat::Format(time_t time)
-    {
-        tm gmTime{};
-        gmtime_s(&gmTime, &time);
-        TCHAR microseconds[45];
-        wsprintf(
-            microseconds,
-            TEXT("%d-%d-%d %d:%d:%d.%06llu UTC"),
-            gmTime.tm_year + 1900,
-            gmTime.tm_mon + 1,
-            gmTime.tm_mday,
-            gmTime.tm_hour,
-            gmTime.tm_min,
-            gmTime.tm_sec,
-            time % 1000000
-        );
-        return microseconds;
-    }
 
 #pragma endregion
     
     
-    void _ThrowIfFailed(HRESULT hr, const TString &file, const int32_t line, const TString &func)
+    void GThrowIfFailed(HRESULT hr, const TString &file, const int32_t line, const TString &func)
     {
         if (FAILED(hr))
         {

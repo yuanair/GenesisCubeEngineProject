@@ -2,7 +2,7 @@
 
 #include <utility>
 
-#include "../Core/GenesisCubeEngine.h"
+#include "../Core/Header.h"
 #include "../Object/GObject.h"
 
 namespace GenesisCubeEngine

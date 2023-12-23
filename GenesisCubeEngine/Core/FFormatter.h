@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "GenesisCubeEngine.h"
+#include "Header.h"
 #include "../Exception/Exception.h"
 #include <string>
 

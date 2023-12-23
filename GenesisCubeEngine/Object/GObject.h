@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "../Core/Core.h"
+#include "../Core/FCore.h"
 
 namespace GenesisCubeEngine
 {

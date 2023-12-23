@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "GenesisCubeEngine.h"
+#include "Header.h"
 
 namespace GenesisCubeEngine
 {

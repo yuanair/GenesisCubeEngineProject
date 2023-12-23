@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "../Core/GenesisCubeEngine.h"
+#include "../Core/Header.h"
 #include "EException.h"
 
 namespace GenesisCubeEngine

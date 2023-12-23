@@ -11,5 +11,5 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../")
 add_library(GenesisCubeEngine ${GenesisCubeEngine_source})
 
 # precompile header
-target_precompile_headers(GenesisCubeEngine PUBLIC "./Core/GenesisCubeEngine.h")
+target_precompile_headers(GenesisCubeEngine PUBLIC "Core/Header.h")
 

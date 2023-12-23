@@ -1,9 +1,9 @@
 //
 // Created by admin on 2023/12/19.
 //
-#include <GenesisCubeEngine/Core/Core.h>
+#include <GenesisCubeEngine/Core/FCore.h>
 #include <GenesisCubeEngine/Game/FWindow.h>
-#include <GenesisCubeEngine/Core/Debug.h>
+#include <GenesisCubeEngine/Debug/Debug.h>
 #include <GenesisCubeEngine/Resource/resource.h>
 #include <GenesisCubeEngine/Localization/Localization.h>
 #include <GenesisCubeEngine/IO/GFileName.h>
@@ -20,7 +20,6 @@ public:
     
     MyProgram()
     {
-        FLogger::GetInstance().RemoveOldLogFile(time_t(0));
         
         // 注册窗口类
         FWindow::Register(mainWndClassName, FWindow::GetIcon(IDI_ICON_Main), FWindow::GetIcon(IDI_ICON_MainSm));
@@ -43,7 +42,16 @@ public:
         mainWindow.ShowAndUpdate();
         addWindow.ShowAndUpdate();
         
-        addWindow.SubMBox(std::format(TEXT("Test: |{:.3f}|"), 42.48978), Core::name);
+        addWindow.SubMBox(std::format(TEXT("Test: |{:.3f}|"), 42.48978), FCore::name);
+        
+        // system((TEXT("CLion ") + FLogger::GetInstance().GetFile()).c_str());
+
+//        mainWindow.eOnTick += [](FWindow::EventOnTickArgs args) -> void
+//        {
+//            LOG_INFO FLogger::Write(
+//                std::format(TEXT("deltaTime:{:.7f}\nnowTime:{}"), args.deltaTime, FTimer::LocalTime()));
+//
+//        };
         
     }
     
@@ -68,12 +76,13 @@ public:
             FLogger::GetInstance() << files[i]->GetFileName() << TEXT("\n");
             if (auto *ptr = files[i].Cast<GDirectoryName>()) ptr->Find(files);
         }
-        LOG_INFO_ODS_M(nullptr, Core::name) FLogger::GetInstance();
+        LOG_INFO_ODS_M(nullptr, FCore::name) FLogger::GetInstance();
     }
     
     void Tick() override
     {
-        // addWindow.SubMBox(std::format(TEXT("{}"), addWindow.GetWindowRect()), Core::name);
+        mainWindow.Tick();
+        addWindow.Tick();
     }
 
 public:

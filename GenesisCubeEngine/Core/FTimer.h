@@ -4,7 +4,8 @@
 
 #pragma once
 
-#include "GenesisCubeEngine.h"
+#include "Header.h"
+#include "FCore.h"
 
 namespace GenesisCubeEngine
 {
@@ -45,6 +46,26 @@ namespace GenesisCubeEngine
         ///
         /// \return 单位：秒
         static double_t NowSecond();
+        
+        ///
+        /// 暂停当前线程
+        /// \param time 单位：秒
+        static void SleepThisThreadSeconds(int64_t time);
+        
+        ///
+        /// 暂停当前线程
+        /// \param time 单位：毫秒
+        static void SleepThisThreadMilliseconds(int64_t time);
+        
+        ///
+        /// 暂停当前线程
+        /// \param time 单位：微秒
+        static void SleepThisThreadMicroseconds(int64_t time);
+        
+        ///
+        /// 暂停当前线程
+        /// \param time 单位：纳秒
+        static void SleepThisThreadNanoseconds(int64_t time);
         
         ///
         /// 重置
@@ -140,4 +161,30 @@ namespace GenesisCubeEngine
         
     };
     
+}
+
+namespace std
+{
+    template<>
+    struct formatter<SYSTEMTIME, GenesisCubeEngine::TChar> : formatter<WORD, GenesisCubeEngine::TChar>
+    {
+        template<class C>
+        constexpr auto format(const SYSTEMTIME &systemTime, C &context)
+        {
+            typename C::iterator Ite = formatter<WORD, GenesisCubeEngine::TChar>::format(systemTime.wYear, context);
+            Ite = TEXT('-');
+            Ite = formatter<WORD, GenesisCubeEngine::TChar>::format(systemTime.wMonth, context);
+            Ite = TEXT('-');
+            Ite = formatter<WORD, GenesisCubeEngine::TChar>::format(systemTime.wDay, context);
+            Ite = TEXT(' ');
+            Ite = formatter<WORD, GenesisCubeEngine::TChar>::format(systemTime.wHour, context);
+            Ite = TEXT(':');
+            Ite = formatter<WORD, GenesisCubeEngine::TChar>::format(systemTime.wMinute, context);
+            Ite = TEXT(':');
+            Ite = formatter<WORD, GenesisCubeEngine::TChar>::format(systemTime.wSecond, context);
+            Ite = TEXT('.');
+            Ite = formatter<WORD, GenesisCubeEngine::TChar>::format(systemTime.wMilliseconds, context);
+            return Ite;
+        }
+    };
 }

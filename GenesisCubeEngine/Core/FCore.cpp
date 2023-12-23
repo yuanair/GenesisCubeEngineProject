@@ -2,20 +2,20 @@
 // Created by admin on 2023/12/19.
 //
 
-#include "Core.h"
-#include "Debug.h"
+#include "FCore.h"
+#include "../Debug/Debug.h"
 #include "../Game/FWindow.h"
 
 namespace GenesisCubeEngine
 {
     
-    const TCHAR Core::name[] = TEXT("Genesis Cube Engine");
+    const TCHAR FCore::name[] = TEXT("Genesis Cube Engine");
     
-    const TCHAR Core::versionString[] = TEXT("0.1-alpha");
+    const TCHAR FCore::versionString[] = TEXT("0.1-alpha");
     
-    const TCHAR Core::buildTime[] = TEXT(__DATE__);
+    const TCHAR FCore::buildTime[] = TEXT(__DATE__);
     
-    const int Core::version_code = 1;
+    const int FCore::version_code = 1;
     
     static HINSTANCE hInstance = nullptr;
     
@@ -25,27 +25,33 @@ namespace GenesisCubeEngine
     
     static int nShowCmd = 0;
     
-    void Core::Exit(int nExitCode)
+    void FCore::Exit(int nExitCode)
     {
         PostQuitMessage(nExitCode);
     }
     
-    HINSTANCE Core::GetInstance()
+    HINSTANCE FCore::Shell(HWND hWnd, const TString &operation, const TString &file, const TString &parameters,
+                           const TString &directory, INT showCmd)
+    {
+        return ShellExecute(hWnd, operation.c_str(), file.c_str(), parameters.c_str(), directory.c_str(), showCmd);
+    }
+    
+    HINSTANCE FCore::GetInstance()
     {
         return hInstance;
     }
     
-    HINSTANCE Core::GetPrevInstance()
+    HINSTANCE FCore::GetPrevInstance()
     {
         return hPrevInstance;
     }
     
-    LPSTR Core::GetCmdLine()
+    LPSTR FCore::GetCmdLine()
     {
         return cmdLine;
     }
     
-    int Core::GetShowCmd()
+    int FCore::GetShowCmd()
     {
         return nShowCmd;
     }

@@ -15,7 +15,7 @@
 > 编译时定义UNICODE宏
 
 ```c++
-#include <GenesisCubeEngine/Core/Core.h>
+#include <GenesisCubeEngine/FCore/FCore.h>
 #include <GenesisCubeEngine/Game/FWindow.h>
 
 using namespace GenesisCubeEngine;

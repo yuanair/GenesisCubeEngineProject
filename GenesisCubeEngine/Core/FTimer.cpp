@@ -141,4 +141,24 @@ namespace GenesisCubeEngine
         );
     }
     
+    void FTimer::SleepThisThreadSeconds(int64_t time)
+    {
+        std::this_thread::sleep_for(std::chrono::seconds(time));
+    }
+    
+    void FTimer::SleepThisThreadMilliseconds(int64_t time)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(time));
+    }
+    
+    void FTimer::SleepThisThreadMicroseconds(int64_t time)
+    {
+        std::this_thread::sleep_for(std::chrono::microseconds(time));
+    }
+    
+    void FTimer::SleepThisThreadNanoseconds(int64_t time)
+    {
+        std::this_thread::sleep_for(std::chrono::nanoseconds(time));
+    }
+    
 }

@@ -52,7 +52,7 @@ namespace GenesisCubeEngine
                 this->windowRect.height,
                 hWndParent,
                 hMenu,
-                Core::GetInstance(),
+                FCore::GetInstance(),
                 this
             );
         if (!this->hWnd)
@@ -78,7 +78,7 @@ namespace GenesisCubeEngine
                 this->windowRect.height,
                 hWndParent,
                 hMenu,
-                Core::GetInstance(),
+                FCore::GetInstance(),
                 this
             );
         if (!this->hWnd)
@@ -98,7 +98,7 @@ namespace GenesisCubeEngine
                 .lpfnWndProc = FWindow::WindowProc,
                 .cbClsExtra = 0,
                 .cbWndExtra = sizeof(FWindow *),
-                .hInstance = Core::GetInstance(),
+                .hInstance = FCore::GetInstance(),
                 .hIcon = hIcon,
                 .hCursor = hCursor,
                 .hbrBackground = hbrBackground,
@@ -232,7 +232,7 @@ namespace GenesisCubeEngine
     void FWindow::ShowAndUpdate()
     {
         this->timer.Reset();
-        ::ShowWindow(this->hWnd, Core::GetShowCmd());
+        ::ShowWindow(this->hWnd, FCore::GetShowCmd());
         ::UpdateWindow(this->hWnd);
     }
     
@@ -278,7 +278,7 @@ namespace GenesisCubeEngine
     
     void FWindow::ExitOnDestroy(FWindow::EventArgs args)
     {
-        Core::Exit();
+        FCore::Exit();
     }
     
     TString FWindow::GetWindowName() const
@@ -310,12 +310,12 @@ namespace GenesisCubeEngine
     
     HICON FWindow::GetIcon(const TString &iconName)
     {
-        return GetIcon(iconName, Core::GetInstance());
+        return GetIcon(iconName, FCore::GetInstance());
     }
     
     HICON FWindow::GetIcon(short iconId)
     {
-        return GetIcon(iconId, Core::GetInstance());
+        return GetIcon(iconId, FCore::GetInstance());
     }
     
     void FWindow::Tick()

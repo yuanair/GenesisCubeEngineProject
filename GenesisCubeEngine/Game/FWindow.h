@@ -4,14 +4,14 @@
 
 #pragma once
 
-#include "../Core/GenesisCubeEngine.h"
+#include "../Core/Header.h"
 
-#include "../Core/Core.h"
+#include "../Core/FCore.h"
 #include "../Object/GObject.h"
 #include "../Core/TEvent.h"
 #include "../Core/FTimer.h"
 #include "../Helpers/Helpers.h"
-#include "../Core/Debug.h"
+#include "../Debug/Debug.h"
 
 namespace GenesisCubeEngine
 {
