@@ -229,10 +229,10 @@ namespace GenesisCubeEngine
 		return ::MessageBoxEx(hWnd, text.c_str(), caption.c_str(), uType, wLanguageId);
 	}
 	
-	void FWindow::ShowAndUpdate()
+	void FWindow::ShowAndUpdate(int nCmdShow)
 	{
 		this->timer.Reset();
-		::ShowWindow(this->hWnd, FCore::GetShowCmd());
+		::ShowWindow(this->hWnd, nCmdShow);
 		::UpdateWindow(this->hWnd);
 	}
 	

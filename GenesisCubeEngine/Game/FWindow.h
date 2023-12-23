@@ -232,7 +232,8 @@ namespace GenesisCubeEngine
 		///
 		/// 第一次显示窗口时调用
 		///
-		void ShowAndUpdate();
+		/// \param nCmdShow 可传入WinMain的参数nShowCmd
+		void ShowAndUpdate(int nCmdShow);
 		
 		///
 		/// 显示窗口

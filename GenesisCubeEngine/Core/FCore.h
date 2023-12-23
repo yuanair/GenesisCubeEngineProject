@@ -12,10 +12,8 @@ namespace GenesisCubeEngine
 
 #if defined(_DEBUG) || defined(DEBUG)
 	static const bool bIsDebug = true;
-	static const bool bIsRelease = false;
 #else
 	static const bool bIsDebug = false;
-	static const bool bIsRelease = true;
 #endif
 
 #if defined(GenesisCubeEditor)
@@ -112,9 +110,40 @@ namespace GenesisCubeEngine
 	
 	typedef std::basic_ofstream<NTChar> NTOFStream;
 	
-	//
-	// 核心类
-	//
+	
+	///
+	/// 程序类
+	///
+	class GProgram
+	{
+	public:
+		
+		GProgram() noexcept(false) = default;
+		
+		virtual ~GProgram() noexcept(false) = default;
+	
+	public:
+		
+		///
+		/// 开始时调用
+		///
+		virtual void Start() = 0;
+		
+		///
+		/// 每帧调用
+		///
+		virtual void Tick() = 0;
+		
+		///
+		/// 结束时调用
+		///
+		virtual void End() = 0;
+		
+	};
+	
+	///
+	/// 核心类
+	///
 	class FCore
 	{
 	public:
@@ -140,79 +169,52 @@ namespace GenesisCubeEngine
 	
 	public:
 		
-		//
-		// 项目名称
-		//
+		///
+		/// 项目名称
+		///
 		static const TCHAR name[];
 		
-		//
-		// 版本字符串
-		// 样式：大版本号 ## . ## 小版本号 ## - ## 版本类型
-		// 例如：1.0-alpha
-		// alpha - Debug测试版
-		// beta - Release测试版
-		// release - Release正式版
-		//
+		///
+		/// 版本字符串
+		/// 样式：大版本号 ## . ## 小版本号 ## - ## 版本类型
+		/// 例如：1.0-alpha
+		/// alpha - Debug测试版
+		/// beta - Release测试版
+		/// release - Release正式版
+		///
 		static const TCHAR versionString[];
 		
-		//
-		// 编译时间
-		//
+		///
+		/// 编译时间
+		///
 		static const TCHAR buildTime[];
 		
-		//
-		// 版本代码
-		// 样式：0x ## 大版本号 ## 小版本号
-		// 例如：0x0100
-		//
+		///
+		/// 版本代码
+		/// 样式：0x ## 大版本号 ## 小版本号
+		/// 例如：0x0100
+		///
 		static const int version_code;
 		
-		//
-		// 应用实例
-		//
+		///
+		/// 应用实例
+		///
 		static HINSTANCE GetInstance();
 		
-		//
-		// 应用实例
-		//
-		static HINSTANCE GetPrevInstance();
-		
-		//
-		// 运行参数
-		//
-		static LPSTR GetCmdLine();
-		
-		//
-		// 显示
-		//
-		static int GetShowCmd();
-		
-	};
-	
-	///
-	/// 程序类
-	///
-	class GProgram
-	{
-	public:
-		
-		GProgram() noexcept(false) = default;
-		
-		virtual ~GProgram() noexcept(false) = default;
-	
-	public:
+		///
+		/// 运行参数
+		///
+		static TString GetCmdLine();
 		
 		///
-		/// 每帧调用
+		/// 运行
 		///
-		virtual void Tick() = 0;
+		/// \param program 程序
+		/// \return 返回值
+		static int Run(GProgram &program);
 		
 	};
 	
 } // GenesisCubeEngine
 
 
-//
-// 程序入口
-//
-GenesisCubeEngine::GProgram *GCProgram();

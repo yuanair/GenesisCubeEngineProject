@@ -94,7 +94,7 @@ namespace GenesisCubeEngine
 	public:
 		
 		/// 获取实例，程序结束时必须调用DeleteInstance()
-		static FLogger &GetInstance();
+		static FLogger &Inst();
 		
 		/// 删除实例
 		static void DeleteInstance();
@@ -107,42 +107,93 @@ namespace GenesisCubeEngine
 		static TString TraceStack(uint16_t frameToSkip = 1, uint16_t framesToCapture = 16);
 		
 		///
+		/// LOG
+		/// \param loggerLevel 日志等级
+		/// \param message 消息
+		void Log(LoggerLevel loggerLevel, const TString &message);
+		
+		///
 		/// LOG DEBUG
 		/// \param message 消息
-		void LogDebug(const TString &message);
+		inline void LogDebug(const TString &message) { return Log(LoggerLevel::Debug, message); }
 		
 		///
 		/// LOG TEST
 		/// \param message 消息
-		void LogTest(const TString &message);
+		inline void LogTest(const TString &message) { return Log(LoggerLevel::Test, message); }
 		
 		///
 		/// LOG INFO
 		/// \param message 消息
-		void Log(const TString &message);
+		inline void LogInfo(const TString &message) { return Log(LoggerLevel::Info, message); }
 		
 		///
 		/// LOG WARNING
 		/// \param message 消息
-		void LogWarning(const TString &message);
+		inline void LogWarning(const TString &message) { return Log(LoggerLevel::Warning, message); }
 		
 		///
 		/// LOG ERROR
 		/// \param message 消息
-		void LogError(const TString &message);
+		inline void LogError(const TString &message) { return Log(LoggerLevel::Error, message); }
 		
 		///
 		/// LOG FATAL
 		/// \param message 消息
-		void LogFatal(const TString &message);
+		inline void LogFatal(const TString &message) { return Log(LoggerLevel::Fatal, message); }
+		
+		
+		///
+		/// LOG DEBUG ODS
+		/// \param message 消息
+		inline void LogDebugODS(const TString &message)
+		{
+			return Log((LoggerLevel) (LoggerLevel::Debug | LoggerLevel::ODS), message);
+		}
+		
+		///
+		/// LOG TEST ODS
+		/// \param message 消息
+		inline void LogTestODS(const TString &message)
+		{
+			return Log((LoggerLevel) (LoggerLevel::Test | LoggerLevel::ODS), message);
+		}
+		
+		///
+		/// LOG INFO ODS
+		/// \param message 消息
+		inline void LogInfoODS(const TString &message)
+		{
+			return Log((LoggerLevel) (LoggerLevel::Info | LoggerLevel::ODS), message);
+		}
+		
+		///
+		/// LOG WARNING ODS
+		/// \param message 消息
+		inline void LogWarningODS(const TString &message)
+		{
+			return Log((LoggerLevel) (LoggerLevel::Warning | LoggerLevel::ODS), message);
+		}
+		
+		///
+		/// LOG ERROR ODS
+		/// \param message 消息
+		inline void LogErrorODS(const TString &message)
+		{
+			return Log((LoggerLevel) (LoggerLevel::Error | LoggerLevel::ODS), message);
+		}
+		
+		///
+		/// LOG FATAL ODS
+		/// \param message 消息
+		inline void LogFatalODS(const TString &message)
+		{
+			return Log((LoggerLevel) (LoggerLevel::Fatal | LoggerLevel::ODS), message);
+		}
 		
 		FLogger &operator<<(const NTChar *str) = delete;
 		
 		FLogger &operator<<(NTChar c) = delete;
-		
-		/// 写入nullptr
-		/// ptr - nullptr
-		FLogger &operator<<(std::nullptr_t ptr);
 		
 		/// 写入字符串
 		/// str - 字符串
@@ -162,7 +213,7 @@ namespace GenesisCubeEngine
 		
 		/// 写入一行
 		/// exception - 异常
-		void Write(const class ELoggerLevelException &exception);
+		void Log(const class ELoggerLevelException &exception);
 		
 		/// 删除文件
 		static void RemoveOldFile(GDirectoryName::ConstForeachEventArgs args);
@@ -255,8 +306,8 @@ namespace GenesisCubeEngine
 	{
 	public:
 		
-		ELoggerLevelException(const TString &message, const LoggerLevel &loggerLevel, TString traceStack)
-			: EException(message), loggerLevel(loggerLevel), traceStack(std::move(traceStack))
+		ELoggerLevelException(const TString &message, const LoggerLevel &loggerLevel)
+			: EException(message), loggerLevel(loggerLevel)
 		{
 		
 		}
@@ -264,8 +315,6 @@ namespace GenesisCubeEngine
 	public:
 		
 		const LoggerLevel loggerLevel;
-		
-		TString traceStack;
 		
 	};
 	

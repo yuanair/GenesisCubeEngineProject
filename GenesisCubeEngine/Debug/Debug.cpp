@@ -33,17 +33,10 @@ namespace GenesisCubeEngine
 		this->file += filename;
 		this->file += TEXT(".log");
 		
-		buffer += std::format(
+		buffer = std::format(
 			TEXT("\n\n{1} Start {0}  {1}\n"), FLoggerFormat::Format(FTimer::LocalTime()),
 			TEXT("----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----")
 		);
-		LOG_INFO_ODS *this << TEXT("[") << FCore::name << TEXT(" ") << FCore::versionString << TEXT("(code: ")
-						   << ToTString(FCore::version_code)
-						   << TEXT(")]\n")
-						   << TEXT(" - [logger file: \"") << this->file << TEXT("\"]\n")
-						   << TEXT(" - [build time: ") << FCore::buildTime << TEXT("]\n")
-						   << TEXT(" - [build type: ") << buildType << TEXT("]\n")
-						   << TEXT(" - [running path: ") << GDirectoryName::ModuleFile().GetFileName() << TEXT("]\n");
 	}
 	
 	bool FLogger::Flush()
@@ -72,16 +65,11 @@ namespace GenesisCubeEngine
 	FLogger::~FLogger()
 	{
 		Flush();
-		TOFStream ofs(this->file, std::ios::out | std::ios::app);
-		if (ofs.is_open())
-		{
-			ofs << TEXT(
-				"\n----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----  End ")
-				<< FLoggerFormat::Format(FTimer::LocalTime())
-				<< TEXT(
-					"  ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- \n\n");
-			ofs.close();
-		}
+		buffer = std::format(
+			TEXT("\n\n{1} End {0}  {1}\n"), FLoggerFormat::Format(FTimer::LocalTime()),
+			TEXT("----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----")
+		);
+		Flush();
 		delete this->formatter;
 	}
 	
@@ -107,7 +95,7 @@ namespace GenesisCubeEngine
 	
 	static FLogger *logger;
 	
-	FLogger &FLogger::GetInstance()
+	FLogger &FLogger::Inst()
 	{
 		if (logger == nullptr)
 		{
@@ -188,12 +176,6 @@ namespace GenesisCubeEngine
 		return szStackInfo;
 	}
 	
-	FLogger &FLogger::operator<<(const std::nullptr_t)
-	{
-		lineBuffer.append(TEXT("nullptr"));
-		return *this;
-	}
-	
 	FLogger &FLogger::operator<<(const TString &str)
 	{
 		lineBuffer.append(str);
@@ -221,7 +203,7 @@ namespace GenesisCubeEngine
 		
 		buffer.append(sBuffer);
 		
-		// Write
+		// Log
 		if ((loggerLevel & 0x000F) >= LoggerLevel::Warning)
 		{
 			Flush();
@@ -241,25 +223,22 @@ namespace GenesisCubeEngine
 		return true;
 	}
 	
-	void FLogger::Write(const class ELoggerLevelException &exception)
+	void FLogger::Log(const struct ELoggerLevelException &exception)
 	{
-		this->operator<<(exception.What());
-		EndLine(exception.loggerLevel);
+		Log(exception.loggerLevel, exception.What());
 	}
 	
 	void FLogger::RemoveOldFile(GDirectoryName::ConstForeachEventArgs args)
 	{
 		
-		LOG_INFO GetInstance()
+		LOG_INFO Inst()
 			<< TEXT("[File : \"") << args.fileName->GetFileName() << TEXT("\"]\n")
-			//	<< TEXT("\t - [Size : ") << size << TEXT(" bytes]\n")
-			//	<< TEXT("\t - [Drive : ") << (TCHAR)(buf.st_dev + TEXT('A') << TEXT("]\n")
 			<< TEXT("\t - [Created Times:       ") << FLoggerFormat::Format(args.creationTime) << TEXT("]\n")
 			<< TEXT("\t - [Last Accessed Times: ") << FLoggerFormat::Format(args.lastAccessTime) << TEXT("]\n")
 			<< TEXT("\t - [Last Modified Times: ") << FLoggerFormat::Format(args.lastWriteTime) << TEXT("]");
 		
 		DeleteFile(args.fileName->GetFileName().c_str());
-		LOG_INFO_ODS GetInstance() << TEXT("> Remove file : \"") << args.fileName->GetFileName() << TEXT("\"");
+		LOG_INFO_ODS Inst() << TEXT("> Remove file : \"") << args.fileName->GetFileName() << TEXT("\"");
 	}
 	
 	bool FLogger::RemoveOldLogFile()
@@ -267,34 +246,26 @@ namespace GenesisCubeEngine
 		return GDirectoryName(TEXT(".\\log")).FindForeach(TEvent<GDirectoryName::ConstForeachEventArgs>(RemoveOldFile));
 	}
 	
-	void FLogger::LogDebug(const TString &message)
+	void FLogger::Log(LoggerLevel loggerLevel, const TString &message)
 	{
-		EndLine(LoggerLevel::Debug);
-	}
-	
-	void FLogger::LogTest(const TString &message)
-	{
-	
-	}
-	
-	void FLogger::Log(const TString &message)
-	{
-	
-	}
-	
-	void FLogger::LogWarning(const TString &message)
-	{
-	
-	}
-	
-	void FLogger::LogError(const TString &message)
-	{
-	
-	}
-	
-	void FLogger::LogFatal(const TString &message)
-	{
-	
+		loggerTimer.Tick();
+		
+		TString sBuffer = formatter->Format(message, loggerLevel);
+		
+		buffer.append(sBuffer);
+		
+		// Log
+		if ((loggerLevel & 0x000F) >= LoggerLevel::Warning || loggerTimer.TotalTime() > writeDeltaTime)
+		{
+			loggerTimer.Reset();
+			Flush();
+		}
+		
+		// ODS
+		if ((loggerLevel & ODS) != 0)
+		{
+			OutputDebugString(sBuffer.c_str());
+		}
 	}
 
 #pragma endregion
@@ -304,64 +275,52 @@ namespace GenesisCubeEngine
 	
 	TString FLoggerFormat::Format(const TString &message, LoggerLevel loggerLevel) const
 	{
-		TString buffer;
-		buffer.append(TEXT("[")).append(Format(loggerLevel));
-		buffer.append(TEXT("] [")).append(Format(FTimer::LocalTime()));
-		if (bIsEditor || bIsDebug) buffer.append(TEXT("] [")).append(FLogger::TraceStack(3, 16));
-		buffer.append(TEXT("]"));
-		
-		if (message.empty())
+		if (bIsEditor || bIsDebug)
 		{
-			buffer.push_back(TEXT('\n'));
-			return buffer;
+			return std::format(
+				TEXT("[{}] [{}] [\n{}] {}\n"), Format(loggerLevel), Format(FTimer::LocalTime()),
+				FLogger::TraceStack(3, 16), message
+			);
 		}
-		buffer.push_back(TEXT('\t'));
-		for (TCHAR ch: message)
+		else
 		{
-			if (ch == TEXT('\n'))
-			{
-				buffer.append(TEXT("\n\t"));
-			}
-			else
-			{
-				buffer.push_back(ch);
-			}
+			return std::format(
+				TEXT("[{}] [{}] {}\n"), Format(loggerLevel), Format(FTimer::LocalTime()), message
+			);
 		}
-		buffer.push_back(TEXT('\n'));
-		return buffer;
 	}
 	
 	TString FLoggerFormat::Format(LoggerLevel loggerLevel)
 	{
-		TString result;
-		switch (loggerLevel & 0x000F)
+		switch (loggerLevel)
 		{
 			case LoggerLevel::Debug:
-				result += TEXT("Debug");
-				break;
+				return TEXT("Debug");
 			case LoggerLevel::Test:
-				result += TEXT("Test");
-				break;
+				return TEXT("Test");
 			case LoggerLevel::Info:
-				result += TEXT("Info");
-				break;
+				return TEXT("Info");
 			case LoggerLevel::Warning:
-				result += TEXT("Warning");
-				break;
+				return TEXT("Warning");
 			case LoggerLevel::Error:
-				result += TEXT("Error");
-				break;
+				return TEXT("Error");
 			case LoggerLevel::Fatal:
-				result += TEXT("Fatal");
-				break;
+				return TEXT("Fatal");
+			case LoggerLevel::Debug | LoggerLevel::ODS:
+				return TEXT("Debug ODS");
+			case LoggerLevel::Test | LoggerLevel::ODS:
+				return TEXT("Test ODS");
+			case LoggerLevel::Info | LoggerLevel::ODS:
+				return TEXT("Info ODS");
+			case LoggerLevel::Warning | LoggerLevel::ODS:
+				return TEXT("Warning ODS");
+			case LoggerLevel::Error | LoggerLevel::ODS:
+				return TEXT("Error ODS");
+			case LoggerLevel::Fatal | LoggerLevel::ODS:
+				return TEXT("Fatal ODS");
 			default:
-				result += TEXT("<error>");
-				break;
+				return TEXT("<error>");
 		}
-		
-		if (loggerLevel & LoggerLevel::ODS) result += TEXT(" ODS");
-		
-		return result;
 	}
 	
 	TString FLoggerFormat::Format(SYSTEMTIME time)
@@ -376,29 +335,22 @@ namespace GenesisCubeEngine
 			time.wSecond,
 			time.wMilliseconds
 		);
-//        TCHAR microseconds[45];
-//        wsprintf
-//            (
-//                microseconds,
-//                TEXT("%d-%d-%d %d:%d:%d.%d"),
-//                time.wYear,
-//                time.wMonth,
-//                time.wDay,
-//                time.wHour,
-//                time.wMinute,
-//                time.wSecond,
-//                time.wMilliseconds
-//            );
-//        return microseconds;
-	
 	}
 	
 	TString FLoggerFormat::Format(FILETIME time)
 	{
 		SYSTEMTIME st;
 		FileTimeToSystemTime(&time, &st);
-		return Format(st);
-		
+		return std::format(
+			TEXT("{:0>4}-{:0>2}-{:0>2} {:0>2}:{:0>2}:{:0>2}.{:0>3}"),
+			st.wYear,
+			st.wMonth,
+			st.wDay,
+			st.wHour,
+			st.wMinute,
+			st.wSecond,
+			st.wMilliseconds
+		);
 	}
 
 #pragma endregion
@@ -408,15 +360,9 @@ namespace GenesisCubeEngine
 	{
 		if (FAILED(hr))
 		{
-			TCHAR strBufferHr[300]{};
-			wsprintf(strBufferHr, TEXT("%s (0x%0.8x)"), GFormatMessage(hr).c_str(), hr);
-			throw GenesisCubeEngine::ELoggerLevelException(
-				strBufferHr,
-				(GenesisCubeEngine::LoggerLevel) (
-					GenesisCubeEngine::LoggerLevel::Fatal | GenesisCubeEngine::LoggerLevel::ODS
-				),
-				FLogger::TraceStack(2, 16)
-			);
+			TString message = std::format(TEXT("{} (0x{:08X})"), GFormatMessage(hr), hr);
+			FLogger::Inst().Log((LoggerLevel) (LoggerLevel::Fatal | LoggerLevel::ODS), message);
+			throw ELoggerLevelException(message, (LoggerLevel) (LoggerLevel::Fatal | LoggerLevel::ODS));
 		}
 	}
 	

@@ -14,8 +14,9 @@
 #include <vector>
 #include <map>
 
-
 #include <dbghelp.h>
+
+#pragma comment(lib, "DbgHelp.lib")
 
 #if defined(_DEBUG) || defined(DEBUG)
 

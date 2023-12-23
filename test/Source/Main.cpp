@@ -1,6 +1,7 @@
 //
 // Created by admin on 2023/12/19.
 //
+
 #include <GenesisCubeEngine/Core/FCore.h>
 #include <GenesisCubeEngine/Core/FFormatter.h>
 #include <GenesisCubeEngine/Game/FWindow.h>
@@ -19,13 +20,36 @@ class MyProgram : public GProgram
 {
 public:
 	
-	MyProgram()
+	explicit MyProgram(int nShowCmd) : nShowCmd(nShowCmd) {}
+	
+	~MyProgram() override = default;
+
+public:
+	
+	TString TText(const TString &key)
 	{
-		
+		return GLanguage::Find(gameText, key, nowLanguage);
+	}
+	
+	static void OnDropFiles(FWindow::EventOnDropFilesArgs args)
+	{
+		std::vector<TPtr<GFileName>> files;
+		GFileName::DragQuery(args.hDropInfo, files);
+		for (size_t i = 0; i < files.size(); i++)
+		{
+			FLogger::Inst() << files[i]->GetFileName() << TEXT("\n");
+			if (auto *ptr = files[i].Cast<GDirectoryName>()) ptr->Find(files);
+		}
+		LOG_INFO_ODS FLogger::Inst();
+	}
+	
+	void Start() override
+	{
+		LOG_INFO FLogger::Inst() << TEXT("MyProgram Start");
 		// 注册窗口类
 		FWindow::Register(mainWndClassName, FWindow::GetIcon(IDI_ICON_Main), FWindow::GetIcon(IDI_ICON_MainSm));
 		
-		LOG_INFO_ODS FLogger::GetInstance() << TEXT("test");
+		FLogger::Inst().LogInfoODS(TEXT("test"));
 		
 		// 创建窗口
 		mainWindow.Create(mainWndClassName, Text("MainWindowName"));
@@ -42,50 +66,30 @@ public:
 		mainWindow.eOnDropFiles += OnDropFiles;
 		
 		// 显示窗口
-		mainWindow.ShowAndUpdate();
-		addWindow.ShowAndUpdate();
+		mainWindow.ShowAndUpdate(nShowCmd);
+		addWindow.ShowAndUpdate(nShowCmd);
 		
 		// addWindow.SubMBox(std::format(TEXT("Test: |{:.3f}|"), 42.48978), FCore::name);
 		
 		mainWindow.eOnTick += [](FWindow::EventOnTickArgs args) -> void
 		{
-//			LOG_INFO FLogger::GetInstance() <<
+//			LOG_INFO FLogger::Inst() <<
 //											std::format(
 //												TEXT("deltaTime:{:.7f}\nnowTime:{}"), args.deltaTime,
 //												FTimer::LocalTime());
-			
-		};
 		
-	}
-	
-	~MyProgram() override
-	{
-		LOG_INFO FLogger::GetInstance() << TEXT("~MyProgram()");
-	}
-
-public:
-	
-	TString TText(const TString &key)
-	{
-		return GLanguage::Find(gameText, key, nowLanguage);
-	}
-	
-	static void OnDropFiles(FWindow::EventOnDropFilesArgs args)
-	{
-		std::vector<TPtr<GFileName>> files;
-		GFileName::DragQuery(args.hDropInfo, files);
-		for (size_t i = 0; i < files.size(); i++)
-		{
-			FLogger::GetInstance() << files[i]->GetFileName() << TEXT("\n");
-			if (auto *ptr = files[i].Cast<GDirectoryName>()) ptr->Find(files);
-		}
-		LOG_INFO_ODS FLogger::GetInstance();
+		};
 	}
 	
 	void Tick() override
 	{
 		mainWindow.Tick();
 		addWindow.Tick();
+	}
+	
+	void End() override
+	{
+		LOG_INFO FLogger::Inst() << TEXT("MyProgram End");
 	}
 
 public:
@@ -94,6 +98,8 @@ public:
 	static constexpr TCHAR mainWndClassName[] = TEXT("main window class");
 
 private:
+	
+	const int nShowCmd;
 	
 	FWindow mainWindow;
 	
@@ -131,8 +137,14 @@ private:
 	
 };
 
-GProgram *GCProgram()
+int WINAPI wWinMain
+	(
+		HINSTANCE hInstance,
+		HINSTANCE hPrevInstance,
+		LPWSTR lpCmdLine,
+		int nShowCmd
+	)
 {
-	return new MyProgram();
+	MyProgram myProgram(nShowCmd);
+	return GenesisCubeEngine::FCore::Run(myProgram);
 }
-
