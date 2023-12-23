@@ -14,8 +14,9 @@
 #include <vector>
 #include <map>
 
+#include <dbghelp.h>
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
 
 #define _CRTDBG_MAP_ALLOC
 
