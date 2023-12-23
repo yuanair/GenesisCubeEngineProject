@@ -14,16 +14,16 @@
 #include <vector>
 #include <map>
 
-#include <dbghelp.h>
 
-#pragma comment(lib, "DbgHelp.lib")
-
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(_DEBUG) || defined(DEBUG) || defined(GenesisCubeEditor)
 
 #define _CRTDBG_MAP_ALLOC
 
 #include <cstdlib>
 #include <crtdbg.h>
+#include <dbghelp.h>
+
+#pragma comment(lib, "DbgHelp.lib")
 
 #define new new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
 

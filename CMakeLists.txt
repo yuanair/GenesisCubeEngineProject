@@ -12,9 +12,6 @@ elseif (${GenesisCubeBuildType} STREQUAL "Editor")
     add_definitions(-DGenesisCubeEditor)
 endif ()
 
-
-# add_link_options("/ENTRY:wWinMainCRTStartup")
-
 add_definitions("-utf-8" "-DUNICODE" "-D_UNICODE")
 
 # GenesisCubeEngine

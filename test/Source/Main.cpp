@@ -35,17 +35,18 @@ public:
 	{
 		std::vector<TPtr<GFileName>> files;
 		GFileName::DragQuery(args.hDropInfo, files);
+		TString buffer;
 		for (size_t i = 0; i < files.size(); i++)
 		{
-			FLogger::Inst() << files[i]->GetFileName() << TEXT("\n");
+			buffer.append(files[i]->GetFileName()).push_back(TEXT('\n'));
 			if (auto *ptr = files[i].Cast<GDirectoryName>()) ptr->Find(files);
 		}
-		LOG_INFO_ODS FLogger::Inst();
+		FLogger::Inst().LogInfoODS(buffer);
 	}
 	
 	void Start() override
 	{
-		LOG_INFO FLogger::Inst() << TEXT("MyProgram Start");
+		FLogger::Inst().LogInfoODS(TEXT("MyProgram Start"));
 		// 注册窗口类
 		FWindow::Register(mainWndClassName, FWindow::GetIcon(IDI_ICON_Main), FWindow::GetIcon(IDI_ICON_MainSm));
 		
@@ -89,7 +90,7 @@ public:
 	
 	void End() override
 	{
-		LOG_INFO FLogger::Inst() << TEXT("MyProgram End");
+		FLogger::Inst().LogInfoODS(TEXT("MyProgram End"));
 	}
 
 public:

@@ -12,10 +12,7 @@ namespace GenesisCubeEngine
 #pragma region Logger
 	
 	
-	uint64_t FLogger::count = 0;
-	
 	FLogger::FLogger(const TString &dir, const TString &filename, const FLoggerFormat *formatter)
-		: id(count++)
 	{
 		if (formatter)
 		{
@@ -116,6 +113,7 @@ namespace GenesisCubeEngine
 	
 	TString FLogger::TraceStack(uint16_t frameToSkip, uint16_t framesToCapture)
 	{
+#if defined(_DEBUG) || defined(DEBUG) || defined(GenesisCubeEditor)
 		auto pStack = new PVOID[framesToCapture];
 		TString szStackInfo;
 		
@@ -174,71 +172,24 @@ namespace GenesisCubeEngine
 		delete[] pStack;
 		
 		return szStackInfo;
-	}
-	
-	FLogger &FLogger::operator<<(const TString &str)
-	{
-		lineBuffer.append(str);
-		return *this;
-	}
-	
-	FLogger &FLogger::operator<<(const TCHAR *str)
-	{
-		lineBuffer.append(str);
-		return *this;
-	}
-	
-	FLogger &FLogger::operator<<(TCHAR c)
-	{
-		lineBuffer.push_back(c);
-		return *this;
-	}
-	
-	bool FLogger::EndLine(LoggerLevel loggerLevel)
-	{
-		loggerTimer.Tick();
-		
-		TString sBuffer = formatter->Format(lineBuffer, loggerLevel);
-		lineBuffer.clear();
-		
-		buffer.append(sBuffer);
-		
-		// Log
-		if ((loggerLevel & 0x000F) >= LoggerLevel::Warning)
-		{
-			Flush();
-		}
-		else if (loggerTimer.TotalTime() > writeDeltaTime)
-		{
-			loggerTimer.Reset();
-			Flush();
-		}
-		
-		// ODS
-		if ((loggerLevel & ODS) != 0)
-		{
-			OutputDebugString(sBuffer.c_str());
-		}
-		
-		return true;
-	}
-	
-	void FLogger::Log(const struct ELoggerLevelException &exception)
-	{
-		Log(exception.loggerLevel, exception.What());
+#else
+		return TEXT("no DEBUG");
+#endif
 	}
 	
 	void FLogger::RemoveOldFile(GDirectoryName::ConstForeachEventArgs args)
 	{
-		
-		LOG_INFO Inst()
-			<< TEXT("[File : \"") << args.fileName->GetFileName() << TEXT("\"]\n")
-			<< TEXT("\t - [Created Times:       ") << FLoggerFormat::Format(args.creationTime) << TEXT("]\n")
-			<< TEXT("\t - [Last Accessed Times: ") << FLoggerFormat::Format(args.lastAccessTime) << TEXT("]\n")
-			<< TEXT("\t - [Last Modified Times: ") << FLoggerFormat::Format(args.lastWriteTime) << TEXT("]");
-		
 		DeleteFile(args.fileName->GetFileName().c_str());
-		LOG_INFO_ODS Inst() << TEXT("> Remove file : \"") << args.fileName->GetFileName() << TEXT("\"");
+		Inst().LogInfo(
+			std::format(
+				TEXT(
+					R"([remove file: \"{0}\"]
+	[created time:			{1}]
+	[last accessed time:	{2}]
+	[last modified time:	{3}]
+)"),
+				args.fileName->GetFileName(), FLoggerFormat::Format(args.creationTime),
+				FLoggerFormat::Format(args.lastAccessTime), FLoggerFormat::Format(args.lastWriteTime)));
 	}
 	
 	bool FLogger::RemoveOldLogFile()
@@ -266,6 +217,14 @@ namespace GenesisCubeEngine
 		{
 			OutputDebugString(sBuffer.c_str());
 		}
+	}
+	
+	void FLogger::LogMBox(HRESULT hr, const TString &message)
+	{
+		TString hrMessage = std::format(
+			TEXT("{} (error code: 0x{:08X}): {}"), message, hr, GenesisCubeEngine::GFormatMessage(hr));
+		LogFatalODS(hrMessage);
+		MessageBox(nullptr, hrMessage.c_str(), FCore::name, MB_OK | MB_ICONSTOP);
 	}
 
 #pragma endregion
@@ -355,17 +314,6 @@ namespace GenesisCubeEngine
 
 #pragma endregion
 	
-	
-	void GThrowIfFailed(HRESULT hr)
-	{
-		if (FAILED(hr))
-		{
-			TString message = std::format(TEXT("{} (0x{:08X})"), GFormatMessage(hr), hr);
-			FLogger::Inst().Log((LoggerLevel) (LoggerLevel::Fatal | LoggerLevel::ODS), message);
-			throw ELoggerLevelException(message, (LoggerLevel) (LoggerLevel::Fatal | LoggerLevel::ODS));
-		}
-	}
-	
 	TString GFormatMessage(DWORD dwMessageId, DWORD dwLanguageId, DWORD dwBufferSize)
 	{
 		auto strBufferError = new TChar[dwBufferSize];
@@ -378,6 +326,17 @@ namespace GenesisCubeEngine
 		TString buffer = strBufferError;
 		delete[] strBufferError;
 		return buffer;
+	}
+	
+	void GThrowIfFailed(HRESULT hr, const TString &message)
+	{
+		if (FAILED(hr))
+		{
+			FLogger::Inst().LogMBox(hr, message);
+			GenesisCubeEngine::FLogger::Inst().LogFatalODS(
+				std::format(TEXT("{} (0x{:08X})"), GenesisCubeEngine::GFormatMessage(hr), hr));
+			throw EBadException(__FUNCSIG__ TEXT(":: FAILED(hr)"));
+		}
 	}
 	
 	
