@@ -230,6 +230,11 @@ namespace GenesisCubeEngine
 					WORD wLanguageId = MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT));
 		
 		///
+		/// 触发事件
+		/// \return 是否成功
+		static bool PeekEvent();
+		
+		///
 		/// 第一次显示窗口时调用
 		///
 		/// \param nCmdShow 可传入WinMain的参数nShowCmd

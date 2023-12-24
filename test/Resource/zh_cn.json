@@ -1,0 +1,7 @@
+{
+  "$schema": "../../GenesisCubeEngine/Resource/JSON/languageSchema.json",
+  "name": "zh_cn",
+  "displayName": "简体中文",
+  "MainWindowName": "主窗口",
+  "AddWindowName": "附加窗口"
+}

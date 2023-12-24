@@ -3,22 +3,15 @@
 //
 
 #include <iostream>
-
+#include <GenesisCubeEngine/Language/LRunner.h>
 
 using namespace std;
+using namespace GenesisCubeEngine;
+using namespace GenesisCubeEngine::Language;
 
 int main()
 {
-    while (true)
-    {
-        int a;
-        cout << "a = ";
-        cin >> a;
-        if (a == 578)
-        {
-            break; // 休息，停止
-        }
-    }
-    
-    return 0;
+	
+	
+	return 0;
 }

@@ -37,10 +37,8 @@ namespace GenesisCubeEngine
 		return GetCommandLine();
 	}
 	
-	int FCore::Run(GProgram &program)
+	void FCore::Init()
 	{
-		// 定义
-		MSG msg = {};
 		
 		// 当为DEBUG模式时，内存泄漏检测
 		if (GenesisCubeEngine::bIsDebug)
@@ -48,57 +46,29 @@ namespace GenesisCubeEngine
 			_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 		}
 		
-		// log
-		{
-			TString buffer;
-			buffer += std::format(
-				TEXT(
-					R"([{0} {1} (code: {2})]
-	[running path: {3}]
-	[logger file: {4}]
-	[build time: {5}]
-	[build type: {6}{7}]
-	[lpCmdLine: {8}]
+		TString buffer;
+		buffer += std::format(
+			TEXT(
+				R"([{0} {1} (code: {2})]
+[running path: {3}]
+[logger file: {4}]
+[build time: {5}]
+[build type: {6}{7}]
+[lpCmdLine: {8}]
 )"),
-				FCore::name, // 0
-				FCore::versionString, // 1
-				FCore::version_code, // 2
-				GDirectoryName::ModuleFile().GetFileName(), // 3
-				FLogger::Inst().GetFile(), // 4
-				FCore::buildTime, // 5
-				buildType, // 6
-				bIsDebug ? TEXT("Debug") : TEXT("Release"), // 7
-				FCore::GetCmdLine()// 8
-			);
-			
-			FLogger::Inst().LogInfoODS(buffer);
-		}
+			FCore::name, // 0
+			FCore::versionString, // 1
+			FCore::version_code, // 2
+			GDirectoryName::ModuleFile().GetFileName(), // 3
+			FLogger::Inst().GetFile(), // 4
+			FCore::buildTime, // 5
+			buildType, // 6
+			bIsDebug ? TEXT("Debug") : TEXT("Release"), // 7
+			FCore::GetCmdLine()// 8
+		);
 		
-		// 开始
-		program.Start();
+		FLogger::Inst().LogInfoODS(buffer);
 		
-		// 消息循环
-		while (msg.message != WM_QUIT)
-		{
-			if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-			{
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
-			else
-			{
-				// Tick
-				program.Tick();
-			}
-		}
-		
-		// 结束
-		program.End();
-		
-		// 删除日志实例
-		GenesisCubeEngine::FLogger::DeleteInstance();
-		
-		return (int) msg.wParam;
 	}
 	
 } // GenesisCubeEngine

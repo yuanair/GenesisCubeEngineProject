@@ -6,35 +6,53 @@
 
 #include "../Core/Header.h"
 #include "../Core/FCore.h"
+#include "../JSON/Json.h"
 
 namespace GenesisCubeEngine
 {
 	
-	
-	typedef std::map<const class GLanguage *, TString> GLanguageString;
-	
-	typedef std::map<TString, GLanguageString> GStringList;
-	
 	///
 	/// 语言
 	///
-	class GLanguage
+	class GLanguage : public GObject
 	{
 	public:
 		
-		static TString Find(const GStringList &list, const TString &key, const GLanguage *language);
+		GLanguage();
+		
+		GLanguage(TString name, TString displayName);
+		
+		~GLanguage() override;
+	
+	public:
+		
+		///
+		/// 从JSON加载
+		/// \param json Json
+		/// \return 是否成功
+		bool LoadFromJson(const JSON::Json &json);
+	
+	public:
+		
+		[[nodiscard]]
+		GLanguage *Clone() const noexcept override;
 	
 	public:
 		
 		///
 		/// zh_cn, en_us, ...
 		///
-		const TString name;
+		TString name;
 		
 		///
 		/// 简体中文, English, ...
 		///
-		const TString displayName;
+		TString displayName;
+		
+		///
+		/// 键值对
+		///
+		std::map<TString, TString> values;
 		
 	};
 	

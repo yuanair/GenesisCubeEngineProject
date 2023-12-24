@@ -5,9 +5,9 @@
 
 namespace GenesisCubeEngine
 {
-	/// <summary>
+	/// 
 	/// JSON布尔
-	/// </summary>
+	/// 
 	class GBool : public GObject
 	{
 	public:

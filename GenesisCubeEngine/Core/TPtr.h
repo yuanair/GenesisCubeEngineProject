@@ -43,6 +43,15 @@ namespace GenesisCubeEngine
 		inline bool operator!=(const TPtr &_other) const noexcept;
 		
 		///
+		/// 解引用
+		///
+		inline T &operator*()
+		{
+			if (this->ptr == nullptr) throw ENullptrException(TEXT(__FUNCSIG__) ":: nullptr");
+			return *this->ptr;
+		}
+		
+		///
 		/// 指针
 		///
 		///
@@ -82,6 +91,7 @@ namespace GenesisCubeEngine
 		/// 类型
 		///
 		///
+		[[nodiscard]]
 		inline const type_info &TypeId() const noexcept;
 		
 		///

@@ -5,9 +5,9 @@
 
 namespace GenesisCubeEngine
 {
-	/// <summary>
+	///
 	/// JSON浮点数
-	/// </summary>
+	///
 	class GFloat : public GObject
 	{
 	public:

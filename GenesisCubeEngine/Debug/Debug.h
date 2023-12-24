@@ -96,9 +96,6 @@ namespace GenesisCubeEngine
 		/// 获取实例，程序结束时必须调用DeleteInstance()
 		static FLogger &Inst();
 		
-		/// 删除实例
-		static void DeleteInstance();
-		
 		///
 		/// 获取栈帧（只在Debug模式编译有效）
 		/// \param frameToSkip 跳过的栈帧

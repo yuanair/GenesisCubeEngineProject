@@ -90,24 +90,11 @@ namespace GenesisCubeEngine
 		return std::format(TEXT("{:0<4}{:0<2}{:0<2}"), localTime.wYear, localTime.wMonth, localTime.wDay);
 	}
 	
-	static FLogger *logger;
 	
 	FLogger &FLogger::Inst()
 	{
-		if (logger == nullptr)
-		{
-			logger = new FLogger(TEXT(".\\log"), FormatFirstCallTime(), nullptr);
-		}
-		return *logger;
-	}
-	
-	void FLogger::DeleteInstance()
-	{
-		if (logger != nullptr)
-		{
-			delete logger;
-			logger = nullptr;
-		}
+		static auto logger = FLogger(TEXT(".\\log"), FormatFirstCallTime(), nullptr);
+		return logger;
 	}
 	
 	

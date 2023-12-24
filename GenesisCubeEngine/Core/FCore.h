@@ -50,6 +50,36 @@ namespace GenesisCubeEngine
 	
 	typedef std::basic_string<NTChar> NTString;
 	
+	// in stream
+	
+	typedef std::basic_istream<WChar> WIStream;
+	
+	typedef std::basic_istream<Char> IStream;
+	
+	typedef std::basic_istream<TChar> TIStream;
+	
+	typedef std::basic_istream<NTChar> NTIStream;
+	
+	// out stream
+	
+	typedef std::basic_ostream<WChar> WOStream;
+	
+	typedef std::basic_ostream<Char> OStream;
+	
+	typedef std::basic_ostream<TChar> TOStream;
+	
+	typedef std::basic_ostream<NTChar> NTOStream;
+	
+	// in out stream
+	
+	typedef std::basic_iostream<WChar> WIOStream;
+	
+	typedef std::basic_iostream<Char> IOStream;
+	
+	typedef std::basic_iostream<TChar> TIOStream;
+	
+	typedef std::basic_iostream<NTChar> NTIOStream;
+	
 	// string stream
 	
 	typedef std::basic_stringstream<WChar> WStringStream;
@@ -110,37 +140,6 @@ namespace GenesisCubeEngine
 	
 	typedef std::basic_ofstream<NTChar> NTOFStream;
 	
-	
-	///
-	/// 程序类
-	///
-	class GProgram
-	{
-	public:
-		
-		GProgram() noexcept(false) = default;
-		
-		virtual ~GProgram() noexcept(false) = default;
-	
-	public:
-		
-		///
-		/// 开始时调用
-		///
-		virtual void Start() = 0;
-		
-		///
-		/// 每帧调用
-		///
-		virtual void Tick() = 0;
-		
-		///
-		/// 结束时调用
-		///
-		virtual void End() = 0;
-		
-	};
-	
 	///
 	/// 核心类
 	///
@@ -166,6 +165,21 @@ namespace GenesisCubeEngine
 		/// \return 应用实例
 		static HINSTANCE Shell(HWND hWnd, const TString &operation, const TString &file, const TString &parameters,
 							   const TString &directory, INT showCmd);
+		
+		///
+		/// 运行
+		///
+		static void Init();
+		
+		///
+		/// 应用实例
+		///
+		static HINSTANCE GetInstance();
+		
+		///
+		/// 运行参数
+		///
+		static TString GetCmdLine();
 	
 	public:
 		
@@ -195,23 +209,6 @@ namespace GenesisCubeEngine
 		/// 例如：0x0100
 		///
 		static const int version_code;
-		
-		///
-		/// 应用实例
-		///
-		static HINSTANCE GetInstance();
-		
-		///
-		/// 运行参数
-		///
-		static TString GetCmdLine();
-		
-		///
-		/// 运行
-		///
-		/// \param program 程序
-		/// \return 返回值
-		static int Run(GProgram &program);
 		
 	};
 	

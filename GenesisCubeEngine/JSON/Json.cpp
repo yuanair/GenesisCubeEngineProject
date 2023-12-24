@@ -418,4 +418,9 @@ namespace GenesisCubeEngine
 		this->json = new GNull();
 	}
 	
+	TString JSON::Json::ToString() const noexcept
+	{
+		return this->json->ToString();
+	}
+	
 }

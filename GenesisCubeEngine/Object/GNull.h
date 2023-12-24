@@ -5,9 +5,9 @@
 
 namespace GenesisCubeEngine
 {
-	/// <summary>
+	///
 	/// JSON对象
-	/// </summary>
+	///
 	class GNull : public GObject
 	{
 	public:

@@ -7,9 +7,9 @@
 
 namespace GenesisCubeEngine
 {
-	/// <summary>
+	///
 	/// JSON字符串
-	/// </summary>
+	///
 	class GString : public GObject
 	{
 	public:

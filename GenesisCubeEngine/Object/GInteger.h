@@ -5,9 +5,9 @@
 
 namespace GenesisCubeEngine
 {
-	/// <summary>
+	///
 	/// JSON整数
-	/// </summary>
+	///
 	class GInteger : public GObject
 	{
 	public:

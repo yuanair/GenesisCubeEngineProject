@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "required": [
+    "name",
+    "displayName"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "必需的名称字符串，例如en_us, zh_cn, ..."
+    },
+    "displayName": {
+      "type": "string",
+      "description": "必需的显示名称字符串，例如简体中文，English, ...."
+    }
+  }
+}

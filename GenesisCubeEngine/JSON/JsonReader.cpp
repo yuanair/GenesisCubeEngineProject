@@ -3,32 +3,25 @@
 namespace GenesisCubeEngine
 {
 	
-	JSON::JsonReader::JsonReader()
+	JSON::JsonReader::JsonReader(TIStream &source)
+		: source(source)
 	{
-		this->index = 0;
-		this->ch = TEXT('\0');
-	}
-	
-	JSON::JsonReader::JsonReader(const TString &source)
-	{
-		this->source = source;
-		this->index = 0;
-		if (source.empty())
+		if (source.bad())
 		{
 			this->ch = TEXT('\0');
 		}
 		else
 		{
-			this->ch = source[0];
+			this->ch = source.get();
 		}
 	}
 	
 	JSON::JsonReader::~JsonReader()
 	= default;
 	
-	bool JSON::JsonReader::Final() const
+	bool JSON::JsonReader::Eof() const
 	{
-		return this->index == this->source.size();
+		return this->source.eof();
 	}
 	
 	TString JSON::JsonReader::ReadString(TCHAR stopChar)
@@ -101,29 +94,24 @@ namespace GenesisCubeEngine
 	
 	bool JSON::JsonReader::NextChar()
 	{
-		if (Final())
+		if (Eof())
 		{
 			this->ch = TEXT('\0');
 			return false;
 		}
-		this->ch = this->source[++this->index];
+		this->ch = this->source.get();
 		return true;
 	}
 	
 	bool JSON::JsonReader::UnnextChar()
 	{
-		if (this->index == 0)
-		{
-			this->ch = TEXT('\0');
-			return false;
-		}
-		this->ch = this->source[--this->index];
+		this->source.unget();
 		return true;
 	}
 	
 	bool JSON::JsonReader::Good() const
 	{
-		return Final();
+		return Eof();
 	}
 	
 	JSON::Json *JSON::JsonReader::Next()

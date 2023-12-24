@@ -1,34 +1,32 @@
 ﻿#pragma once
 
 #include "../Core/Header.h"
-#include "JSON.h"
+#include "Json.h"
 
-namespace GenesisCubeEngine
+
+namespace GenesisCubeEngine::JSON
 {
-	namespace JSON
+	
+	///
+	/// JSON数组
+	///
+	class JArray : public GObject
 	{
+	public:
 		
-		/// <summary>
-		/// JSON数组
-		/// </summary>
-		class JArray : public GObject
-		{
-		public:
-			
-			JArray() {}
-			
-			~JArray() override {}
+		JArray() = default;
 		
-		public:
-			
-			JArray *Clone() const noexcept override;
-			
-			TString ToString() const noexcept override;
+		~JArray() override = default;
+	
+	public:
 		
-		public:
-			
-			std::vector<Json> values;
-			
-		};
-	}
+		[[nodiscard]] JArray *Clone() const noexcept override;
+		
+		[[nodiscard]] TString ToString() const noexcept override;
+	
+	public:
+		
+		std::vector<Json> values;
+		
+	};
 }

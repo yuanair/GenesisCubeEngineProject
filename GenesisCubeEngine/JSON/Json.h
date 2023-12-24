@@ -13,9 +13,9 @@
 namespace GenesisCubeEngine::JSON
 {
 	
-	/// <summary>
+	/// 
 	/// json对象
-	/// </summary>
+	/// 
 	class Json : public GObject
 	{
 	public:
@@ -116,188 +116,182 @@ namespace GenesisCubeEngine::JSON
 	
 	public:
 		
-		/// <summary>
+		/// 
 		/// 数组：添加元素
-		/// </summary>
-		/// <returns></returns>
+		///
 		void Push(const Json &_json);
 		
-		/// <summary>
+		/// 
 		/// 数组：减少元素
-		/// </summary>
-		/// <returns></returns>
+		///
 		void Pop();
 		
-		/// <summary>
+		/// 
 		/// 数组：有一个。不是数组返回false
-		/// </summary>
-		/// <param name="key"></param>
+		///
 		[[nodiscard]] bool Has(size_t index) const;
 		
-		/// <summary>
+		/// 
 		/// 对象：有一个。不是对象返回false
-		/// </summary>
-		/// <param name="key"></param>
+		///
 		[[nodiscard]] bool Has(const TString &key) const;
 		
-		/// <summary>
+		/// 
 		/// 数组：删除元素
-		/// </summary>
-		/// <param name="index">索引</param>
-		/// <returns></returns>
+		/// 
+		/// \param index 索引
+		/// \return 
 		ArrayIterator Remove(size_t index);
 		
-		/// <summary>
+		/// 
 		/// 数组：删除元素
-		/// </summary>
-		/// <param name="_First">开始位置</param>
-		/// <param name="_Last">结束位置</param>
-		/// <returns></returns>
+		/// 
+		/// \param _First 开始位置
+		/// \param _Last 结束位置
+		/// \return 
 		ArrayIterator Remove(const ArrayIterator &_First, const ArrayIterator &_Last);
 		
-		/// <summary>
+		/// 
 		/// 数组：删除元素
-		/// </summary>
-		/// <param name="_Where">位置</param>
-		/// <returns></returns>
+		/// 
+		/// \param _Where 位置
+		/// \return 
 		ArrayIterator Remove(const ArrayIterator &_Where);
 		
-		/// <summary>
+		/// 
 		/// 对象：删除元素
-		/// </summary>
-		/// <param name="key">键</param>
-		/// <returns>删除元素数量</returns>
+		/// 
+		/// \param key 键
+		/// \return 删除元素数量
 		size_t Remove(const TString &key);
 		
-		/// <summary>
+		/// 
 		/// 对象：删除元素
-		/// </summary>
-		/// <param name="_First">开始位置</param>
-		/// <param name="_Last">结束位置</param>
-		/// <returns></returns>
+		/// 
+		/// \param _First 开始位置
+		/// \param _Last 结束位置
+		/// \return 
 		ObjectIterator Remove(const ObjectIterator &_First, const ObjectIterator &_Last);
 		
-		/// <summary>
+		/// 
 		/// 对象：删除元素
-		/// </summary>
-		/// <param name="_Where">位置</param>
-		/// <returns></returns>
+		/// 
+		/// \param _Where 位置
+		/// \return 
 		ObjectIterator Remove(const ObjectIterator &_Where);
 		
-		/// <summary>
+		/// 
 		/// 数组：元素个数。
 		/// 对象：键值对个数
-		/// </summary>
-		/// <returns>个数</returns>
+		/// 
+		/// \return 个数
 		[[nodiscard]] size_t Size() const;
 		
-		/// <summary>
+		/// 
 		/// 开始iterator，用于foreach，无法遍历数组
-		/// </summary>
-		/// <returns></returns>
+		/// 
+		/// \return 
 		[[nodiscard]] ObjectIterator begin() const;
 		
-		/// <summary>
+		/// 
 		/// 结束iterator，用于foreach，无法遍历数组
-		/// </summary>
-		/// <returns></returns>
+		/// 
+		/// \return 
 		[[nodiscard]] ObjectIterator end() const;
 		
-		/// <summary>
+		/// 
 		/// 开始iterator
-		/// </summary>
-		/// <returns></returns>
+		/// 
+		/// \return 
 		[[nodiscard]] ArrayIterator ArrayBegin() const;
 		
-		/// <summary>
+		/// 
 		/// 结束iterator
-		/// </summary>
-		/// <returns></returns>
+		/// 
+		/// \return 
 		[[nodiscard]] ArrayIterator ArrayEnd() const;
 		
-		/// <summary>
+		/// 
 		/// 反转开始iterator
-		/// </summary>
-		/// <returns></returns>
+		/// 
+		/// \return 
 		[[nodiscard]] ArrayReverseIterator ArrayRBegin() const;
 		
-		/// <summary>
+		/// 
 		/// 反转结束iterator
-		/// </summary>
-		/// <returns></returns>
+		/// 
+		/// \return 
 		[[nodiscard]] ArrayReverseIterator ArrayREnd() const;
 		
-		/// <summary>
+		/// 
 		/// 开始iterator
-		/// </summary>
-		/// <returns></returns>
+		/// 
+		/// \return 
 		[[nodiscard]] ObjectIterator ObjectBegin() const;
 		
-		/// <summary>
+		/// 
 		/// 结束iterator
-		/// </summary>
-		/// <returns></returns>
+		/// 
+		/// \return 
 		[[nodiscard]] ObjectIterator ObjectEnd() const;
 		
-		/// <summary>
+		/// 
 		/// 反转开始iterator
-		/// </summary>
-		/// <returns></returns>
+		/// 
+		/// \return 
 		[[nodiscard]] ObjectReverseIterator ObjectRBegin() const;
 		
-		/// <summary>
+		/// 
 		/// 反转结束iterator
-		/// </summary>
-		/// <returns></returns>
+		/// 
+		/// \return 
 		[[nodiscard]] ObjectReverseIterator ObjectREnd() const;
 		
-		/// <summary>
+		/// 
 		/// 数组：转换为vector数组
-		/// </summary>
-		/// <returns></returns>
+		/// 
+		/// \return 
 		[[nodiscard]] Array &ToArray() const;
 		
-		/// <summary>
+		/// 
 		/// 对象：转换为map
-		/// </summary>
-		/// <returns></returns>
+		/// 
+		/// \return 
 		[[nodiscard]] Object &ToMap() const;
 		
-		/// <summary>
+		/// 
 		/// 重置为GNull
-		/// </summary>
+		/// 
 		void Reset();
 		
-		/// <summary>
+		/// 
 		/// 获取类型
-		/// </summary>
-		/// <returns>类型</returns>
+		/// 
+		/// \return 类型
 		[[nodiscard]] inline const type_info &TypeId() const { return this->json.TypeId(); }
 		
-		/// <summary>
+		/// 
 		/// 判断类型
-		/// </summary>
-		/// <returns>bool</returns>
+		/// 
+		/// \return bool
 		template<class T>
 		[[nodiscard]] inline bool Is() const { return TypeId() == typeid(T); }
 		
-		/// <summary>
+		/// 
 		/// 转换类型并获取
-		/// </summary>
-		/// <returns>auto</returns>
+		/// 
+		/// \return auto
 		template<class T>
 		inline auto Get() const;
 		
-		/// <summary>
-		/// 克隆
-		/// </summary>
-		/// <returns></returns>
 		[[nodiscard]] Json *Clone() const noexcept override
 		{
 			Json *ptr = new Json();
 			ptr->json = this->json;
 			return ptr;
 		}
+		
+		[[nodiscard]] TString ToString() const noexcept override;
 	
 	private:
 		

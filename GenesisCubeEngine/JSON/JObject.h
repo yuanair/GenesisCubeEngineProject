@@ -1,14 +1,14 @@
 ﻿#pragma once
 
-#include "JSON.h"
+#include "Json.h"
 
 
 namespace GenesisCubeEngine::JSON
 {
 	
-	/// <summary>
+	///
 	/// JSON对象
-	/// </summary>
+	///
 	class JObject : public GObject
 	{
 	public:
@@ -19,9 +19,11 @@ namespace GenesisCubeEngine::JSON
 	
 	public:
 		
-		[[nodiscard]] JObject *Clone() const noexcept override;
+		[[nodiscard]]
+		JObject *Clone() const noexcept override;
 		
-		[[nodiscard]] TString ToString() const noexcept override;
+		[[nodiscard]]
+		TString ToString() const noexcept override;
 	
 	public:
 		

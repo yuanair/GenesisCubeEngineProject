@@ -18,41 +18,54 @@ using namespace std;
 using namespace GenesisCubeEngine;
 
 
-class MyProgram : public GProgram
+class MyProgram
 {
 public:
 	
-	explicit MyProgram(int nShowCmd) : nShowCmd(nShowCmd) {}
-	
-	~MyProgram() override = default;
-
-public:
-	
-	TString TText(const TString &key)
+	explicit MyProgram(int nShowCmd) : nShowCmd(nShowCmd)
 	{
-		return GLanguage::Find(gameText, key, nowLanguage);
-	}
-	
-	static void OnDropFiles(FWindow::EventOnDropFilesArgs args)
-	{
-		std::vector<TPtr<GFileName>> files;
-		GFileName::DragQuery(args.hDropInfo, files);
-		TString buffer;
-		for (size_t i = 0; i < files.size(); i++)
+		
 		{
-			buffer.append(files[i]->GetFileName()).push_back(TEXT('\n'));
-			if (auto *ptr = files[i].Cast<GDirectoryName>()) ptr->Find(files);
+			std::locale::global(std::locale("zh_CN.UTF-8"));
+			TIFStream ifStream;
+			ifStream.open(TEXT("D:/GenesisCubeEngine/test/Resource/zh_cn.json"), std::ios::in);
+			if (ifStream.is_open())
+			{
+				JSON::JsonReader jsonReader(ifStream);
+				this->zh_cn.LoadFromJson(*jsonReader.NextSafe());
+				ifStream.close();
+			}
+			else
+			{
+				FWindow::MBox(TEXT("can not open zh_cn.json"), FCore::name);
+			}
+			ifStream.open(TEXT("D:/GenesisCubeEngine/test/Resource/en_us.json"), std::ios::in);
+			if (ifStream.is_open())
+			{
+				JSON::JsonReader jsonReader(ifStream);
+				this->en_us.LoadFromJson(*jsonReader.NextSafe());
+				ifStream.close();
+			}
+			else
+			{
+				FWindow::MBox(TEXT("can not open en_us.json"), FCore::name);
+			}
+			
+			ifStream.open(TEXT("D:/GenesisCubeEngine/test/Resource/language_debug.json"), std::ios::in);
+			if (ifStream.is_open())
+			{
+				JSON::JsonReader jsonReader(ifStream);
+				this->language_debug.LoadFromJson(*jsonReader.NextSafe());
+				ifStream.close();
+			}
+			else
+			{
+				FWindow::MBox(TEXT("can not open language_debug.json"), FCore::name);
+			}
 		}
-		FLogger::Inst().LogInfoODS(buffer);
-	}
-	
-	void Start() override
-	{
-		FLogger::Inst().LogInfoODS(TEXT("MyProgram Start"));
+		
 		// 注册窗口类
 		FWindow::Register(mainWndClassName, FWindow::GetIcon(IDI_ICON_Main), FWindow::GetIcon(IDI_ICON_MainSm));
-		
-		FLogger::Inst().LogInfoODS(TEXT("test"));
 		
 		// 创建窗口
 		mainWindow.Create(mainWndClassName, Text("MainWindowName"));
@@ -76,49 +89,46 @@ public:
 		
 		mainWindow.eOnTick += [](FWindow::EventOnTickArgs args) -> void
 		{
-//			LOG_INFO FLogger::Inst() <<
-//											std::format(
-//												TEXT("deltaTime:{:.7f}\nnowTime:{}"), args.deltaTime,
-//												FTimer::LocalTime());
-		
+			
 		};
 		
-		TString jsonBuffer;
-		{
-			std::locale::global(std::locale("zh_CN.UTF-8"));
-			TFStream fstream(TEXT("Test.json"), std::ios::in);
-			if (!fstream.is_open())
-			{
-				FWindow::MBox(TEXT("can not open Test.json"), Text("MainWindowName"));
-			}
-			else
-			{
-				TString buffer;
-				while (std::getline(fstream, buffer))
-				{
-					jsonBuffer.append(buffer);
-					jsonBuffer.push_back(TEXT('\n'));
-				}
-				fstream.close();
-			}
-		}
-		
-		JSON::JsonReader jsonReader(jsonBuffer);
-		TPtr<JSON::Json> json = jsonReader.Next();
-		
-		FLogger::Inst().LogInfoODS(json->ToString());
-		
 	}
 	
-	void Tick() override
-	{
-		mainWindow.Tick();
-		addWindow.Tick();
-	}
-	
-	void End() override
+	~MyProgram()
 	{
 		FLogger::Inst().LogInfoODS(TEXT("MyProgram End"));
+	}
+
+public:
+	
+	TString TText(const TString &key)
+	{
+		if (nowLanguage == nullptr) return key;
+		auto iter = nowLanguage->values.find(key);
+		if (iter == nowLanguage->values.end()) return key;
+		return iter->second;
+	}
+	
+	static void OnDropFiles(FWindow::EventOnDropFilesArgs args)
+	{
+		std::vector<TPtr<GFileName>> files;
+		GFileName::DragQuery(args.hDropInfo, files);
+		TString buffer;
+		for (size_t i = 0; i < files.size(); i++)
+		{
+			buffer.append(files[i]->GetFileName()).push_back(TEXT('\n'));
+			if (auto *ptr = files[i].Cast<GDirectoryName>()) ptr->Find(files);
+		}
+		FLogger::Inst().LogInfoODS(buffer);
+	}
+	
+	void Tick()
+	{
+		static auto deltaTime = std::chrono::milliseconds(int64_t(1.0f / 60.0f * 1000.0f));
+		auto timePoint = std::chrono::system_clock::now() + deltaTime;
+		mainWindow.Tick();
+		addWindow.Tick();
+		std::this_thread::sleep_until(timePoint);
 	}
 
 public:
@@ -134,35 +144,13 @@ private:
 	
 	FWindow addWindow;
 	
-	GLanguage zh_cn = GLanguage(TEXT("zh_cn"), TEXT("简体中文"));
+	GLanguage zh_cn;
 	
-	GLanguage en_us = GLanguage(TEXT("en_us"), TEXT("English"));
+	GLanguage en_us;
 	
-	GLanguage language_debug = GLanguage(TEXT("debug"), TEXT("调试语言"));
+	GLanguage language_debug;
 	
 	GLanguage *nowLanguage = &zh_cn;
-	
-	GStringList gameText =
-		{
-			{
-				TEXT("Language"),       {{&zh_cn, TEXT("语言 (Language)")}, {
-																				&en_us, TEXT("Language（语言）")
-																			}, {
-																				   &language_debug, TEXT("Language")
-																			   }}},
-			{
-				TEXT("MainWindowName"), {{&zh_cn, TEXT("主窗口")},          {
-																				&en_us, TEXT("main window")
-																			}, {
-																				   &language_debug, TEXT("mainWindow")
-																			   }}},
-			{
-				TEXT("AddWindowName"),  {{&zh_cn, TEXT("附加窗口")},        {
-																				&en_us, TEXT("add window")
-																			}, {
-																				   &language_debug, TEXT("addWindow")
-																			   }}}
-		};
 	
 };
 
@@ -175,5 +163,10 @@ int WINAPI wWinMain
 	)
 {
 	MyProgram myProgram(nShowCmd);
-	return GenesisCubeEngine::FCore::Run(myProgram);
+	GenesisCubeEngine::FCore::Init();
+	while (FWindow::PeekEvent())
+	{
+		myProgram.Tick();
+	}
+	return 0;
 }
