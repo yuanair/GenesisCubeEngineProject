@@ -204,6 +204,12 @@ namespace GenesisCubeEngine
 		/// 写入缓冲区字符
 		/// \return 是否成功打开文件
 		bool Flush();
+		
+		///
+		/// 如果FAILED(hr)则抛出异常
+		/// \param hr HRESULT
+		/// \param message 消息
+		void GThrowIfFailed(HRESULT hr, const TString &message = TEXT("DirectX"));
 	
 	private:
 		
@@ -236,23 +242,7 @@ namespace GenesisCubeEngine
 		
 	};
 	
-	///
-	/// 如果FAILED(hr)则抛出异常
-	/// \param hr HRESULT
-	/// \param message 消息
-	void GThrowIfFailed(HRESULT hr, const TString &message = TEXT("DirectX"));
-	
-	///
-	/// 格式化Windows错误
-	///
-	/// \param dwMessageId 消息ID
-	/// \param dwLanguageId 语言ID
-	/// \param dwBufferSize 缓冲区大小，包括'\0'字符，以TChar为单位
-	/// \return 字符串
-	TString GFormatMessage(DWORD dwMessageId, DWORD dwLanguageId = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),
-						   DWORD dwBufferSize = 256);
-	
 	
 }
 
-#define ThrowIfFailed(hr) GenesisCubeEngine::GThrowIfFailed(hr)
+#define ThrowIfFailed(hr) GenesisCubeEngine::FLogger::GThrowIfFailed(hr)

@@ -71,5 +71,25 @@ namespace GenesisCubeEngine
 		
 	}
 	
+	HICON FCore::GetIcon(const TString &iconName, HINSTANCE hInstance)
+	{
+		return ::LoadIcon(hInstance, iconName.c_str());
+	}
+	
+	HICON FCore::GetIcon(short iconId, HINSTANCE hInstance)
+	{
+		return ::LoadIcon(hInstance, MAKEINTRESOURCE(iconId));
+	}
+	
+	HICON FCore::GetIcon(const TString &iconName)
+	{
+		return GetIcon(iconName, FCore::GetInstance());
+	}
+	
+	HICON FCore::GetIcon(short iconId)
+	{
+		return GetIcon(iconId, FCore::GetInstance());
+	}
+	
 } // GenesisCubeEngine
 

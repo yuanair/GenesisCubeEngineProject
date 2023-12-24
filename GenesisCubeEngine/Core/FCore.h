@@ -180,6 +180,34 @@ namespace GenesisCubeEngine
 		/// 运行参数
 		///
 		static TString GetCmdLine();
+		
+		///
+		/// 获取图标
+		/// \param iconName 图标名
+		/// \param hInstance 应用实例
+		/// \return 图标
+		static HICON GetIcon(const TString &iconName, HINSTANCE hInstance);
+		
+		
+		///
+		/// 获取图标
+		/// \param iconId 图标ID
+		/// \param hInstance 应用实例
+		/// \return 图标
+		static HICON GetIcon(short iconId, HINSTANCE hInstance);
+		
+		///
+		/// 获取图标
+		/// \param iconName 图标名
+		/// \return 图标
+		static HICON GetIcon(const TString &iconName);
+		
+		
+		///
+		/// 获取图标
+		/// \param iconId 图标ID
+		/// \return 图标
+		static HICON GetIcon(short iconId);
 	
 	public:
 		

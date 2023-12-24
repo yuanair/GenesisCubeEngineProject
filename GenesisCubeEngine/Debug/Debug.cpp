@@ -3,6 +3,8 @@
 //
 
 #include "Debug.h"
+#include "../Core/FFormatter.h"
+#include "../Core/FLocator.h"
 
 namespace GenesisCubeEngine
 {
@@ -152,7 +154,8 @@ namespace GenesisCubeEngine
 			else
 			{
 				auto lastError = GetLastError();
-				szStackInfo.append(std::format(TEXT("\terror(0x{:08X}): {}"), lastError, GFormatMessage(lastError)));
+				szStackInfo.append(
+					std::format(TEXT("\terror(0x{:08X}): {}"), lastError, FFormatter::GFormatMessage(lastError)));
 			}
 		}
 		delete[] pStack;
@@ -208,9 +211,20 @@ namespace GenesisCubeEngine
 	void FLogger::LogMBox(HRESULT hr, const TString &message)
 	{
 		TString hrMessage = std::format(
-			TEXT("{} (error code: 0x{:08X}): {}"), message, hr, GenesisCubeEngine::GFormatMessage(hr));
+			TEXT("{} (error code: 0x{:08X}): {}"), message, hr, FFormatter::GFormatMessage(hr));
 		LogFatalODS(hrMessage);
 		MessageBox(nullptr, hrMessage.c_str(), FCore::name, MB_OK | MB_ICONSTOP);
+	}
+	
+	void FLogger::GThrowIfFailed(HRESULT hr, const TString &message)
+	{
+		if (FAILED(hr))
+		{
+			FLogger::Inst().LogMBox(hr, message);
+			FLogger::Inst().LogFatalODS(
+				std::format(TEXT("{} (0x{:08X})"), FFormatter::GFormatMessage(hr), hr));
+			throw EBadException(__FUNCSIG__ TEXT(":: FAILED(hr)"));
+		}
 	}
 
 #pragma endregion
@@ -299,31 +313,6 @@ namespace GenesisCubeEngine
 	}
 
 #pragma endregion
-	
-	TString GFormatMessage(DWORD dwMessageId, DWORD dwLanguageId, DWORD dwBufferSize)
-	{
-		auto strBufferError = new TChar[dwBufferSize];
-		FormatMessage
-			(
-				FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-				nullptr, dwMessageId, dwLanguageId,
-				strBufferError, dwBufferSize, nullptr
-			);
-		TString buffer = strBufferError;
-		delete[] strBufferError;
-		return buffer;
-	}
-	
-	void GThrowIfFailed(HRESULT hr, const TString &message)
-	{
-		if (FAILED(hr))
-		{
-			FLogger::Inst().LogMBox(hr, message);
-			GenesisCubeEngine::FLogger::Inst().LogFatalODS(
-				std::format(TEXT("{} (0x{:08X})"), GenesisCubeEngine::GFormatMessage(hr), hr));
-			throw EBadException(__FUNCSIG__ TEXT(":: FAILED(hr)"));
-		}
-	}
 	
 	
 }

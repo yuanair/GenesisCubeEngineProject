@@ -6,6 +6,8 @@
 
 #include <windows.h>
 #include <windowsx.h>
+#include <msctf.h>
+#include <inputscope.h>
 
 #include <typeinfo>
 #include <fstream>
@@ -15,6 +17,7 @@
 #include <list>
 #include <map>
 
+#pragma comment(lib, "Imm32.lib")
 
 #if defined(_DEBUG) || defined(DEBUG) || defined(GenesisCubeEditor)
 

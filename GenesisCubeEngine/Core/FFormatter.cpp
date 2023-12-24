@@ -245,4 +245,19 @@ namespace GenesisCubeEngine
 		return buffer;
 	}
 	
+	
+	TString FFormatter::GFormatMessage(DWORD dwMessageId, DWORD dwLanguageId, DWORD dwBufferSize)
+	{
+		auto strBufferError = new TChar[dwBufferSize];
+		FormatMessage
+			(
+				FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+				nullptr, dwMessageId, dwLanguageId,
+				strBufferError, dwBufferSize, nullptr
+			);
+		TString buffer = strBufferError;
+		delete[] strBufferError;
+		return buffer;
+	}
+	
 }
