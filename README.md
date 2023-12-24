@@ -25,7 +25,7 @@ class MyProgram : public GProgram
 {
 public:
     
-    MyProgram()
+    MyProgram(int nShowCmd)
     {
         // 注册窗口类
         FWindow::Register(wndClassName);
@@ -42,7 +42,7 @@ public:
         // do some works ...
         
         // 显示窗口
-        window.ShowAndUpdate();
+        window.ShowAndUpdate(nShowCmd); // nShowCmd不是必须的
     }
     
     ~MyProgram() override
@@ -71,9 +71,21 @@ private:
     
 }
 
-GProgram* GCProgram()
+int WINAPI wWinMain
+	(
+		HINSTANCE hInstance,
+		HINSTANCE hPrevInstance,
+		LPWSTR lpCmdLine,
+		int nShowCmd
+	)
 {
-    return new MyProgram();
+	MyProgram myProgram(nShowCmd); // nShowCmd不是必须的
+	GenesisCubeEngine::FCore::Init();
+	while (FWindow::PeekEvent())
+	{
+		myProgram.Tick();
+	}
+	return 0;
 }
 
 

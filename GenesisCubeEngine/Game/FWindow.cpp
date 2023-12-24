@@ -139,6 +139,28 @@ namespace GenesisCubeEngine
 	{
 		switch (message)
 		{
+			case WM_CHAR:
+			{
+				if (bEnableOnChar)
+				{
+					eOnChar.Trigger(EventCharArgs{.window=*this, .input=(TChar) wParam});
+					return 0;
+				}
+				else
+				{
+					return ::DefWindowProc(this->hWnd, message, wParam, lParam);
+				}
+			}
+			case WM_KEYDOWN:
+			{
+				eOnKeyDown.Trigger(EventKeyArgs{.window=*this});
+				return 0;
+			}
+			case WM_KEYUP:
+			{
+				eOnKeyUp.Trigger(EventKeyArgs{.window=*this});
+				return 0;
+			}
 			case WM_MOUSEMOVE:
 			{
 				int32_t newMouseX = GET_X_LPARAM(lParam);
@@ -147,12 +169,12 @@ namespace GenesisCubeEngine
 				int32_t deltaY = newMouseY - mouseY;
 				mouseX = newMouseX;
 				mouseY = newMouseY;
-				eOnMouseMoved.Trigger(EventOnMouseMoveArgs(*this, deltaX, deltaY));
+				eOnMouseMoved.Trigger(EventOnMouseMoveArgs{.window=*this, .deltaX=deltaX, .deltaY=deltaY});
 				return 0;
 			}
 			case WM_ACTIVATE:
 			{
-				EventArgs args(*this);
+				EventArgs args{.window=*this};
 				switch (LOWORD(wParam))
 				{
 					case WA_INACTIVE:
@@ -172,14 +194,16 @@ namespace GenesisCubeEngine
 			case WM_MOVE:
 				this->windowRect.x = LOWORD(lParam);
 				this->windowRect.y = HIWORD(lParam);
-				return TRUE;
+				return 0;
 			case WM_SIZE:
 				this->windowRect.width = LOWORD(lParam);
 				this->windowRect.height = HIWORD(lParam);
-				eOnResize.Trigger(EventOnResizeArgs(*this, this->windowRect.width, this->windowRect.height));
+				eOnResize.Trigger(
+					EventOnResizeArgs{.window=*this, .width=this->windowRect.width, .height=this->windowRect.height}
+				);
 				return 0;
 			case WM_DROPFILES:
-				eOnDropFiles.Trigger(EventOnDropFilesArgs(*this, (HDROP) wParam));
+				eOnDropFiles.Trigger(EventOnDropFilesArgs{.window=*this, .hDropInfo=(HDROP) wParam});
 				::DragFinish((HDROP) wParam);
 				return 0;
 			case WM_GETMINMAXINFO:
@@ -202,17 +226,17 @@ namespace GenesisCubeEngine
 				// 禁用 alt-enter.
 				return MAKELRESULT(0, MNC_CLOSE);
 			case WM_CLOSE:
-				eOnClose.Trigger(EventArgs(*this));
+				eOnClose.Trigger(EventArgs{.window=*this});
 				return 0;
 			case WM_QUERYENDSESSION:
-				eOnQueryEndSession.Trigger(EventArgs(*this));
+				eOnQueryEndSession.Trigger(EventArgs{.window=*this});
 				return this->bCanEndSession;
 			case WM_ENDSESSION:
-				eOnEndSession.Trigger(EventArgs(*this));
+				eOnEndSession.Trigger(EventArgs{.window=*this});
 				return this->bCanEndSession;
 			case WM_DESTROY:
 				this->hWnd = nullptr;
-				eOnDestroy.Trigger(EventArgs(*this));
+				eOnDestroy.Trigger(EventArgs{.window=*this});
 				return 0;
 			default:
 				return ::DefWindowProc(this->hWnd, message, wParam, lParam);

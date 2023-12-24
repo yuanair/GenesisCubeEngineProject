@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#include <utility>
-
 #include "../Core/Header.h"
 #include "../Object/GObject.h"
 

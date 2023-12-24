@@ -20,7 +20,7 @@ namespace GenesisCubeEngine
 		return GFileName(lpFileName);
 	}
 	
-	bool GFileName::Find(const TString &fileName, std::vector<TPtr<GFileName>> &fileNames)
+	bool GFileName::Find(const TString &fileName, std::list<TPtr<GFileName>> &fileNames)
 	{
 		WIN32_FIND_DATA fd;
 		HANDLE hFind = ::FindFirstFile(fileName.c_str(), &fd);
@@ -47,7 +47,7 @@ namespace GenesisCubeEngine
 		return true;
 	}
 	
-	bool GFileName::DragQuery(HDROP hDrop, std::vector<TPtr<GFileName>> &fileNames)
+	bool GFileName::DragQuery(HDROP hDrop, std::list<TPtr<GFileName>> &fileNames)
 	{
 		UINT nFileCount = ::DragQueryFile(hDrop, (UINT) -1, nullptr, 0);
 		TCHAR szFileName[MAX_PATH] = {};

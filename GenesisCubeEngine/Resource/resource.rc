@@ -1,5 +1,5 @@
 #include "GenesisCubeEngine/Resource/resource.h"
 
-IDI_ICON_Main ICON "../../GenesisCubeEngine/Resource/GenesisCubeEngineIcon.ico"
+IDI_ICON_Main ICON "Icon/GenesisCubeEngineIcon.ico"
 
-IDI_ICON_MainSm ICON "../../GenesisCubeEngine/Resource/GenesisCubeEngineIcon.ico"
+IDI_ICON_MainSm ICON "Icon/GenesisCubeEngineIcon.ico"

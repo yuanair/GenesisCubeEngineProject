@@ -25,7 +25,7 @@ namespace GenesisCubeEngine
 		
 		TEvent();
 		
-		explicit TEvent(std::initializer_list<Observer> observers);
+		TEvent(std::initializer_list<Observer> observers);
 		
 		explicit TEvent(Observer observer);
 		
@@ -53,7 +53,7 @@ namespace GenesisCubeEngine
 	
 	private:
 		
-		std::vector<Observer> observers;
+		std::list<Observer> observers;
 		
 	};
 	

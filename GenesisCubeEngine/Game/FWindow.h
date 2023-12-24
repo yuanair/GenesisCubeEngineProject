@@ -20,9 +20,6 @@ namespace GenesisCubeEngine
 	//
 	class FWindow
 	{
-		
-		friend int Run();
-	
 	public:
 		
 		//
@@ -34,28 +31,62 @@ namespace GenesisCubeEngine
 			// 事件发生的窗口
 			//
 			FWindow &window;
-			
-			explicit EventArgs(FWindow &window) : window(window) {}
 		};
 		
 		//
 		// Tick事件参数
 		//
-		struct EventOnTickArgs : public EventArgs
+		struct EventOnTickArgs
 		{
+			//
+			// 事件发生的窗口
+			//
+			FWindow &window;
+			
 			//
 			// 帧间隔时间
 			//
 			float deltaTime;
+		};
+		
+		//
+		// 字符事件参数
+		//
+		struct EventCharArgs
+		{
+			//
+			// 事件发生的窗口
+			//
+			FWindow &window;
 			
-			EventOnTickArgs(FWindow &window, float deltaTime) : EventArgs(window), deltaTime(deltaTime) {}
+			//
+			// 输入的字符
+			//
+			TChar input;
+		};
+		
+		//
+		// 按键事件参数
+		//
+		struct EventKeyArgs
+		{
+			//
+			// 事件发生的窗口
+			//
+			FWindow &window;
+			
 		};
 		
 		//
 		// 鼠标移动事件参数
 		//
-		struct EventOnMouseMoveArgs : public EventArgs
+		struct EventOnMouseMoveArgs
 		{
+			//
+			// 事件发生的窗口
+			//
+			FWindow &window;
+			
 			//
 			// 鼠标x坐标偏移
 			//
@@ -66,15 +97,18 @@ namespace GenesisCubeEngine
 			//
 			int32_t deltaY;
 			
-			EventOnMouseMoveArgs(FWindow &window, int32_t deltaX, int32_t deltaY) : EventArgs(window), deltaX(deltaX),
-																					deltaY(deltaY) {}
 		};
 		
 		//
 		// 改变大小事件参数
 		//
-		struct EventOnResizeArgs : public EventArgs
+		struct EventOnResizeArgs
 		{
+			//
+			// 事件发生的窗口
+			//
+			FWindow &window;
+			
 			//
 			// 窗口宽度
 			//
@@ -84,22 +118,23 @@ namespace GenesisCubeEngine
 			// 窗口高度
 			//
 			int32_t height;
-			
-			EventOnResizeArgs(FWindow &window, int32_t width, int32_t height) : EventArgs(window), width(width),
-																				height(height) {}
 		};
 		
 		//
 		// 拖放文件事件参数
 		//
-		struct EventOnDropFilesArgs : public EventArgs
+		struct EventOnDropFilesArgs
 		{
+			//
+			// 事件发生的窗口
+			//
+			FWindow &window;
+			
 			//
 			// 拖放的文件
 			//
 			HDROP hDropInfo;
 			
-			EventOnDropFilesArgs(FWindow &window, HDROP hDropInfo) : EventArgs(window), hDropInfo(hDropInfo) {}
 		};
 	
 	public:
@@ -237,7 +272,7 @@ namespace GenesisCubeEngine
 		///
 		/// 第一次显示窗口时调用
 		///
-		/// \param nCmdShow 可传入WinMain的参数nShowCmd
+		/// \param nCmdShow 可传入WinMain的参数nShowCmd。否则，传入SW_SHOW
 		void ShowAndUpdate(int nCmdShow);
 		
 		///
@@ -331,6 +366,21 @@ namespace GenesisCubeEngine
 		TEvent<EventOnTickArgs> eOnTick;
 		
 		///
+		/// 字符事件，可用于输入法
+		///
+		TEvent<EventCharArgs> eOnChar;
+		
+		///
+		/// 按下按键事件
+		///
+		TEvent<EventKeyArgs> eOnKeyDown;
+		
+		///
+		/// 松开按键事件
+		///
+		TEvent<EventKeyArgs> eOnKeyUp;
+		
+		///
 		/// 鼠标移动事件
 		///
 		TEvent<EventOnMouseMoveArgs> eOnMouseMoved;
@@ -389,6 +439,11 @@ namespace GenesisCubeEngine
 		/// 是否可以关机
 		///
 		bool bCanEndSession = false;
+		
+		///
+		/// 是否启用OnChar事件
+		///
+		bool bEnableOnChar = false;
 		
 		///
 		/// 窗口大小限制

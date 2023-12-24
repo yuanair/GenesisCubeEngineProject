@@ -3,7 +3,6 @@
 //
 
 #include "FTimer.h"
-#include <profileapi.h>
 
 namespace GenesisCubeEngine
 {

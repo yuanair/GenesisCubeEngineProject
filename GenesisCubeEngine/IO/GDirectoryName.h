@@ -97,7 +97,7 @@ namespace GenesisCubeEngine
 		/// </summary>
 		/// <param name="fileNames">文件数组</param>
 		/// <returns>是否成功</returns>
-		bool Find(std::vector<TPtr<GFileName>> &fileNames) const;
+		bool Find(std::list<TPtr<GFileName>> &fileNames) const;
 		
 		/// <summary>
 		/// 查找文件夹下所有文件与目录。

@@ -22,13 +22,13 @@ class MyProgram
 {
 public:
 	
-	explicit MyProgram(int nShowCmd) : nShowCmd(nShowCmd)
+	explicit MyProgram(int nShowCmd)
 	{
 		
 		{
 			std::locale::global(std::locale("zh_CN.UTF-8"));
 			TIFStream ifStream;
-			ifStream.open(TEXT("D:/GenesisCubeEngine/test/Resource/zh_cn.json"), std::ios::in);
+			ifStream.open(TEXT("Data/zh_cn.json"), std::ios::in);
 			if (ifStream.is_open())
 			{
 				JSON::JsonReader jsonReader(ifStream);
@@ -39,7 +39,7 @@ public:
 			{
 				FWindow::MBox(TEXT("can not open zh_cn.json"), FCore::name);
 			}
-			ifStream.open(TEXT("D:/GenesisCubeEngine/test/Resource/en_us.json"), std::ios::in);
+			ifStream.open(TEXT("Data/en_us.json"), std::ios::in);
 			if (ifStream.is_open())
 			{
 				JSON::JsonReader jsonReader(ifStream);
@@ -51,7 +51,7 @@ public:
 				FWindow::MBox(TEXT("can not open en_us.json"), FCore::name);
 			}
 			
-			ifStream.open(TEXT("D:/GenesisCubeEngine/test/Resource/language_debug.json"), std::ios::in);
+			ifStream.open(TEXT("Data/language_debug.json"), std::ios::in);
 			if (ifStream.is_open())
 			{
 				JSON::JsonReader jsonReader(ifStream);
@@ -85,11 +85,16 @@ public:
 		mainWindow.ShowAndUpdate(nShowCmd);
 		addWindow.ShowAndUpdate(nShowCmd);
 		
-		// addWindow.SubMBox(std::format(TEXT("Test: |{:.3f}|"), 42.48978), FCore::name);
+		mainWindow.bEnableOnChar = true;
+		
+		mainWindow.eOnChar += [](FWindow::EventCharArgs args) -> void
+		{
+			args.window.SetWindowName(args.window.GetWindowName() + args.input);
+		};
 		
 		mainWindow.eOnTick += [](FWindow::EventOnTickArgs args) -> void
 		{
-			
+		
 		};
 		
 	}
@@ -111,13 +116,13 @@ public:
 	
 	static void OnDropFiles(FWindow::EventOnDropFilesArgs args)
 	{
-		std::vector<TPtr<GFileName>> files;
+		std::list<TPtr<GFileName>> files;
 		GFileName::DragQuery(args.hDropInfo, files);
 		TString buffer;
-		for (size_t i = 0; i < files.size(); i++)
+		for (auto file: files)
 		{
-			buffer.append(files[i]->GetFileName()).push_back(TEXT('\n'));
-			if (auto *ptr = files[i].Cast<GDirectoryName>()) ptr->Find(files);
+			buffer.append(file->GetFileName()).push_back(TEXT('\n'));
+			if (auto *ptr = file.Cast<GDirectoryName>()) ptr->Find(files);
 		}
 		FLogger::Inst().LogInfoODS(buffer);
 	}
@@ -127,6 +132,14 @@ public:
 		static auto deltaTime = std::chrono::milliseconds(int64_t(1.0f / 60.0f * 1000.0f));
 		auto timePoint = std::chrono::system_clock::now() + deltaTime;
 		mainWindow.Tick();
+		
+		PAINTSTRUCT ps;
+		HDC hdc = BeginPaint(mainWindow.GetHwnd(), &ps);
+		auto rect1 = mainWindow.GetWindowRect();
+		RECT rect = {.left=rect1.x, .top=rect1.y, .right=rect1.x + rect1.width, .bottom=rect1.y + rect1.height};
+		DrawText(hdc, buffer.c_str(), -1, &rect, DT_LEFT);
+		EndPaint(mainWindow.GetHwnd(), &ps);
+		
 		addWindow.Tick();
 		std::this_thread::sleep_until(timePoint);
 	}
@@ -138,7 +151,7 @@ public:
 
 private:
 	
-	const int nShowCmd;
+	TString buffer;
 	
 	FWindow mainWindow;
 	

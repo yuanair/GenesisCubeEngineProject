@@ -46,7 +46,7 @@ namespace GenesisCubeEngine
 	}
 	
 	
-	bool GDirectoryName::Find(std::vector<TPtr<GFileName>> &fileNames) const
+	bool GDirectoryName::Find(std::list<TPtr<GFileName>> &fileNames) const
 	{
 		WIN32_FIND_DATA fd;
 		HANDLE hFind = ::FindFirstFile((fileName + TEXT("\\*.*")).c_str(), &fd);

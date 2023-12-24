@@ -33,7 +33,7 @@ namespace GenesisCubeEngine
 		/// <param name="fileName">文件名</param>
 		/// <param name="fileNames">文件数组</param>
 		/// <returns>文件数组</returns>
-		static bool Find(const TString &fileName, std::vector<TPtr<GFileName>> &fileNames);
+		static bool Find(const TString &fileName, std::list<TPtr<GFileName>> &fileNames);
 		
 		/// <summary>
 		/// 拖放文件查找
@@ -41,7 +41,7 @@ namespace GenesisCubeEngine
 		/// <param name="hDrop"></param>
 		/// <param name="fileNames">文件数组</param>
 		/// <returns>是否成功</returns>
-		static bool DragQuery(HDROP hDrop, std::vector<TPtr<GFileName>> &fileNames);
+		static bool DragQuery(HDROP hDrop, std::list<TPtr<GFileName>> &fileNames);
 		
 		
 		/// <summary>

@@ -1,17 +1,15 @@
-# GenesisCubeEngine
+﻿# GenesisCubeEngine
 project(GenesisCubeEngine)
 
 # source
 file(GLOB GenesisCubeEngine_source "./*/*.cpp")
-
-# out
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../")
 
 # library
 add_library(GenesisCubeEngine ${GenesisCubeEngine_source})
 
 # precompile header
 target_precompile_headers(GenesisCubeEngine PUBLIC "Core/Header.h")
+
 
 #
 # 参考
@@ -34,6 +32,6 @@ target_precompile_headers(GenesisCubeEngine PUBLIC "Core/Header.h")
 # 如果你想要做出让人享受的东西，那就享受做它的过程。
 # 另一个极端，基类提供了所有子类也许需要的操作。 子类只与基类耦合，不调用任何外部系统的东西。
 #
-#
+# 7.避免在处理事件的代码中发送事件。
 #
 

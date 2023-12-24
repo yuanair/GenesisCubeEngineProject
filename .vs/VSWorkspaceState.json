@@ -14,10 +14,12 @@
   "ExpandedNodes": [
     "",
     "\\GenesisCubeEngine",
+    "\\GenesisCubeEngine\\Core",
     "\\GenesisCubeEngine\\Debug",
+    "\\GenesisCubeEngine\\JSON",
     "\\test",
     "\\test\\Source"
   ],
-  "SelectedNode": "\\CMakeLists.txt",
+  "SelectedNode": "\\GenesisCubeEngine\\CMakeLists.txt",
   "PreviewInSolutionExplorer": false
 }
