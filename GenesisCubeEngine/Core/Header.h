@@ -7,7 +7,16 @@
 #include <windows.h>
 #include <windowsx.h>
 #include <msctf.h>
-#include <inputscope.h>
+#include <wrl.h>
+
+#include <d3d11.h>
+#include <d2d1.h>
+#include <dwrite.h>
+#include <d3dcompiler.h>
+#include <dxgi1_6.h>
+
+#include <DirectXMath.h>
+#include <DirectXColors.h>
 
 #include <typeinfo>
 #include <fstream>
@@ -18,6 +27,7 @@
 #include <map>
 
 #pragma comment(lib, "Imm32.lib")
+#pragma comment(lib, "d3d11.lib")
 
 #if defined(_DEBUG) || defined(DEBUG) || defined(GenesisCubeEditor)
 

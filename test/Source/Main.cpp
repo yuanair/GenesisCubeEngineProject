@@ -1,84 +1,8 @@
 //
 // Created by admin on 2023/12/19.
 //
+#include "Main.h"
 
-#include <GenesisCubeEngine/Core/FCore.h>
-#include <GenesisCubeEngine/Core/FFormatter.h>
-#include <GenesisCubeEngine/Game/GWindow.h>
-#include <GenesisCubeEngine/Debug/Debug.h>
-#include <GenesisCubeEngine/Resource/resource.h>
-#include <GenesisCubeEngine/Localization/Localization.h>
-#include <GenesisCubeEngine/IO/GFileName.h>
-#include <GenesisCubeEngine/JSON/Json.h>
-#include <GenesisCubeEngine/JSON/JsonReader.h>
-
-#define Text(key) TText(TEXT(key))
-
-using namespace std;
-using namespace GenesisCubeEngine;
-
-class MyProgram
-{
-public:
-	
-	MyProgram(const TString &cmdLine, int nShowCmd);
-	
-	~MyProgram();
-
-public:
-	
-	TString TText(const TString &key);
-	
-	void Tick();
-
-private:
-	
-	TPtr<GWindow> mainWindow;
-	
-	TPtr<GWindow> addWindow;
-	
-	GLanguage zh_cn;
-	
-	GLanguage en_us;
-	
-	GLanguage language_debug;
-	
-	GLanguage *nowLanguage = &zh_cn;
-	
-	FTimer timer;
-};
-
-
-class MainWindow : public GWindow
-{
-public:
-	
-	// 主窗口类名
-	static constexpr TCHAR mainWndClassName[] = TEXT("main window class");
-	
-	explicit MainWindow(int nShowCmd, MyProgram &program);
-	
-	void OnChar(const TChar &input) override;
-	
-	void OnString(const TString &input) override;
-	
-	void OnTick(float deltaTime) override;
-	
-	void OnDropFiles(HDROP hDropInfo) override;
-
-protected:
-	void OnDestroy() override;
-
-public:
-
-
-private:
-	
-	MyProgram &program;
-	
-	TString buffer;
-	
-};
 
 void MainWindow::OnDropFiles(HDROP hDropInfo)
 {
@@ -93,18 +17,9 @@ void MainWindow::OnDropFiles(HDROP hDropInfo)
 	FLogger::Inst().LogInfoODS(message);
 }
 
-MainWindow::MainWindow(int nShowCmd, MyProgram &program)
-	: program(program)
+MainWindow::MainWindow(const TString &wndClassName, int nShowCmd, MyProgram &program)
+	: DXWindow(wndClassName, program.Text("MainWindowName"), nShowCmd, program)
 {
-	
-	// 注册窗口类
-	GWindow::Register(mainWndClassName, FCore::GetIcon(IDI_ICON_Main), FCore::GetIcon(IDI_ICON_MainSm));
-	
-	// 创建窗口
-	Create(mainWndClassName, program.Text("MainWindowName"));
-	
-	// 显示窗口
-	ShowAndUpdate(nShowCmd);
 	
 	bEnableOnChar = true;
 	
@@ -112,7 +27,7 @@ MainWindow::MainWindow(int nShowCmd, MyProgram &program)
 
 void MainWindow::OnChar(const TChar &input)
 {
-	GWindow::OnChar(input);
+	DXWindow::OnChar(input);
 	if (input == VK_BACK)
 	{
 		if (!buffer.empty()) buffer.pop_back();
@@ -124,7 +39,7 @@ void MainWindow::OnChar(const TChar &input)
 
 void MainWindow::OnString(const TString &input)
 {
-	GWindow::OnString(input);
+	DXWindow::OnString(input);
 	buffer += input;
 	// input point
 	inputPoint = {(int) buffer.size(), 0};
@@ -132,47 +47,23 @@ void MainWindow::OnString(const TString &input)
 
 void MainWindow::OnTick(float deltaTime)
 {
-	GWindow::OnTick(deltaTime);
-	HDC hdc = GetDC(GetHWnd());
-	HBRUSH brush = CreateSolidBrush(RGB(255, 0, 255));
-	
-	RECT rect = {0, 0, 500, 500};
-	FillRect(hdc, &rect, brush);
-	DrawText(hdc, buffer.c_str(), -1, &rect, DT_LEFT);
-	
-	DeleteBrush(brush);
-	DeleteDC(hdc);
+	DXWindow::OnTick(deltaTime);
+//	HDC hdc = GetDC(GetHWnd());
+//	HBRUSH brush = CreateSolidBrush(RGB(255, 0, 255));
+//
+//	RECT rect = {0, 0, 500, 500};
+//	FillRect(hdc, &rect, brush);
+//	DrawText(hdc, buffer.c_str(), -1, &rect, DT_LEFT);
+//
+//	DeleteBrush(brush);
+//	DeleteDC(hdc);
 }
 
 void MainWindow::OnDestroy()
 {
-	GWindow::OnDestroy();
+	DXWindow::OnDestroy();
 	FCore::Exit(0);
 }
-
-class AddWindow : public GWindow
-{
-public:
-	
-	AddWindow(int nShowCmd, MyProgram &program)
-		: program(program)
-	{
-		
-		// 创建窗口
-		Create(MainWindow::mainWndClassName, program.Text("AddWindowName"));
-		
-		// 显示窗口
-		ShowAndUpdate(nShowCmd);
-	}
-	
-	~AddWindow() override
-	= default;
-
-public:
-	
-	MyProgram &program;
-	
-};
 
 
 MyProgram::MyProgram(const TString &cmdLine, int nShowCmd)
@@ -218,8 +109,12 @@ MyProgram::MyProgram(const TString &cmdLine, int nShowCmd)
 		}
 	}
 	
-	mainWindow = new MainWindow(nShowCmd, *this);
-	addWindow = new AddWindow(nShowCmd, *this);
+	ThrowIfFailed(device.AutoCreate(deviceContext, adapter, factory));
+	
+	// 注册窗口类
+	GWindow::Register(wndClassName, FCore::GetIcon(IDI_ICON_Main), FCore::GetIcon(IDI_ICON_MainSm));
+	
+	mainWindow = new MainWindow(wndClassName, nShowCmd, *this);
 }
 
 void MyProgram::Tick()
@@ -227,7 +122,6 @@ void MyProgram::Tick()
 	timer.Tick();
 	auto deltaTime = (float) timer.GetDeltaTime();
 	mainWindow->Tick(deltaTime);
-	addWindow->Tick(deltaTime);
 }
 
 TString MyProgram::TText(const TString &key)
@@ -248,10 +142,107 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 #endif
 {
+#ifdef _DEBUG
 	MyProgram myProgram(lpCmdLine, nShowCmd);
 	while (GWindow::PeekEvents())
 	{
 		myProgram.Tick();
 	}
+#else
+	try
+	{
+		MyProgram myProgram(lpCmdLine, nShowCmd);
+		while (GWindow::PeekEvents())
+		{
+			myProgram.Tick();
+		}
+	}
+	catch (const EException &exception)
+	{
+		TString buffer = TEXT("error: ");
+		buffer += exception.What();
+		FLogger::Inst().LogFatalODS(buffer);
+		GWindow::MBox(buffer, FCore::name, MB_OK | MB_ICONSTOP);
+	}
+	catch (const std::exception &ex)
+	{
+		TString buffer = TEXT("error: ");
+		buffer += FFormatter::StringToWString(ex.what());
+		FLogger::Inst().LogFatalODS(buffer);
+		GWindow::MBox(buffer, FCore::name, MB_OK | MB_ICONSTOP);
+	}
+#endif
 	return 0;
+}
+
+DXWindow::DXWindow(const TString &wndClassName, const TString &windowName, int nShowCmd, MyProgram &program)
+	: program(program)
+{
+	// 创建窗口
+	Create(wndClassName, windowName);
+	
+	// 显示窗口
+	ShowAndUpdate(nShowCmd);
+	
+	// directX
+//	program.factory.CreateSwapChain(swapChain, program.device, *this, 2);
+//	swapChain.GetBuffer(backBuffer, 0);
+//	program.device.CreateRenderTargetView(renderTargetView, backBuffer);
+//
+//	auto backDesc = backBuffer.GetDesc();
+//	program.device.CreateTexture2D(depthStencilBuffer, GTexture2D::DepthStencilDesc(backDesc.Width, backDesc.Height));
+//	program.device.CreateDepthStencilView(depthStencilView, depthStencilBuffer);
+//
+//	std::vector<D3D11_VIEWPORT> viewports = {
+//		D3D11_VIEWPORT{
+//			.TopLeftX = 0.0f,
+//			.TopLeftY = 0.0f,
+//			.Width=static_cast<FLOAT>(backDesc.Width),
+//			.Height=static_cast<FLOAT>(backDesc.Height),
+//			.MinDepth = 0.0f,
+//			.MaxDepth = 1.0f,
+//		}
+//	};
+//	program.deviceContext.RSSetViewports(viewports);
+	
+}
+
+void DXWindow::OnTick(float deltaTIme)
+{
+	GWindow::OnTick(deltaTIme);
+	program.deviceContext.ClearRenderTargetView(renderTargetView, {0.5f, 0.0f, 0.5f, 1.0f});
+	program.deviceContext.ClearDepthStencilView(depthStencilView);
+	std::vector<GRenderTargetView::TUnknown::Type *> buffer = {renderTargetView.Get()};
+	program.deviceContext.OMSetRenderTargets(buffer, depthStencilView);
+	swapChain.Present();
+}
+
+void DXWindow::OnResize(GWindow::EventOnResizeArgs args)
+{
+	GWindow::OnResize(args);
+	backBuffer.Reset();
+	renderTargetView.Reset();
+	depthStencilBuffer.Reset();
+	depthStencilView.Reset();
+	swapChain.Reset();
+	ThrowIfFailed(program.factory.CreateSwapChain(swapChain, program.device, *this, 2));
+	ThrowIfFailed(swapChain.GetBuffer(backBuffer, 0));
+	ThrowIfFailed(program.device.CreateRenderTargetView(renderTargetView, backBuffer));
+	
+	auto backDesc = backBuffer.GetDesc();
+	ThrowIfFailed(program.device.CreateTexture2D(
+		depthStencilBuffer, GTexture2D::DepthStencilDesc(backDesc.Width, backDesc.Height)));
+	ThrowIfFailed(program.device.CreateDepthStencilView(depthStencilView, depthStencilBuffer));
+	
+	std::vector<D3D11_VIEWPORT> viewports = {
+		D3D11_VIEWPORT{
+			.TopLeftX = 0.0f,
+			.TopLeftY = 0.0f,
+			.Width=static_cast<FLOAT>(backDesc.Width),
+			.Height=static_cast<FLOAT>(backDesc.Height),
+			.MinDepth = 0.0f,
+			.MaxDepth = 1.0f,
+		}
+	};
+	program.deviceContext.RSSetViewports(viewports);
 }

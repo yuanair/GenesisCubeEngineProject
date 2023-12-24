@@ -15,30 +15,40 @@
 
 namespace GenesisCubeEngine
 {
-	//
-	// 窗口
-	//
+	///
+	/// 窗口
+	///
 	class GWindow : public GObject
 	{
 	public:
 		
-		//
-		// 按键事件参数
-		//
+		///
+		/// 按键事件参数
+		///
 		struct EventKeyArgs
 		{
-			//
-			// 事件发生的窗口
-			//
-			GWindow &window;
+			///
+			/// 虚拟按键。例如VK_BACK
+			///
+			uint64_t virtualKey;
 			
 		};
 		
-		//
-		// 鼠标移动事件参数
-		//
+		///
+		/// 鼠标移动事件参数
+		///
 		struct EventOnMouseMoveArgs
 		{
+			
+			//
+			// 鼠标x坐标偏移
+			//
+			int32_t mouseX;
+			
+			//
+			// 鼠标y坐标偏移
+			//
+			int32_t mouseY;
 			
 			//
 			// 鼠标x坐标偏移
@@ -201,6 +211,16 @@ namespace GenesisCubeEngine
 		///
 		[[nodiscard]]
 		TString GetWindowName() const;
+		
+		///
+		/// \return 窗口的显示状态
+		[[nodiscard]]
+		WINDOWPLACEMENT GetWindowPlacement() const;
+		
+		///
+		/// \return 是否为窗口模式
+		[[nodiscard]]
+		bool IsWindowed() const;
 		
 		///
 		/// 设置窗口名字，在创建窗口后

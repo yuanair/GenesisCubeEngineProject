@@ -209,7 +209,7 @@ namespace GenesisCubeEngine
 		/// 如果FAILED(hr)则抛出异常
 		/// \param hr HRESULT
 		/// \param message 消息
-		void GThrowIfFailed(HRESULT hr, const TString &message = TEXT("DirectX"));
+		static void GThrowIfFailed(HRESULT hr, const TString &message = TEXT("DirectX"));
 	
 	private:
 		

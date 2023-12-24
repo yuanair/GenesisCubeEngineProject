@@ -145,12 +145,12 @@ namespace GenesisCubeEngine
 		{
 			case WM_KEYDOWN:
 			{
-				OnKeyDown(EventKeyArgs{.window=*this});
+				OnKeyDown(EventKeyArgs{.virtualKey=wParam});
 				return 0;
 			}
 			case WM_KEYUP:
 			{
-				OnKeyUp(EventKeyArgs{.window=*this});
+				OnKeyUp(EventKeyArgs{.virtualKey=wParam});
 				return 0;
 			}
 			case WM_MOUSEMOVE:
@@ -161,7 +161,7 @@ namespace GenesisCubeEngine
 				int32_t deltaY = newMouseY - mouseY;
 				mouseX = newMouseX;
 				mouseY = newMouseY;
-				OnMouseMoved(EventOnMouseMoveArgs{.deltaX=deltaX, .deltaY=deltaY});
+				OnMouseMoved(EventOnMouseMoveArgs{.mouseX=mouseX, .mouseY=mouseY, .deltaX=deltaX, .deltaY=deltaY});
 				return 0;
 			}
 			case WM_ACTIVATE:
@@ -383,6 +383,18 @@ namespace GenesisCubeEngine
 	void GWindow::Tick(float deltaTime)
 	{
 		OnTick(deltaTime);
+	}
+	
+	WINDOWPLACEMENT GWindow::GetWindowPlacement() const
+	{
+		WINDOWPLACEMENT windowPlacement;
+		::GetWindowPlacement(this->hWnd, &windowPlacement);
+		return windowPlacement;
+	}
+	
+	bool GWindow::IsWindowed() const
+	{
+		return GetWindowPlacement().showCmd != SW_MAXIMIZE;
 	}
 	
 } // GenesisCubeEngine
