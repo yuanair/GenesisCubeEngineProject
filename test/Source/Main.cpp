@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by admin on 2023/12/19.
 //
 #include "Main.h"
@@ -48,15 +48,7 @@ void MainWindow::OnString(const TString &input)
 void MainWindow::OnTick(float deltaTime)
 {
 	DXWindow::OnTick(deltaTime);
-	HDC hdc = GetDC(GetHWnd());
-	HBRUSH brush = CreateSolidBrush(RGB(255, 0, 255));
 	
-	RECT rect = {0, 0, 500, 500};
-	FillRect(hdc, &rect, brush);
-	DrawText(hdc, buffer.c_str(), -1, &rect, DT_LEFT);
-	
-	DeleteBrush(brush);
-	DeleteDC(hdc);
 }
 
 void MainWindow::OnDestroy()
@@ -183,35 +175,36 @@ DXWindow::DXWindow(const TString &wndClassName, const TString &windowName, int n
 	ShowAndUpdate(nShowCmd);
 	
 	// directX
-//	program.factory.CreateSwapChain(swapChain, program.device, *this, 2);
-//	swapChain.GetBuffer(backBuffer, 0);
-//	program.device.CreateRenderTargetView(renderTargetView, backBuffer);
-//
-//	auto backDesc = backBuffer.GetDesc();
-//	program.device.CreateTexture2D(depthStencilBuffer, GTexture2D::DepthStencilDesc(backDesc.Width, backDesc.Height));
-//	program.device.CreateDepthStencilView(depthStencilView, depthStencilBuffer);
-//
-//	std::vector<D3D11_VIEWPORT> viewports = {
-//		D3D11_VIEWPORT{
-//			.TopLeftX = 0.0f,
-//			.TopLeftY = 0.0f,
-//			.Width=static_cast<FLOAT>(backDesc.Width),
-//			.Height=static_cast<FLOAT>(backDesc.Height),
-//			.MinDepth = 0.0f,
-//			.MaxDepth = 1.0f,
-//		}
-//	};
-//	program.deviceContext.RSSetViewports(viewports);
-
-
+	ThrowIfFailed(this->factory.Create());
+	ThrowIfFailed(this->hwndRenderTarget.Create(factory, *this));
+	ThrowIfFailed(this->gdWriteFactory.Create());
+	ThrowIfFailed(this->gdWriteFactory.CreateTextFormat(
+		textFormat, TEXT("Consolas"), DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL,
+		50.0f, TEXT("Consolas")
+	));
+	ThrowIfFailed(this->hwndRenderTarget.CreateSolidBrush(brush, D2D1::ColorF(0.1f, 0.1f, 0.1f)));
+	
+	
 }
 
 void DXWindow::OnTick(float deltaTIme)
 {
 	GWindow::OnTick(deltaTIme);
+	hwndRenderTarget.BeginDraw();
+	hwndRenderTarget.Clear(D2D1::ColorF(1.0f, 0.0f, 1.0f));
+	
+	brush.SetColor(0.0f, 0.0f, 0.0f);
+	
+	hwndRenderTarget.FillRectangle(D2D1::RectF(0.0f, 0.0f, GetMouseX(), GetMouseY()), brush);
+	brush.SetColor(1.0f, 1.0f, 1.0f);
+	
+	hwndRenderTarget.DrawText(TEXT("Hello World!"), textFormat, D2D1::RectF(0.0f, 0.0f, 500.0f, 500.0f), brush);
+	
+	ThrowIfFailed(hwndRenderTarget.EndDraw());
 }
 
 void DXWindow::OnResize(GWindow::EventOnResizeArgs args)
 {
 	GWindow::OnResize(args);
+	if (hwndRenderTarget) ThrowIfFailed(hwndRenderTarget.Resize(args.width, args.height));
 }

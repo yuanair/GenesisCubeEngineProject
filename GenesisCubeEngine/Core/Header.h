@@ -11,6 +11,7 @@
 
 #include <d3d11.h>
 #include <d2d1.h>
+#include <d2d1_1.h>
 #include <dwrite.h>
 #include <d3dcompiler.h>
 #include <dxgi1_6.h>
@@ -28,6 +29,8 @@
 
 #pragma comment(lib, "Imm32.lib")
 #pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "d2d1.lib")
+#pragma comment(lib, "dwrite.lib")
 
 #if defined(_DEBUG) || defined(DEBUG) || defined(GenesisCubeEditor)
 

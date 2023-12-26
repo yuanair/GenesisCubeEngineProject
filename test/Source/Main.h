@@ -13,6 +13,7 @@
 #include <GenesisCubeEngine/IO/GFileName.h>
 #include <GenesisCubeEngine/JSON/Json.h>
 #include <GenesisCubeEngine/JSON/JsonReader.h>
+#include <GenesisCubeEngine/DirectX/GD2D1HwndRenderTarget.h>
 
 
 #define Text(key) TText(TEXT(key))
@@ -73,6 +74,16 @@ protected:
 	void OnResize(EventOnResizeArgs args) override;
 
 protected:
+	
+	GD2DFactory factory;
+	
+	GD2D1HwndRenderTarget hwndRenderTarget;
+	
+	GDWriteFactory gdWriteFactory;
+	
+	GDWriteTextFormat textFormat;
+	
+	GD2D1SolidColorBrush brush;
 	
 	MyProgram &program;
 	
