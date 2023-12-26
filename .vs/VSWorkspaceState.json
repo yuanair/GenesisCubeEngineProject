@@ -15,11 +15,14 @@
     "",
     "\\GenesisCubeEngine",
     "\\GenesisCubeEngine\\Core",
-    "\\GenesisCubeEngine\\Debug",
-    "\\GenesisCubeEngine\\JSON",
-    "\\test",
-    "\\test\\Source"
+    "\\GenesisCubeEngine\\DirectX",
+    "\\GenesisCubeEngine\\Exception",
+    "\\GenesisCubeEngine\\Game",
+    "\\GenesisCubeEngine\\Language",
+    "\\GenesisCubeEngine\\Localization",
+    "\\GenesisCubeEngine\\Object",
+    "\\GenesisCubeEngine\\Resource"
   ],
-  "SelectedNode": "\\GenesisCubeEngine\\CMakeLists.txt",
+  "SelectedNode": "\\GenesisCubeEngine\\Game\\GWindow.h",
   "PreviewInSolutionExplorer": false
 }

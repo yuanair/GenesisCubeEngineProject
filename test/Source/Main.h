@@ -13,7 +13,6 @@
 #include <GenesisCubeEngine/IO/GFileName.h>
 #include <GenesisCubeEngine/JSON/Json.h>
 #include <GenesisCubeEngine/JSON/JsonReader.h>
-#include <GenesisCubeEngine/DirectX/GDevice.h>
 
 
 #define Text(key) TText(TEXT(key))
@@ -41,14 +40,6 @@ public:
 	void Tick();
 
 public:
-	
-	GDevice device;
-	
-	GDeviceContext deviceContext;
-	
-	GDXGIAdapter adapter;
-	
-	GDXGIFactory factory;
 	
 	// ----- ----- ----- -----
 	
@@ -84,16 +75,6 @@ protected:
 protected:
 	
 	MyProgram &program;
-	
-	GDXGISwapChain swapChain;
-	
-	GTexture2D backBuffer;
-	
-	GRenderTargetView renderTargetView;
-	
-	GTexture2D depthStencilBuffer;
-	
-	GDepthStencilView depthStencilView;
 	
 };
 

@@ -48,15 +48,15 @@ void MainWindow::OnString(const TString &input)
 void MainWindow::OnTick(float deltaTime)
 {
 	DXWindow::OnTick(deltaTime);
-//	HDC hdc = GetDC(GetHWnd());
-//	HBRUSH brush = CreateSolidBrush(RGB(255, 0, 255));
-//
-//	RECT rect = {0, 0, 500, 500};
-//	FillRect(hdc, &rect, brush);
-//	DrawText(hdc, buffer.c_str(), -1, &rect, DT_LEFT);
-//
-//	DeleteBrush(brush);
-//	DeleteDC(hdc);
+	HDC hdc = GetDC(GetHWnd());
+	HBRUSH brush = CreateSolidBrush(RGB(255, 0, 255));
+	
+	RECT rect = {0, 0, 500, 500};
+	FillRect(hdc, &rect, brush);
+	DrawText(hdc, buffer.c_str(), -1, &rect, DT_LEFT);
+	
+	DeleteBrush(brush);
+	DeleteDC(hdc);
 }
 
 void MainWindow::OnDestroy()
@@ -108,8 +108,6 @@ MyProgram::MyProgram(const TString &cmdLine, int nShowCmd)
 			GWindow::MBox(TEXT("can not open language_debug.json"), FCore::name);
 		}
 	}
-	
-	ThrowIfFailed(device.AutoCreate(deviceContext, adapter, factory));
 	
 	// 注册窗口类
 	GWindow::Register(wndClassName, FCore::GetIcon(IDI_ICON_Main), FCore::GetIcon(IDI_ICON_MainSm));
@@ -204,45 +202,16 @@ DXWindow::DXWindow(const TString &wndClassName, const TString &windowName, int n
 //		}
 //	};
 //	program.deviceContext.RSSetViewports(viewports);
-	
+
+
 }
 
 void DXWindow::OnTick(float deltaTIme)
 {
 	GWindow::OnTick(deltaTIme);
-	program.deviceContext.ClearRenderTargetView(renderTargetView, {0.5f, 0.0f, 0.5f, 1.0f});
-	program.deviceContext.ClearDepthStencilView(depthStencilView);
-	std::vector<GRenderTargetView::TUnknown::Type *> buffer = {renderTargetView.Get()};
-	program.deviceContext.OMSetRenderTargets(buffer, depthStencilView);
-	swapChain.Present();
 }
 
 void DXWindow::OnResize(GWindow::EventOnResizeArgs args)
 {
 	GWindow::OnResize(args);
-	backBuffer.Reset();
-	renderTargetView.Reset();
-	depthStencilBuffer.Reset();
-	depthStencilView.Reset();
-	swapChain.Reset();
-	ThrowIfFailed(program.factory.CreateSwapChain(swapChain, program.device, *this, 2));
-	ThrowIfFailed(swapChain.GetBuffer(backBuffer, 0));
-	ThrowIfFailed(program.device.CreateRenderTargetView(renderTargetView, backBuffer));
-	
-	auto backDesc = backBuffer.GetDesc();
-	ThrowIfFailed(program.device.CreateTexture2D(
-		depthStencilBuffer, GTexture2D::DepthStencilDesc(backDesc.Width, backDesc.Height)));
-	ThrowIfFailed(program.device.CreateDepthStencilView(depthStencilView, depthStencilBuffer));
-	
-	std::vector<D3D11_VIEWPORT> viewports = {
-		D3D11_VIEWPORT{
-			.TopLeftX = 0.0f,
-			.TopLeftY = 0.0f,
-			.Width=static_cast<FLOAT>(backDesc.Width),
-			.Height=static_cast<FLOAT>(backDesc.Height),
-			.MinDepth = 0.0f,
-			.MaxDepth = 1.0f,
-		}
-	};
-	program.deviceContext.RSSetViewports(viewports);
 }
