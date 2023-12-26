@@ -2,6 +2,5 @@
   "$schema": "../../GenesisCubeEngine/Resource/JSON/languageSchema.json",
   "name": "en_us",
   "displayName": "English",
-  "MainWindowName": "main window",
-  "AddWindowName": "add window"
+  "MainWindowName": "Genshin Impact"
 }

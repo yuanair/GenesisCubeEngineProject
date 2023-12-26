@@ -85,6 +85,10 @@ protected:
 	
 	GD2D1SolidColorBrush brush;
 	
+	GD2D1Bitmap bitmap;
+	
+	GD2D1BitmapBrush bitmapBrush;
+	
 	MyProgram &program;
 	
 };

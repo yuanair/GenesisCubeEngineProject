@@ -4,6 +4,10 @@
 #include "Main.h"
 
 
+#define STB_IMAGE_IMPLEMENTATION    // include之前必须定义
+
+#include "GenesisCubeEngine/Core/stb_image.h"
+
 void MainWindow::OnDropFiles(HDROP hDropInfo)
 {
 	std::list<TPtr<GFileName>> files;
@@ -184,6 +188,15 @@ DXWindow::DXWindow(const TString &wndClassName, const TString &windowName, int n
 	));
 	ThrowIfFailed(this->hwndRenderTarget.CreateSolidBrush(brush, D2D1::ColorF(0.1f, 0.1f, 0.1f)));
 	
+	int x, y, n;
+	unsigned char *data = stbi_load("Data/ys/w5.png", &x, &y, &n, 0);
+	
+	if (data == nullptr) throw ENullptrException(TEXT("nullptr data"));
+	ThrowIfFailed(this->hwndRenderTarget.CreateBitmap(bitmap, data, x * n, D2D1::SizeU(x, y)));
+	ThrowIfFailed(this->hwndRenderTarget.CreateBitmapBrush(bitmapBrush, bitmap));
+	
+	stbi_image_free(data);
+	
 	
 }
 
@@ -193,9 +206,11 @@ void DXWindow::OnTick(float deltaTIme)
 	hwndRenderTarget.BeginDraw();
 	hwndRenderTarget.Clear(D2D1::ColorF(1.0f, 0.0f, 1.0f));
 	
+	hwndRenderTarget.FillRectangle(D2D1::RectF(0.0f, 0.0f, 256.0f, 256.0f), bitmapBrush.Get());
+	
 	brush.SetColor(0.0f, 0.0f, 0.0f);
 	
-	hwndRenderTarget.FillRectangle(D2D1::RectF(0.0f, 0.0f, GetMouseX(), GetMouseY()), brush);
+	hwndRenderTarget.FillCircle(D2D1::Point2F(GetMouseX(), GetMouseY()), 50.0f, brush);
 	brush.SetColor(1.0f, 1.0f, 1.0f);
 	
 	hwndRenderTarget.DrawText(TEXT("Hello World!"), textFormat, D2D1::RectF(0.0f, 0.0f, 500.0f, 500.0f), brush);
