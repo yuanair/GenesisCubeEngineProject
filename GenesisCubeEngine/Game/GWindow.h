@@ -13,7 +13,7 @@
 #include "../Helpers/Helpers.h"
 #include "../Debug/Debug.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	///
 	/// 窗口
@@ -392,4 +392,4 @@ namespace GenesisCubeEngine
 		
 	};
 	
-} // GenesisCubeEngine
+} // GenesisCube

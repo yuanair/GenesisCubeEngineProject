@@ -3,7 +3,7 @@
 #include "Header.h"
 #include "../Exception/Exception.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	
 	///

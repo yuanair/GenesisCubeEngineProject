@@ -14,11 +14,16 @@ endif ()
 
 add_definitions("-utf-8" "-DUNICODE" "-D_UNICODE")
 
-# GenesisCubeEngine
+# GenesisCubeBase
+add_subdirectory("./GenesisCubeBase")
+
+# GenesisCube
 add_subdirectory("./GenesisCubeEngine")
 
-# test
-add_subdirectory("test")
+# GenesisCubeLanguage
+add_subdirectory("./GenesisCubeLanguage")
 
-# console test
-add_subdirectory("ConsoleTest")
+# Simple
+add_subdirectory("Simple")
+
+

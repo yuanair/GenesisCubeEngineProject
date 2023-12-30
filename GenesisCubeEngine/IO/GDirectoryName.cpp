@@ -1,6 +1,6 @@
 ﻿#include "GDirectoryName.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	GDirectoryName::GDirectoryName()
 	= default;

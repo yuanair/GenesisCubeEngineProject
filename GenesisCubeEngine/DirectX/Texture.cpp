@@ -4,7 +4,7 @@
 
 #include "Texture.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	
 	
@@ -31,23 +31,26 @@ namespace GenesisCubeEngine
 	
 	GTexture1D::Desc GTexture1D::GetDesc() const
 	{
+		ThrowIfNull();
 		Desc desc;
-		this->ptr->GetDesc(&desc);
+		Get()->GetDesc(&desc);
 		return desc;
 	}
 	
 	GTexture2D::Desc GTexture2D::GetDesc() const
 	{
+		ThrowIfNull();
 		Desc desc;
-		this->ptr->GetDesc(&desc);
+		GetComPtr()->GetDesc(&desc);
 		return desc;
 	}
 	
 	GTexture3D::Desc GTexture3D::GetDesc() const
 	{
+		ThrowIfNull();
 		Desc desc;
-		this->ptr->GetDesc(&desc);
+		GetComPtr()->GetDesc(&desc);
 		return desc;
 	}
 	
-} // GenesisCubeEngine
+} // GenesisCube

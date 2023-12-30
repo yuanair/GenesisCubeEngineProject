@@ -4,7 +4,7 @@
 
 #include "../Object/GObject.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	/// <summary>
 	/// 读取器

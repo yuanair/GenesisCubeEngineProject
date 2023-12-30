@@ -1,4 +1,4 @@
-# GenesisCubeEngine
+# GenesisCube
 
 > 使用DirectX渲染的轻量化游戏引擎
 

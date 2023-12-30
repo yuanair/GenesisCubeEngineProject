@@ -1,6 +1,0 @@
-{
-  "$schema": "../../GenesisCubeEngine/Resource/JSON/languageSchema.json",
-  "name": "language_debug",
-  "displayName": "Debug",
-  "MainWindowName": "Genshin Impact-debug"
-}

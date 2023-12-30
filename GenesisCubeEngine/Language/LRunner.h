@@ -8,7 +8,7 @@
 
 #include "../Object/GObject.h"
 
-namespace GenesisCubeEngine::Language
+namespace GenesisCube::Language
 {
 	///
 	/// 运行器
@@ -35,4 +35,4 @@ namespace GenesisCubeEngine::Language
 	};
 	
 } // Language
-// GenesisCubeEngine
+// GenesisCube

@@ -5,8 +5,9 @@
 #pragma once
 
 #include "TUnknown.h"
+#include "GD2D1Brush.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	
 	///
@@ -19,4 +20,4 @@ namespace GenesisCubeEngine
 	
 	};
 	
-} // GenesisCubeEngine
+} // GenesisCube

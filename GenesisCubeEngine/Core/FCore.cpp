@@ -5,7 +5,7 @@
 #include "FCore.h"
 #include "../Debug/Debug.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	
 	const TCHAR FCore::name[] = TEXT("Genesis Cube Engine");
@@ -15,6 +15,8 @@ namespace GenesisCubeEngine
 	const TCHAR FCore::buildTime[] = TEXT(__DATE__);
 	
 	const int FCore::version_code = 1;
+	
+	static FCore::RunningMode globalRunningMode = FCore::ErrorRunningMode;
 	
 	void FCore::Exit(int nExitCode)
 	{
@@ -37,11 +39,12 @@ namespace GenesisCubeEngine
 		return GetCommandLine();
 	}
 	
-	void FCore::Init()
+	int32_t FCore::Running(FProgram &program, RunningMode runningMode)
 	{
+		globalRunningMode = runningMode;
 		
 		// 当为DEBUG模式时，内存泄漏检测
-		if (GenesisCubeEngine::bIsDebug)
+		if (GenesisCube::bIsDebug)
 		{
 			_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 		}
@@ -69,6 +72,26 @@ namespace GenesisCubeEngine
 		
 		FLogger::Inst().LogInfoODS(buffer);
 		
+		program.Start();
+		
+		MSG msg = {};
+		while (msg.message != WM_QUIT)
+		{
+			if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+			{
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+			else
+			{
+				program.Tick();
+			}
+		}
+		
+		program.End();
+		
+		globalRunningMode = FCore::ErrorRunningMode;
+		return (int) msg.wParam;
 	}
 	
 	HICON FCore::GetIcon(const TString &iconName, HINSTANCE hInstance)
@@ -91,5 +114,15 @@ namespace GenesisCubeEngine
 		return GetIcon(iconId, FCore::GetInstance());
 	}
 	
-} // GenesisCubeEngine
+	FCore::RunningMode FCore::GetRunningMode()
+	{
+		if (globalRunningMode == FCore::ErrorRunningMode)
+		{
+			FLogger::Inst().LogFatalODS(__FUNCSIG__ TEXT("No call FCore::Running"));
+			exit(-1);
+		}
+		return globalRunningMode;
+	}
+	
+} // GenesisCube
 

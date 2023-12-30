@@ -6,7 +6,7 @@
 
 #include "TUnknown.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	
 	///
@@ -16,7 +16,7 @@ namespace GenesisCubeEngine
 	{
 	public:
 	
-	
+		
 	};
 	
-} // GenesisCubeEngine
+} // GenesisCube

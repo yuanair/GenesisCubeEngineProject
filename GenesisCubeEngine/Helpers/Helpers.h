@@ -7,7 +7,7 @@
 #include "../Core/Header.h"
 #include "../Core/FCore.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	
 	template<class T>
@@ -82,25 +82,25 @@ namespace GenesisCubeEngine
 	};
 	
 	
-} // GenesisCubeEngine
+} // GenesisCube
 
 namespace std
 {
 	
 	
 	template<class T>
-	struct std::formatter<GenesisCubeEngine::FSize<T>, GenesisCubeEngine::TChar>
-		: formatter<T, GenesisCubeEngine::TChar>
+	struct std::formatter<GenesisCube::FSize < T>, GenesisCube::TChar>
+		: formatter<T, GenesisCube::TChar>
 	{
 		
 		template<class C>
-		constexpr auto format(const GenesisCubeEngine::FSize<T> &rect, C &context)
+		constexpr auto format(const GenesisCube::FSize<T> &rect, C &context)
 		{
 			typename C::iterator Ite = format_to(context.out(), TEXT("("));
-			Ite = formatter<T, GenesisCubeEngine::TChar>::format(rect.width, context);
+			Ite = formatter<T, GenesisCube::TChar>::format(rect.width, context);
 			Ite = TEXT(',');
 			Ite = TEXT(' ');
-			Ite = formatter<T, GenesisCubeEngine::TChar>::format(rect.height, context);
+			Ite = formatter<T, GenesisCube::TChar>::format(rect.height, context);
 			Ite = TEXT(')');
 			return Ite;
 		}
@@ -108,24 +108,24 @@ namespace std
 	};
 	
 	template<class T>
-	struct std::formatter<GenesisCubeEngine::FRect<T>, GenesisCubeEngine::TChar>
-		: formatter<T, GenesisCubeEngine::TChar>
+	struct std::formatter<GenesisCube::FRect<T>, GenesisCube::TChar>
+		: formatter<T, GenesisCube::TChar>
 	{
 		
 		template<class C>
-		constexpr auto format(const GenesisCubeEngine::FRect<T> &rect, C &context)
+		constexpr auto format(const GenesisCube::FRect<T> &rect, C &context)
 		{
 			typename C::iterator Ite = format_to(context.out(), TEXT("("));
-			Ite = formatter<T, GenesisCubeEngine::TChar>::format(rect.x, context);
+			Ite = formatter<T, GenesisCube::TChar>::format(rect.x, context);
 			Ite = TEXT(',');
 			Ite = TEXT(' ');
-			Ite = formatter<T, GenesisCubeEngine::TChar>::format(rect.y, context);
+			Ite = formatter<T, GenesisCube::TChar>::format(rect.y, context);
 			Ite = TEXT(',');
 			Ite = TEXT(' ');
-			Ite = formatter<T, GenesisCubeEngine::TChar>::format(rect.width, context);
+			Ite = formatter<T, GenesisCube::TChar>::format(rect.width, context);
 			Ite = TEXT(',');
 			Ite = TEXT(' ');
-			Ite = formatter<T, GenesisCubeEngine::TChar>::format(rect.height, context);
+			Ite = formatter<T, GenesisCube::TChar>::format(rect.height, context);
 			Ite = TEXT(')');
 			return Ite;
 		}

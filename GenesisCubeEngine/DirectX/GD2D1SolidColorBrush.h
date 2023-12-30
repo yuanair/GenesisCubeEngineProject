@@ -5,8 +5,9 @@
 #pragma once
 
 #include "TUnknown.h"
+#include "GD2D1Brush.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	///
 	/// D2D纯色笔刷
@@ -36,4 +37,4 @@ namespace GenesisCubeEngine
 		
 	};
 	
-} // GenesisCubeEngine
+} // GenesisCube

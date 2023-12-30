@@ -6,7 +6,7 @@
 #include "../Core/FFormatter.h"
 #include "../Core/FLocator.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 
 
@@ -225,6 +225,14 @@ namespace GenesisCubeEngine
 				std::format(TEXT("{} (0x{:08X})"), FFormatter::GFormatMessage(hr), hr));
 			throw EBadException(__FUNCSIG__ TEXT(":: FAILED(hr)"));
 		}
+	}
+	
+	void FLogger::GThrow(HRESULT hr, const TString &message)
+	{
+		FLogger::Inst().LogMBox(hr, message);
+		FLogger::Inst().LogFatalODS(
+			std::format(TEXT("{} (0x{:08X})"), FFormatter::GFormatMessage(hr), hr));
+		throw EBadException(__FUNCSIG__ TEXT(":: FAILED(hr)"));
 	}
 
 #pragma endregion

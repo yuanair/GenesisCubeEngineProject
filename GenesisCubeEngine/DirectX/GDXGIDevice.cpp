@@ -4,10 +4,10 @@
 
 #include "GDXGIDevice.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
-	HRESULT GDXGIDevice::Create()
+	FResult GDXGIDevice::Create()
 	{
-		return CreateDXGIFactory1(IID_PPV_ARGS(&this->ptr));
+		return CreateDXGIFactory1(IID_PPV_ARGS(&GetComPtr()));
 	}
-} // GenesisCubeEngine
+} // GenesisCube

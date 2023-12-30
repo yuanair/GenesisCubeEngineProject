@@ -8,7 +8,7 @@
 #include "JObject.h"
 
 
-namespace GenesisCubeEngine::JSON
+namespace GenesisCube::JSON
 {
 	
 	///

@@ -6,7 +6,7 @@
 
 #include "TUnknown.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	///
 	/// DWrite 字体格式
@@ -18,4 +18,4 @@ namespace GenesisCubeEngine
 	
 	};
 	
-} // GenesisCubeEngine
+} // GenesisCube

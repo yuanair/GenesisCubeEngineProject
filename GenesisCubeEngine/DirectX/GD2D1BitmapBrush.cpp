@@ -4,6 +4,6 @@
 
 #include "GD2D1BitmapBrush.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
-} // GenesisCubeEngine
+} // GenesisCube

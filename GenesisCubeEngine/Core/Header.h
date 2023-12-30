@@ -17,7 +17,6 @@
 #include <dxgi1_6.h>
 
 #include <DirectXMath.h>
-#include <DirectXColors.h>
 
 #include <typeinfo>
 #include <fstream>
@@ -30,7 +29,7 @@
 #pragma comment(lib, "Imm32.lib")
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d2d1.lib")
-#pragma comment(lib, "dwrite.lib")
+#pragma comment(lib, "dWrite.lib")
 
 #if defined(_DEBUG) || defined(DEBUG) || defined(GenesisCubeEditor)
 

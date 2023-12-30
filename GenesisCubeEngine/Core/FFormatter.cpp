@@ -1,6 +1,6 @@
 ﻿#include "FFormatter.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	
 	String FFormatter::GbkToUtf8(const String &src_str)

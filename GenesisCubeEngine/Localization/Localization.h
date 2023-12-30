@@ -8,7 +8,7 @@
 #include "../Core/FCore.h"
 #include "../JSON/Json.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	
 	///

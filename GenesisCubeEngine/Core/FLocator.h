@@ -7,7 +7,7 @@
 #include "Header.h"
 #include "../Debug/Debug.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	///
 	/// 服务定位器
@@ -32,4 +32,4 @@ namespace GenesisCubeEngine
 		
 	};
 	
-} // GenesisCubeEngine
+} // GenesisCube

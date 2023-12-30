@@ -4,6 +4,8 @@
 
 #include "GD2D1Bitmap.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
-} // GenesisCubeEngine
+
+
+} // GenesisCube

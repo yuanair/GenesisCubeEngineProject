@@ -4,7 +4,7 @@
 
 #include "GWindow.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	
 	GWindow::GWindow()
@@ -106,11 +106,7 @@ namespace GenesisCubeEngine
 				.lpszClassName = className.c_str(),
 				.hIconSm = hIconSm
 			};
-		if (!RegisterClassEx(&wnd))
-			throw EBadException(
-				(__FUNCSIG__ TEXT(":: GWindow::Register(")) + className + TEXT(") Failed")
-			);
-		return true;
+		return RegisterClassEx(&wnd);
 	}
 	
 	LRESULT GWindow::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -397,4 +393,4 @@ namespace GenesisCubeEngine
 		return GetWindowPlacement().showCmd != SW_MAXIMIZE;
 	}
 	
-} // GenesisCubeEngine
+} // GenesisCube

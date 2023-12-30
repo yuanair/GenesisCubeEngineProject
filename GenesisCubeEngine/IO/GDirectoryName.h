@@ -4,7 +4,7 @@
 #include "GFileName.h"
 #include "../Core/TEvent.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	/// <summary>
 	/// 目录类

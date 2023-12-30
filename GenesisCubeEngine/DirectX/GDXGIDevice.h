@@ -6,7 +6,7 @@
 
 #include "TUnknown.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	///
 	/// DXGI设备
@@ -19,8 +19,8 @@ namespace GenesisCubeEngine
 		/// 创建
 		/// \return HRESULT
 		[[nodiscard]]
-		HRESULT Create();
+		FResult Create();
 		
 	};
 	
-} // GenesisCubeEngine
+} // GenesisCube

@@ -2,7 +2,7 @@
 
 #include "GDirectoryName.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	
 	

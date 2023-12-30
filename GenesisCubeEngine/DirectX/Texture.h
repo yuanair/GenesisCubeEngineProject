@@ -6,7 +6,7 @@
 
 #include "TUnknown.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	///
 	/// 材质
@@ -69,4 +69,4 @@ namespace GenesisCubeEngine
 		
 	};
 	
-} // GenesisCubeEngine
+} // GenesisCube

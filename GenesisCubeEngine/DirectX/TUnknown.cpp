@@ -4,8 +4,8 @@
 
 #include "TUnknown.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 
 	
-} // GenesisCubeEngine
+} // GenesisCube

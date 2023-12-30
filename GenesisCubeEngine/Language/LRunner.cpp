@@ -5,7 +5,7 @@
 #include "LRunner.h"
 
 
-namespace GenesisCubeEngine::Language
+namespace GenesisCube::Language
 {
 	LRunner::LRunner()
 	= default;

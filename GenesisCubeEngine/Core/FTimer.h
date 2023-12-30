@@ -7,7 +7,7 @@
 #include "Header.h"
 #include "FCore.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	
 	///
@@ -166,24 +166,24 @@ namespace GenesisCubeEngine
 namespace std
 {
 	template<>
-	struct formatter<SYSTEMTIME, GenesisCubeEngine::TChar> : formatter<WORD, GenesisCubeEngine::TChar>
+	struct formatter<SYSTEMTIME, GenesisCube::TChar> : formatter<WORD, GenesisCube::TChar>
 	{
 		template<class C>
 		constexpr auto format(const SYSTEMTIME &systemTime, C &context)
 		{
-			typename C::iterator Ite = formatter<WORD, GenesisCubeEngine::TChar>::format(systemTime.wYear, context);
+			typename C::iterator Ite = formatter<WORD, GenesisCube::TChar>::format(systemTime.wYear, context);
 			Ite = TEXT('-');
-			Ite = formatter<WORD, GenesisCubeEngine::TChar>::format(systemTime.wMonth, context);
+			Ite = formatter<WORD, GenesisCube::TChar>::format(systemTime.wMonth, context);
 			Ite = TEXT('-');
-			Ite = formatter<WORD, GenesisCubeEngine::TChar>::format(systemTime.wDay, context);
+			Ite = formatter<WORD, GenesisCube::TChar>::format(systemTime.wDay, context);
 			Ite = TEXT(' ');
-			Ite = formatter<WORD, GenesisCubeEngine::TChar>::format(systemTime.wHour, context);
+			Ite = formatter<WORD, GenesisCube::TChar>::format(systemTime.wHour, context);
 			Ite = TEXT(':');
-			Ite = formatter<WORD, GenesisCubeEngine::TChar>::format(systemTime.wMinute, context);
+			Ite = formatter<WORD, GenesisCube::TChar>::format(systemTime.wMinute, context);
 			Ite = TEXT(':');
-			Ite = formatter<WORD, GenesisCubeEngine::TChar>::format(systemTime.wSecond, context);
+			Ite = formatter<WORD, GenesisCube::TChar>::format(systemTime.wSecond, context);
 			Ite = TEXT('.');
-			Ite = formatter<WORD, GenesisCubeEngine::TChar>::format(systemTime.wMilliseconds, context);
+			Ite = formatter<WORD, GenesisCube::TChar>::format(systemTime.wMilliseconds, context);
 			return Ite;
 		}
 	};

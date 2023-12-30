@@ -11,7 +11,7 @@
 #include "../Object/GObject.h"
 #include "../IO/GDirectoryName.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	
 	///
@@ -210,6 +210,12 @@ namespace GenesisCubeEngine
 		/// \param hr HRESULT
 		/// \param message 消息
 		static void GThrowIfFailed(HRESULT hr, const TString &message = TEXT("DirectX"));
+		
+		///
+		/// 抛出异常
+		/// \param hr HRESULT
+		/// \param message 消息
+		static void GThrow(HRESULT hr, const TString &message = TEXT("DirectX"));
 	
 	private:
 		
@@ -244,5 +250,3 @@ namespace GenesisCubeEngine
 	
 	
 }
-
-#define ThrowIfFailed(hr) GenesisCubeEngine::FLogger::GThrowIfFailed(hr)

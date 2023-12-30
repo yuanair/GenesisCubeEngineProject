@@ -6,7 +6,7 @@
 
 #include "Header.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 
 
@@ -141,10 +141,54 @@ namespace GenesisCubeEngine
 	typedef std::basic_ofstream<NTChar> NTOFStream;
 	
 	///
+	/// 程序类
+	///
+	class FProgram
+	{
+	public:
+		
+		FProgram() noexcept = default;
+		
+		virtual ~FProgram() noexcept = default;
+	
+	public:
+		
+		///
+		/// 开始
+		///
+		virtual void Start() = 0;
+		
+		///
+		/// 每帧
+		///
+		virtual void Tick() = 0;
+		
+		///
+		/// 结束
+		///
+		virtual void End() = 0;
+		
+	};
+	
+	///
 	/// 核心类
 	///
 	class FCore
 	{
+	public:
+		
+		///
+		/// 运行模式
+		///
+		enum RunningMode
+		{
+			ErrorRunningMode = 0,
+			GameRelease,
+			GameDebug,
+			EditorRelease,
+			EditorDebug
+		};
+	
 	public:
 		
 		///
@@ -169,7 +213,14 @@ namespace GenesisCubeEngine
 		///
 		/// 运行
 		///
-		static void Init();
+		/// \param program 程序
+		/// \param runningMode 模式
+		/// \return 返回值
+		static int32_t Running(FProgram &program, RunningMode runningMode);
+		
+		///
+		/// \return 运行模式
+		static RunningMode GetRunningMode();
 		
 		///
 		/// 应用实例
@@ -240,6 +291,6 @@ namespace GenesisCubeEngine
 		
 	};
 	
-} // GenesisCubeEngine
+} // GenesisCube
 
 

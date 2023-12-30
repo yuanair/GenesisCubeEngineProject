@@ -4,7 +4,7 @@
 
 #include "FLocator.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 
-} // GenesisCubeEngine
+} // GenesisCube

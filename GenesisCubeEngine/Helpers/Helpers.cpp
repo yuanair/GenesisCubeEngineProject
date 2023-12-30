@@ -4,6 +4,6 @@
 
 #include "Helpers.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
-} // GenesisCubeEngine
+} // GenesisCube

@@ -4,13 +4,13 @@
 #include "Localization.h"
 #include "../JSON/JObject.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 
 
-//	TString GLanguage::Find(const GenesisCubeEngine::GStringList &list,
-//							const GenesisCubeEngine::TString &key,
-//							const GenesisCubeEngine::GLanguage *language)
+//	TString GLanguage::Find(const GenesisCube::GStringList &list,
+//							const GenesisCube::TString &key,
+//							const GenesisCube::GLanguage *language)
 //	{
 //		auto string = list.find(key);
 //		if (string == list.end()) return key;

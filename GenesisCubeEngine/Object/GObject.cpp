@@ -5,7 +5,7 @@
 #include "GObject.h"
 #include "../Core/FFormatter.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	
 	GObject::GObject() noexcept
@@ -46,4 +46,4 @@ namespace GenesisCubeEngine
 #endif
 	}
 	
-} // GenesisCubeEngine
+} // GenesisCube

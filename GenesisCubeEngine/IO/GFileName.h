@@ -4,7 +4,7 @@
 #include "../Object/GObject.h"
 #include "../Core/TPtr.h"
 
-namespace GenesisCubeEngine
+namespace GenesisCube
 {
 	/// <summary>
 	/// 文件名类

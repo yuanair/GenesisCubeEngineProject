@@ -1,0 +1,29 @@
+{
+  "MainWindowName": {
+    "key": "windowName"
+  },
+  "things": {
+    "weapon": [
+      {
+        "name": {
+          "key": "thingsWeapon1"
+        },
+        "image": "Data/ys/w1.png"
+      },
+      {
+        "name": {
+          "key": "thingsWeapon2"
+        },
+        "image": "Data/ys/w2.png"
+      },
+      {
+        "name": {
+          "key": "thingsWeapon3"
+        },
+        "image": "Data/ys/w3.png"
+      }
+    ],
+    "character": [
+    ]
+  }
+}
