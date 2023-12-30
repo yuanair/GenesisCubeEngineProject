@@ -14,14 +14,10 @@
   "ExpandedNodes": [
     "",
     "\\GenesisCubeEngine",
-    "\\GenesisCubeEngine\\Core",
-    "\\GenesisCubeEngine\\DirectX",
-    "\\GenesisCubeEngine\\Exception",
-    "\\GenesisCubeEngine\\Game",
-    "\\GenesisCubeEngine\\Language",
-    "\\GenesisCubeEngine\\Localization",
-    "\\GenesisCubeEngine\\Object",
-    "\\GenesisCubeEngine\\Resource"
+    "\\GenesisCubeLanguage",
+    "\\GenesisCubeLanguage\\Lexer",
+    "\\GenesisCubeLanguage\\Parser"
   ],
+  "SelectedNode": "\\GenesisCubeLanguage\\Parser\\Parser.h",
   "PreviewInSolutionExplorer": false
 }

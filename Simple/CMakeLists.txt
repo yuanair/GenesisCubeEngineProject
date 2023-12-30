@@ -1,3 +1,4 @@
+project(Simple)
 
 # test
 add_subdirectory("test")

@@ -1,86 +1,84 @@
+//
+// Created by admin on 2023/12/30.
+//
+
 #pragma once
+
+#include "../../GenesisCubeBase/Object/GObject.h"
 #include "../Token/Token.h"
-#include <list>
 
-namespace GCL
+namespace GenesisCube::AST
 {
-	namespace AST
+	///
+	/// 抽象语法树节点
+	///
+	class Node : public GObject
 	{
-		// AST节点
-		class Node
-		{
-		public:
-
-			// 节点类型枚举
-			enum Type
-			{
-				Node_Program = 0,			// 根节点
-				Node_Integer,				// 整数
-				Node_Float,					// 浮点数
-				Node_Infix,					// 中缀表达式
-				Node_ExpressionStatement,	// 语句
-			};
-
-		public:
-
-			Node() : Node(Node_Program) {}
-			virtual ~Node() {}
-
-			// type - 类型
-			Node(Type type) : type(type) {}
-
-		public:
-
-			// 获取类型
-			Type GetType() const { return this->type; }
-
-			// 获取符号
-			GCL::Token::Token GetToken() const { return this->token; }
-
-			// 获取类型的字符串表示形式
-			std::string ToTypeString() const;
-
-			// 获取json表示
-			virtual std::string ToJsonString() const;
-
-		public:
-
-			Type type;
-
-			GCL::Token::Token token;
-
-		private:
-
-			static std::map<Type, std::string> names;
-
-		};
-
-		// AST表达式
-		class Expression : public Node
-		{
-		public:
-
-			Expression() : Node() {}
-			virtual ~Expression() {}
-
-			// type - 类型
-			Expression(Type type) : Node(type) {}
-
-
-		};
-
-		// AST语句
-		class Statement : public Node
-		{
-		public:
-
-			Statement() : Node() {}
-			virtual ~Statement() {}
-
-			// type - 类型
-			Statement(Type type) : Node(type) {}
-
-		};
-
-	}
+	public:
+		
+		Node() = default;
+		
+		~Node() override = default;
+	
+	public:
+		
+		[[nodiscard]]
+		virtual TString GetName() const noexcept = 0;
+		
+		[[nodiscard]]
+		virtual JSON::Json ToJson() const noexcept = 0;
+	
+	public:
+		
+		TPtr<Token::Token> token;
+		
+	};
+	
+	///
+	/// 抽象语法树前缀表达式
+	///
+	class Infix : public Node
+	{
+	public:
+		
+		[[nodiscard]]
+		TString GetName() const noexcept override { return TEXT("Infix"); }
+		
+		[[nodiscard]]
+		JSON::Json ToJson() const noexcept override;
+		
+	};
+	
+	///
+	/// 抽象语法树表达式语句
+	///
+	class ExpressionStatement : public Node
+	{
+	public:
+		
+		[[nodiscard]]
+		TString GetName() const noexcept override { return TEXT("ExpressionStatement"); }
+		
+		[[nodiscard]]
+		JSON::Json ToJson() const noexcept override;
+		
+		
+	};
+	
+	///
+	/// 抽象语法树程序
+	///
+	class Program : public Node
+	{
+	public:
+		
+		[[nodiscard]]
+		TString GetName() const noexcept override { return TEXT("Program"); }
+		
+		[[nodiscard]]
+		JSON::Json ToJson() const noexcept override;
+		
+		
+	};
+	
 }

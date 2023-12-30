@@ -15,6 +15,7 @@
 #include <dwrite.h>
 #include <d3dcompiler.h>
 #include <dxgi1_6.h>
+#include <dsound.h>
 
 #include <DirectXMath.h>
 

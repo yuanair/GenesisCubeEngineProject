@@ -1,28 +1,26 @@
+//
+// Created by admin on 2023/12/30.
+//
+
 #include "Node.h"
 
-using namespace GCL::AST;
 
-std::map<Node::Type, std::string> Node::names =
+namespace GenesisCube::AST
 {
-	{ Node_Program,					"Program" },
-	{ Node_Integer,					"Integer" },
-	{ Node_Float,					"Float" },
-	{ Node_Infix,					"Infix" },
-	{ Node_ExpressionStatement,		"ExpressionStatement" },
-};
-
-std::string Node::ToTypeString() const
-{
-	auto it = names.find(this->type);
-	if (it != names.end())
+	
+	JSON::Json Infix::ToJson() const noexcept
 	{
-		return it->second;
+		return nullptr;
 	}
-	return "<error node type>";
-}
-
-
-std::string Node::ToJsonString() const
-{
-	return std::format("{{ \"token\": {}, \"type\": \"{}\" }}", GetToken().ToJsonString(), ToTypeString());
+	
+	JSON::Json ExpressionStatement::ToJson() const noexcept
+	{
+		return JSON::Json();
+	}
+	
+	JSON::Json Program::ToJson() const noexcept
+	{
+		return JSON::Json();
+	}
+	
 }
