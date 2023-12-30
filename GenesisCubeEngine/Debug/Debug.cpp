@@ -3,8 +3,7 @@
 //
 
 #include "Debug.h"
-#include "../Core/FFormatter.h"
-#include "../Core/FLocator.h"
+#include "../../GenesisCubeBase/Core/FFormatter.h"
 
 namespace GenesisCube
 {
@@ -242,7 +241,7 @@ namespace GenesisCube
 	
 	TString FLoggerFormat::Format(const TString &message, LoggerLevel loggerLevel) const
 	{
-		if (bIsEditor || bIsDebug)
+		if (FCore::GetRunningMode() == FCore::GameDebug || FCore::GetRunningMode() == FCore::EditorDebug)
 		{
 			return std::format(
 				TEXT("[{}] [{}] [\n{}] {}\n"), Format(loggerLevel), Format(FTimer::LocalTime()),

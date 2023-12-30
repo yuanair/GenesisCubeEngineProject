@@ -41,10 +41,23 @@ namespace GenesisCube
 	
 	int32_t FCore::Running(FProgram &program, RunningMode runningMode)
 	{
+		if (globalRunningMode != ErrorRunningMode)
+		{
+			throw EBadException(
+				__FUNCSIG__ TEXT(":: Duplicate runs are not allowed")
+			);
+		}
 		globalRunningMode = runningMode;
 		
+		if (runningMode == ErrorRunningMode)
+		{
+			throw EInvalidArgumentException(
+				__FUNCSIG__ TEXT(":: runningMode is invalid")
+			);
+		}
+		
 		// 当为DEBUG模式时，内存泄漏检测
-		if (GenesisCube::bIsDebug)
+		if (runningMode == GameDebug || runningMode == EditorDebug)
 		{
 			_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 		}
@@ -56,8 +69,8 @@ namespace GenesisCube
 [running path: {3}]
 [logger file: {4}]
 [build time: {5}]
-[build type: {6}{7}]
-[lpCmdLine: {8}]
+[build type: {6}]
+[lpCmdLine: {7}]
 )"),
 			FCore::name, // 0
 			FCore::versionString, // 1
@@ -65,9 +78,8 @@ namespace GenesisCube
 			GDirectoryName::ModuleFile().GetFileName(), // 3
 			FLogger::Inst().GetFile(), // 4
 			FCore::buildTime, // 5
-			buildType, // 6
-			bIsDebug ? TEXT("Debug") : TEXT("Release"), // 7
-			FCore::GetCmdLine()// 8
+			ToString(runningMode), // 6
+			FCore::GetCmdLine()// 7
 		);
 		
 		FLogger::Inst().LogInfoODS(buffer);
@@ -122,6 +134,24 @@ namespace GenesisCube
 			exit(-1);
 		}
 		return globalRunningMode;
+	}
+	
+	TString FCore::ToString(FCore::RunningMode runningMode)
+	{
+		switch (runningMode)
+		{
+			case GameRelease:
+				return TEXT("GameRelease");
+			case GameDebug:
+				return TEXT("GameDebug");
+			case EditorRelease:
+				return TEXT("EditorRelease");
+			case EditorDebug:
+				return TEXT("EditorDebug");
+			case ErrorRunningMode:
+			default:
+				return TEXT("ErrorRunningMode");
+		}
 	}
 	
 } // GenesisCube

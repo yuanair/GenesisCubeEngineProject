@@ -5,14 +5,14 @@
 #pragma once
 
 #include <GenesisCubeEngine/Core/FCore.h>
-#include <GenesisCubeEngine/Core/FFormatter.h>
+#include <GenesisCubeBase/Core/FFormatter.h>
 #include <GenesisCubeEngine/Game/GWindow.h>
 #include <GenesisCubeEngine/Debug/Debug.h>
 #include <GenesisCubeEngine/Resource/resource.h>
 #include <GenesisCubeEngine/Localization/Localization.h>
 #include <GenesisCubeEngine/IO/GFileName.h>
-#include <GenesisCubeEngine/JSON/Json.h>
-#include <GenesisCubeEngine/JSON/JsonReader.h>
+#include <GenesisCubeBase/Json/Json.h>
+#include <GenesisCubeBase/Json/JsonReader.h>
 #include <GenesisCubeEngine/DirectX/GD2D1Factory.h>
 #include <GenesisCubeEngine/Game/GUIVector.h>
 

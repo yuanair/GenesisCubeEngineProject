@@ -2,7 +2,7 @@
 // Created by admin on 2023/12/21.
 //
 #include "Localization.h"
-#include "../JSON/JObject.h"
+#include "../../GenesisCubeBase/JSON/JObject.h"
 
 namespace GenesisCube
 {

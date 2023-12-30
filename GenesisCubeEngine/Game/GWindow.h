@@ -7,9 +7,9 @@
 #include "../Core/Header.h"
 
 #include "../Core/FCore.h"
-#include "../Object/GObject.h"
-#include "../Core/TEvent.h"
-#include "../Core/FTimer.h"
+#include "../../GenesisCubeBase/Object/GObject.h"
+#include "../../GenesisCubeBase/Core/TEvent.h"
+#include "../../GenesisCubeBase/Core/FTimer.h"
 #include "../Helpers/Helpers.h"
 #include "../Debug/Debug.h"
 

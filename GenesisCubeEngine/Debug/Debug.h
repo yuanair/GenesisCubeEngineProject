@@ -6,9 +6,9 @@
 #include "../Core/Header.h"
 
 #include "../Core/FCore.h"
-#include "../Core/FTimer.h"
-#include "../Exception/Exception.h"
-#include "../Object/GObject.h"
+#include "../../GenesisCubeBase/Core/FTimer.h"
+#include "../../GenesisCubeBase/Exception/Exception.h"
+#include "../../GenesisCubeBase/Object/GObject.h"
 #include "../IO/GDirectoryName.h"
 
 namespace GenesisCube

@@ -8,8 +8,8 @@
 
 ## 使用
 
-> 编译时<br>
-> 定义宏：UNICODE<br>
+> 编译时  
+> 定义宏：UNICODE  
 > 定义宏：GenesisCubeGame或GenesisCubeEditor
 
-> 示例程序：./test/
+> 示例程序：./Simple/

@@ -6,7 +6,7 @@
 
 #include "../Core/Header.h"
 
-#include "../Object/GObject.h"
+#include "../../GenesisCubeBase/Object/GObject.h"
 
 namespace GenesisCube::Language
 {

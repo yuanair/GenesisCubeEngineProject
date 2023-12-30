@@ -6,7 +6,6 @@
 
 #include "../Core/Header.h"
 #include "../Core/FCore.h"
-#include "../Exception/Exception.h"
 
 namespace GenesisCube
 {

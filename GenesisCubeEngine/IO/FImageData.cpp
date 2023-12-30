@@ -4,6 +4,7 @@
 
 #include "FImageData.h"
 #include "../DoNotInclude/stb_image.h"
+#include "../../GenesisCubeBase/Exception/Exception.h"
 
 namespace GenesisCube
 {

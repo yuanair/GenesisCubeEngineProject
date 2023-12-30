@@ -2,7 +2,7 @@
 
 #include "../Core/Header.h"
 #include "GFileName.h"
-#include "../Core/TEvent.h"
+#include "../../GenesisCubeBase/Core/TEvent.h"
 
 namespace GenesisCube
 {

@@ -6,7 +6,7 @@
 
 #include "../Core/Header.h"
 #include "../Core/FCore.h"
-#include "../JSON/Json.h"
+#include "../../GenesisCubeBase/JSON/Json.h"
 
 namespace GenesisCube
 {

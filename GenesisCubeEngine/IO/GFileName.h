@@ -1,8 +1,8 @@
 ﻿#pragma once
 
 #include "../Core/Header.h"
-#include "../Object/GObject.h"
-#include "../Core/TPtr.h"
+#include "../../GenesisCubeBase/Object/GObject.h"
+#include "../../GenesisCubeBase/Core/TPtr.h"
 
 namespace GenesisCube
 {

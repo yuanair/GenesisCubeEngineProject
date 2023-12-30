@@ -5,7 +5,7 @@
 #pragma once
 
 #include "../Core/Header.h"
-#include "../Object/GObject.h"
+#include "../../GenesisCubeBase/Object/GObject.h"
 #include "../DirectX/GD2D1RenderTarget.h"
 
 namespace GenesisCube
