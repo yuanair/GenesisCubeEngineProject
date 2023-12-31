@@ -8,19 +8,9 @@
 namespace GenesisCube::AST
 {
 	
-	JSON::Json Infix::ToJson() const noexcept
+	JSON::Json Statement::ToJson() const noexcept
 	{
 		return nullptr;
-	}
-	
-	JSON::Json ExpressionStatement::ToJson() const noexcept
-	{
-		return JSON::Json();
-	}
-	
-	JSON::Json Program::ToJson() const noexcept
-	{
-		return JSON::Json();
 	}
 	
 }

@@ -291,6 +291,8 @@ namespace GenesisCube::JSON
 			return ptr;
 		}
 		
+		GCLASS_BODY(Json)
+		
 		[[nodiscard]] TString ToString() const noexcept override;
 	
 	private:

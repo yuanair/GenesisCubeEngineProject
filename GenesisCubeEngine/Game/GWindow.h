@@ -362,6 +362,8 @@ namespace GenesisCube
 		/// \return 无法克隆窗口，只会返回一个新的GWindow对象
 		[[nodiscard]]
 		GWindow *Clone() const noexcept override;
+		
+		GCLASS_BODY(GWindow)
 	
 	public:
 		

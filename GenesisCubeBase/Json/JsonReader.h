@@ -47,6 +47,8 @@ namespace GenesisCube::JSON
 		
 		[[nodiscard]]
 		GObject *Clone() const noexcept override;
+		
+		GCLASS_BODY(JsonReader)
 	
 	private:
 		

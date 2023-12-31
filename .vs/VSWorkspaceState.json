@@ -18,6 +18,6 @@
     "\\GenesisCubeLanguage\\Lexer",
     "\\GenesisCubeLanguage\\Parser"
   ],
-  "SelectedNode": "\\GenesisCubeLanguage\\Parser\\Parser.h",
+  "SelectedNode": "\\GenesisCubeEngine\\CMakeLists.txt",
   "PreviewInSolutionExplorer": false
 }

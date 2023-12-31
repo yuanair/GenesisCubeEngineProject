@@ -59,6 +59,8 @@ namespace GenesisCube
 		[[nodiscard]]
 		inline GFileName *Clone() const noexcept override { return new GFileName(this->fileName); }
 		
+		GCLASS_BODY(GFileName)
+		
 		/// <summary>
 		/// 获取文件名
 		/// </summary>

@@ -22,6 +22,8 @@ namespace GenesisCube::JSON
 		[[nodiscard]]
 		JObject *Clone() const noexcept override;
 		
+		GCLASS_BODY(JObject)
+		
 		[[nodiscard]]
 		TString ToString() const noexcept override;
 	

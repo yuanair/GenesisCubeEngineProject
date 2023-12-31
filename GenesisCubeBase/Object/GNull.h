@@ -6,7 +6,7 @@
 namespace GenesisCube
 {
 	///
-	/// JSON对象
+	/// null
 	///
 	class GNull : public GObject
 	{
@@ -21,6 +21,8 @@ namespace GenesisCube
 	public:
 		
 		[[nodiscard]] inline GNull *Clone() const noexcept override { return new GNull(); }
+		
+		GCLASS_BODY(GNull)
 		
 		[[nodiscard]] inline TString ToString() const noexcept override { return TEXT("null"); }
 		

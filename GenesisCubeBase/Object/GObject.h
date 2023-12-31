@@ -6,6 +6,10 @@
 
 #include "../Core/FCore.h"
 
+#define GCLASS_BODY(className) \
+inline TString GetName() const noexcept override { return TEXT(# className); } \
+inline static TString GetStaticName() noexcept { return TEXT(# className); }
+
 namespace GenesisCube
 {
 	//
@@ -54,7 +58,13 @@ namespace GenesisCube
 		/// 转换为字符串
 		/// \return 字符串
 		[[nodiscard]]
-		virtual TString ToString() const noexcept;
+		inline virtual TString ToString() const noexcept;
+		
+		///
+		/// 获取类名
+		/// \return 类名
+		[[nodiscard]]
+		inline virtual TString GetName() const noexcept = 0;
 	
 	private:
 		

@@ -278,4 +278,11 @@ namespace GenesisCube::Lexer
 		errors.emplace_back(type, message, tokenPos);
 	}
 	
+	Lexer *Lexer::Clone() const noexcept
+	{
+		Lexer *lexer = new Lexer;
+		lexer->input = input;
+		return lexer;
+	}
+	
 }

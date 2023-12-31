@@ -5,6 +5,7 @@
 #pragma once
 
 #include "../../GenesisCubeBase/Object/GObject.h"
+#include "../../GenesisCubeBase/Json/Json.h"
 #include "../Token/Token.h"
 
 namespace GenesisCube::AST
@@ -18,66 +19,52 @@ namespace GenesisCube::AST
 		
 		Node() = default;
 		
+		explicit Node(class Token::Token *token) : token(token) {}
+		
 		~Node() override = default;
 	
 	public:
 		
 		[[nodiscard]]
-		virtual TString GetName() const noexcept = 0;
+		inline TString GetName() const noexcept override = 0;
 		
 		[[nodiscard]]
 		virtual JSON::Json ToJson() const noexcept = 0;
+		
+		[[nodiscard]]
+		inline Node *Clone() const noexcept override = 0;
 	
 	public:
 		
-		TPtr<Token::Token> token;
+		TPtr<class Token::Token> token;
 		
 	};
 	
 	///
-	/// 抽象语法树前缀表达式
+	/// 抽象语法树表达式
 	///
-	class Infix : public Node
+	class Expression : public Node
 	{
 	public:
 		
-		[[nodiscard]]
-		TString GetName() const noexcept override { return TEXT("Infix"); }
+		GCLASS_BODY(Expression)
 		
 		[[nodiscard]]
-		JSON::Json ToJson() const noexcept override;
+		JSON::Json ToJson() const noexcept override = 0;
 		
 	};
 	
 	///
-	/// 抽象语法树表达式语句
+	/// 抽象语法树语句
 	///
-	class ExpressionStatement : public Node
+	class Statement : public Node
 	{
 	public:
 		
-		[[nodiscard]]
-		TString GetName() const noexcept override { return TEXT("ExpressionStatement"); }
+		GCLASS_BODY(Statement)
 		
 		[[nodiscard]]
 		JSON::Json ToJson() const noexcept override;
-		
-		
-	};
-	
-	///
-	/// 抽象语法树程序
-	///
-	class Program : public Node
-	{
-	public:
-		
-		[[nodiscard]]
-		TString GetName() const noexcept override { return TEXT("Program"); }
-		
-		[[nodiscard]]
-		JSON::Json ToJson() const noexcept override;
-		
 		
 	};
 	

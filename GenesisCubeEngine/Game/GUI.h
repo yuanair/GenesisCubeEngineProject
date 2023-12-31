@@ -64,6 +64,8 @@ namespace GenesisCube
 		
 		[[nodiscard]]
 		GUI *Clone() const noexcept override;
+		
+		GCLASS_BODY(GUI)
 	
 	public:
 		

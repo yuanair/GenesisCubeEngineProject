@@ -20,6 +20,15 @@ namespace GenesisCube::Token
 		inline Type GetType() const noexcept override { return OperatorType; }
 		
 		[[nodiscard]]
+		inline TString GetName() const noexcept override = 0;
+		
+		[[nodiscard]]
+		inline Precedence GetPrecedence() const noexcept override = 0;
+		
+		[[nodiscard]]
+		inline TString ToString() const noexcept override = 0;
+		
+		[[nodiscard]]
 		inline OperatorToken *Clone() const noexcept override = 0;
 		
 	};
@@ -35,7 +44,7 @@ namespace GenesisCube::Token
 		inline TString GetName() const noexcept override { return TEXT("Plus"); }
 		
 		[[nodiscard]]
-		Precedence GetPrecedence() const noexcept override { return Sum; }
+		inline Precedence GetPrecedence() const noexcept override { return Sum; }
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("+"); }
@@ -56,7 +65,7 @@ namespace GenesisCube::Token
 		inline TString GetName() const noexcept override { return TEXT("Minus"); }
 		
 		[[nodiscard]]
-		Precedence GetPrecedence() const noexcept override { return Sum; }
+		inline Precedence GetPrecedence() const noexcept override { return Sum; }
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("-"); }
@@ -77,7 +86,7 @@ namespace GenesisCube::Token
 		inline TString GetName() const noexcept override { return TEXT("Multiply"); }
 		
 		[[nodiscard]]
-		Precedence GetPrecedence() const noexcept override { return Product; }
+		inline Precedence GetPrecedence() const noexcept override { return Product; }
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("*"); }
@@ -98,7 +107,7 @@ namespace GenesisCube::Token
 		inline TString GetName() const noexcept override { return TEXT("Divide"); }
 		
 		[[nodiscard]]
-		Precedence GetPrecedence() const noexcept override { return Product; }
+		inline Precedence GetPrecedence() const noexcept override { return Product; }
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("/"); }
@@ -119,7 +128,7 @@ namespace GenesisCube::Token
 		inline TString GetName() const noexcept override { return TEXT("Mod"); }
 		
 		[[nodiscard]]
-		Precedence GetPrecedence() const noexcept override { return Product; }
+		inline Precedence GetPrecedence() const noexcept override { return Product; }
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("%"); }

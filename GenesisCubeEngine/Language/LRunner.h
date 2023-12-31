@@ -32,6 +32,8 @@ namespace GenesisCube::Language
 		[[nodiscard]]
 		LRunner *Clone() const noexcept override;
 		
+		GCLASS_BODY(LRunner)
+		
 	};
 	
 } // Language

@@ -23,6 +23,8 @@ namespace GenesisCube
 		
 		[[nodiscard]]
 		GBox *Clone() const noexcept override;
+		
+		GCLASS_BODY(GBox)
 	
 	public:
 		

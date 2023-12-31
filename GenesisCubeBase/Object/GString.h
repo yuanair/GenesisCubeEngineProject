@@ -7,7 +7,7 @@
 namespace GenesisCube
 {
 	///
-	/// JSON字符串
+	/// 字符串
 	///
 	class GString : public GObject
 	{
@@ -24,6 +24,8 @@ namespace GenesisCube
 	public:
 		
 		[[nodiscard]] inline GString *Clone() const noexcept override { return new GString(this->str); }
+		
+		GCLASS_BODY(GString)
 		
 		[[nodiscard]] TString ToString() const noexcept override;
 		

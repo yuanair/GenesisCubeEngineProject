@@ -33,6 +33,8 @@ namespace GenesisCube
 		
 		[[nodiscard]]
 		GUIVector *Clone() const noexcept override;
+		
+		GCLASS_BODY(GUIVector)
 	
 	private:
 		

@@ -6,12 +6,12 @@
 #include <utility>
 
 #include "../Token/Token.h"
-
+#include "../AST/Node.h"
 
 namespace GenesisCube::Lexer
 {
 	// 词法分析器
-	class Lexer
+	class Lexer : public GObject
 	{
 	public:
 		
@@ -88,6 +88,13 @@ namespace GenesisCube::Lexer
 		void ReadIdentifier(TPtr<Token::Token> &token);
 		
 		void NewError(Error::Type type, const TString &message);
+	
+	public:
+		
+		[[nodiscard]]
+		Lexer *Clone() const noexcept override;
+		
+		GCLASS_BODY(Lexer)
 	
 	private:
 		

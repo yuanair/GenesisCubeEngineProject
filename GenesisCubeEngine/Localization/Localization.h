@@ -36,6 +36,8 @@ namespace GenesisCube
 		
 		[[nodiscard]]
 		GLanguage *Clone() const noexcept override;
+		
+		GCLASS_BODY(GLanguage)
 	
 	public:
 		

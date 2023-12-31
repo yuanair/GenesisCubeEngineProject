@@ -53,9 +53,12 @@ void BracketColor()
 
 int main()
 {
+#ifdef _DEBUG
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
 	InfoColor();
 	{
-		std::shared_ptr<Lexer::Lexer> lexer(new Lexer::Lexer(TEXT("Data/test.c")));
+		TPtr<Lexer::Lexer> lexer(new Lexer::Lexer(TEXT("Data/test.c")));
 		Json json;
 		Json &json1 = json[TEXT("tokens")];
 		
@@ -163,8 +166,8 @@ int main()
 	}
 	
 	{
-		std::shared_ptr<Lexer::Lexer> lexer(new Lexer::Lexer(TEXT("Data/test.c")));
-		std::shared_ptr<Parser::Parser> parser(new Parser::Parser(lexer));
+		TPtr<Lexer::Lexer> lexer(new Lexer::Lexer(TEXT("Data/test.c")));
+		TPtr<Parser::Parser> parser(new Parser::Parser(lexer));
 
 //		auto program = parser->ParseProgram();
 //

@@ -6,7 +6,7 @@
 namespace GenesisCube
 {
 	/// 
-	/// JSON布尔
+	/// 布尔
 	/// 
 	class GBool : public GObject
 	{
@@ -20,14 +20,19 @@ namespace GenesisCube
 	
 	public:
 		
-		[[nodiscard]] inline GBool *Clone() const noexcept override { return new GBool(this->value); }
+		[[nodiscard]]
+		inline GBool *Clone() const noexcept override { return new GBool(this->value); }
 		
-		[[nodiscard]] inline TString ToString() const noexcept override
+		GCLASS_BODY(GBool)
+		
+		[[nodiscard]]
+		inline TString ToString() const noexcept override
 		{
 			return this->value ? TEXT("true") : TEXT("false");
 		}
 		
-		[[nodiscard]] inline bool Get() const noexcept { return this->value; }
+		[[nodiscard]]
+		inline bool Get() const noexcept { return this->value; }
 	
 	private:
 		

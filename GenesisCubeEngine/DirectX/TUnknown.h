@@ -106,6 +106,8 @@ namespace GenesisCube
 	public:
 		
 		TUnknown *Clone() const noexcept override { return new TUnknown(this->ptr); }
+		
+		GCLASS_BODY(TUnknown)
 	
 	private:
 		

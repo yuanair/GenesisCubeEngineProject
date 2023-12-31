@@ -1,8 +1,12 @@
 #pragma once
 
 #include "../../GenesisCubeBase/Core/FCore.h"
-
 #include "../../GenesisCubeBase/Json/Json.h"
+
+namespace GenesisCube::AST
+{
+	class Expression;
+}
 
 namespace GenesisCube::Token
 {
@@ -33,8 +37,8 @@ namespace GenesisCube::Token
 		/// 优先级
 		enum Precedence : int32_t
 		{
-			NullPrecedence = 0,             // 无优先级
-			Lowest,             // 最低优先级
+			NullPrecedence = 0,     // 无优先级
+			Lowest,                // 最低优先级
 			Sum,                    // +与-优先级
 			Product,                // *与/优先级
 		};
@@ -71,7 +75,7 @@ namespace GenesisCube::Token
 		///
 		/// \return 符号名
 		[[nodiscard]]
-		inline virtual TString GetName() const noexcept = 0;
+		inline TString GetName() const noexcept override = 0;
 		
 		///
 		/// \return 优先级
@@ -82,6 +86,15 @@ namespace GenesisCube::Token
 		/// \return 类别
 		[[nodiscard]]
 		inline virtual Type GetType() const noexcept = 0;
+		
+		///
+		/// \return 前缀表达式
+		inline virtual void GetPrefix(TPtr<class AST::Expression> &expression) noexcept {}
+		
+		///
+		/// \return 中缀表达式
+		inline virtual void GetInfix(TPtr<class AST::Expression> &expression,
+									 const TPtr<class AST::Expression> &left) noexcept {}
 	
 	public:
 		
@@ -95,7 +108,15 @@ namespace GenesisCube::Token
 		[[nodiscard]] bool IsEOF() const;
 		
 		template<class T>
-		[[nodiscard]] bool Is() const { return typeid(*this) == typeid(T); }
+		bool Is() const { return typeid(*this) == typeid(T); }
+		
+		template<class T, class... Args>
+		inline T *NewNode(Args... args) noexcept
+		{
+			T *ptr = new T(args...);
+			ptr->token = this;
+			return ptr;
+		}
 	
 	public:
 		

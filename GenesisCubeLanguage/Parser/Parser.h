@@ -6,17 +6,9 @@
 namespace GenesisCube::Parser
 {
 	// 语法分析类
-	class Parser
+	class Parser : public GObject
 	{
 	public:
-		
-		// 优先级
-		enum Precedence : int
-		{
-			Lowest = 0,                // 最低优先级
-			Sum,                    // +与-优先级
-			Product,                // *与/优先级
-		};
 		
 		// 语法错误
 		class Error
@@ -27,13 +19,11 @@ namespace GenesisCube::Parser
 			enum Type
 			{
 				Error_Illegal = 0,                    // 非法的符号
-				Error_InvalidTokenType,                // 无效的符号类型
+				Error_NotAsExpected,                  //与预期不符
 				Error_NoPrefixParseFnError            // 无效表达式
 			};
 		
 		public:
-			
-			Error() : Error(Error_Illegal, TEXT(""), 0LL) {}
 			
 			~Error() {}
 			
@@ -52,40 +42,78 @@ namespace GenesisCube::Parser
 	
 	public:
 		
-		Parser();
+		///
+		/// \param lexer 词法分析器
+		Parser(const TPtr<Lexer::Lexer> &lexer);
 		
-		~Parser();
-		
-		// lexer - 词法分析器指针
-		Parser(const std::shared_ptr<Lexer::Lexer> &lexer);
+		~Parser() override = default;
 	
 	public:
 		
 		///
-		/// 下一个
+		/// 下一个符号
 		///
 		void NextToken();
 	
-	private:
+	public:
 		
+		///
+		/// \return 错误列表
+		[[nodiscard]]
+		inline std::list<Error> GetErrors() const { return this->errors; }
+		
+		///
+		/// 新错误
+		/// \param type
+		/// \param message
+		inline void NewError(Error::Type type, TString message) noexcept
+		{
+			errors.emplace_back(type, message, this->currToken->GetPos());
+		}
+		
+		///
+		/// 预期一个符号
+		/// \tparam T 类型
+		/// \return 是否相符
 		template<class T>
-		bool ExpectPeekToken();
+		inline bool ExpectPeekToken();
+		
+		///
+		/// 下一个符号与预期不符错误
+		/// \tparam T 类型
+		template<class T>
+		inline void PeekTokenError();
+		
+		///
+		/// \tparam T 类型
+		/// \return 当前符号是否为T
+		template<class T>
+		inline bool CurrTokenIs() const { return currToken->Is<T>(); }
+		
+		///
+		/// \tparam T 类型
+		/// \return 下一个符号是否为T
+		template<class T>
+		inline bool PeekTokenIs() const { return currToken->Is<T>(); }
+		
+		///
+		/// \return 当前运算符的优先级
+		inline auto CurrTokenPrecedence() const { return currToken->GetPrecedence(); }
+		
+		///
+		/// \return 下一个运算符的优先级
+		inline auto PeekTokenPrecedence() const { return peekToken->GetPrecedence(); }
+	
+	public:
 		
 		[[nodiscard]]
-		std::list<Error> GetErrors() const { return this->errors; }
+		Parser *Clone() const noexcept override { return new Parser(lexer); }
 		
-		void NewError(Error::Type type, TString message);
-		
-		template<class T>
-		void PeekError();
-		
-		int CurrTokenPrecedence();
-		
-		int PeekTokenPrecedence();
+		GCLASS_BODY(Parser)
 	
 	private:
 		
-		std::shared_ptr<Lexer::Lexer> lexer;
+		TPtr<Lexer::Lexer> lexer;
 		
 		TPtr<Token::Token> currToken;
 		
@@ -96,26 +124,26 @@ namespace GenesisCube::Parser
 	};
 	
 	template<class T>
-	bool Parser::ExpectPeekToken()
+	inline bool Parser::ExpectPeekToken()
 	{
-		if (peekToken->Is<T>())//peekToken->GetType() == type)
+		if (peekToken->Is<T>())
 		{
 			NextToken();
 			return true;
 		}
 		else
 		{
-			PeekError<T>();
+			PeekTokenError<T>();
 			return false;
 		}
 	}
 	
 	template<class T>
-	void Parser::PeekError()
+	inline void Parser::PeekTokenError()
 	{
 		NewError(
-			Error::Type::Error_InvalidTokenType, std::format(
-				TEXT("Should not be [{}]"), peekToken->GetName()));
+			Error::Type::Error_NotAsExpected, std::format(
+				TEXT("expected {}, got {} instead"), T::GetStaticName(), peekToken->GetName()));
 	}
 	
 }
