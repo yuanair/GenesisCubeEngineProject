@@ -38,11 +38,11 @@ namespace GenesisCube::JSON
 		
 		Json(bool _bool);
 		
-		Json(int32_t _interger);
+		Json(int32_t integer);
 		
-		Json(uint32_t _interger);
+		Json(uint32_t integer);
 		
-		Json(int64_t _interger);
+		Json(int64_t integer);
 		
 		Json(double_t _float);
 		
@@ -265,17 +265,11 @@ namespace GenesisCube::JSON
 		void Reset();
 		
 		/// 
-		/// 获取类型
-		/// 
-		/// \return 类型
-		[[nodiscard]] inline const type_info &TypeId() const { return this->json.TypeId(); }
-		
-		/// 
 		/// 判断类型
 		/// 
 		/// \return bool
 		template<class T>
-		[[nodiscard]] inline bool Is() const { return TypeId() == typeid(T); }
+		[[nodiscard]] inline bool Is() const { return GenesisCube::Is<T>(this->json); }
 		
 		/// 
 		/// 转换类型并获取
@@ -304,7 +298,7 @@ namespace GenesisCube::JSON
 	template<class T>
 	inline auto Json::Get() const
 	{
-		const T *ptr = this->json.Cast<T>();
+		const TPtr<T> ptr = CastPtr<T>(this->json);
 		if (ptr == nullptr) throw ENullptrException(__FUNCSIG__ TEXT(":: cannot cast to be a T"));
 		return ptr->Get();
 	}

@@ -6,15 +6,15 @@ namespace GenesisCube
 	String FFormatter::GbkToUtf8(const String &src_str)
 	{
 		int32_t len = MultiByteToWideChar(CP_ACP, 0, src_str.c_str(), -1, nullptr, 0);
-		auto *wstr = new WChar[len + 1];
-		memset(wstr, 0, len + 1LL);
-		MultiByteToWideChar(CP_ACP, 0, src_str.c_str(), -1, wstr, len);
-		len = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, nullptr, 0, nullptr, nullptr);
+		auto *wStr = new WChar[len + 1];
+		memset(wStr, 0, len + 1LL);
+		MultiByteToWideChar(CP_ACP, 0, src_str.c_str(), -1, wStr, len);
+		len = WideCharToMultiByte(CP_UTF8, 0, wStr, -1, nullptr, 0, nullptr, nullptr);
 		auto *str = new Char[len + 1];
 		memset(str, 0, len + 1LL);
-		WideCharToMultiByte(CP_UTF8, 0, wstr, -1, str, len, nullptr, nullptr);
+		WideCharToMultiByte(CP_UTF8, 0, wStr, -1, str, len, nullptr, nullptr);
 		String strTemp = str;
-		delete[] wstr;
+		delete[] wStr;
 		delete[] str;
 		return strTemp;
 	}
@@ -129,7 +129,7 @@ namespace GenesisCube
 					buffer.push_back(TEXT('\\'));
 					break;
 				}
-				TCHAR cbuffer[9] = {};
+				TCHAR cBuffer[9] = {};
 				NumberToChars num = {};
 				ch = str[++i];
 				switch (ch)
@@ -159,49 +159,49 @@ namespace GenesisCube
 						i++;
 						for (int j = 0; i < str.size() && j < 4; i++, j++)
 						{
-							cbuffer[j] = str[i];
+							cBuffer[j] = str[i];
 						}
 						i--;
 #ifdef UNICODE
-						swscanf_s(cbuffer, L"%x", &num.number);
-						wcsncpy_s(cbuffer, num.wchars, 2);
+						swscanf_s(cBuffer, L"%x", &num.number);
+						wcsncpy_s(cBuffer, num.wchars, 2);
 #else
-						sscanf(cbuffer, "%x", &num.number);
-						strncpy_s(cbuffer, num.chars, 4);
+						sscanf(cBuffer, "%x", &num.number);
+						strncpy_s(cBuffer, num.chars, 4);
 #endif
-						buffer.append(cbuffer);
+						buffer.append(cBuffer);
 						break;
 					case TEXT('x'):
 						i++;
 						for (int j = 0; i < str.size() && j < 2; i++, j++)
 						{
-							cbuffer[j] = str[i];
+							cBuffer[j] = str[i];
 						}
 						i--;
 #ifdef UNICODE
-						swscanf_s(cbuffer, L"%x", &num.number);
-						wcsncpy_s(cbuffer, num.wchars, 2);
+						swscanf_s(cBuffer, L"%x", &num.number);
+						wcsncpy_s(cBuffer, num.wchars, 2);
 #else
-						sscanf(cbuffer, "%x", &num.number);
-						strncpy_s(cbuffer, num.chars, 4);
+						sscanf(cBuffer, "%x", &num.number);
+						strncpy_s(cBuffer, num.chars, 4);
 #endif
-						buffer.append(cbuffer);
+						buffer.append(cBuffer);
 						break;
 					case TEXT('U'):
 						i++;
 						for (int j = 0; i < str.size() && j < 8; i++, j++)
 						{
-							cbuffer[j] = str[i];
+							cBuffer[j] = str[i];
 						}
 						i--;
 #ifdef UNICODE
-						swscanf_s(cbuffer, L"%x", &num.number);
-						wcsncpy_s(cbuffer, num.wchars, 2);
+						swscanf_s(cBuffer, L"%x", &num.number);
+						wcsncpy_s(cBuffer, num.wchars, 2);
 #else
-						sscanf(cbuffer, "%x", &num.number);
-						strncpy_s(cbuffer, num.chars, 4);
+						sscanf(cBuffer, "%x", &num.number);
+						strncpy_s(cBuffer, num.chars, 4);
 #endif
-						buffer.append(cbuffer);
+						buffer.append(cBuffer);
 						break;
 					case TEXT('0'):
 					case TEXT('1'):
@@ -215,17 +215,17 @@ namespace GenesisCube
 					case TEXT('9'):
 						for (int j = 0; i < str.size() && j < 3; i++, j++)
 						{
-							cbuffer[j] = str[i];
+							cBuffer[j] = str[i];
 						}
 						i--;
 #ifdef UNICODE
-						swscanf_s(cbuffer, L"%o", &num.number);
-						wcsncpy_s(cbuffer, num.wchars, 2);
+						swscanf_s(cBuffer, L"%o", &num.number);
+						wcsncpy_s(cBuffer, num.wchars, 2);
 #else
-						sscanf(cbuffer, "%o", &num.number);
-						strncpy_s(cbuffer, num.chars, 4);
+						sscanf(cBuffer, "%o", &num.number);
+						strncpy_s(cBuffer, num.chars, 4);
 #endif
-						buffer.append(cbuffer);
+						buffer.append(cBuffer);
 						break;
 					case TEXT('\\'):
 					case TEXT('\"'):

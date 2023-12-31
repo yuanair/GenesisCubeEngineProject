@@ -81,7 +81,7 @@ public:
 
 public:
 	
-	explicit MainWindow(MyProgram &program);
+	explicit MainWindow(MyProgram *program);
 	
 	~MainWindow() override = default;
 
@@ -115,6 +115,6 @@ private:
 	
 	GD2D1BitmapBrush bitmapBrush;
 	
-	MyProgram &program;
+	MyProgram *program;
 	
 };

@@ -64,7 +64,7 @@ namespace GenesisCube::AST
 		GCLASS_BODY(Statement)
 		
 		[[nodiscard]]
-		JSON::Json ToJson() const noexcept override;
+		JSON::Json ToJson() const noexcept override = 0;
 		
 	};
 	

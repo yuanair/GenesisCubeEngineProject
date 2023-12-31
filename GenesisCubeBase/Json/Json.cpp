@@ -9,47 +9,47 @@ namespace GenesisCube
 	
 	JSON::Json::Json()
 	{
-		this->json = new GNull();
+		this->json = MakePtr<GNull>();
 	}
 	
 	JSON::Json::Json(bool _bool)
 	{
-		this->json = new GBool(_bool);
+		this->json = MakePtr<GBool>(_bool);
 	}
 	
-	JSON::Json::Json(int32_t _interger)
+	JSON::Json::Json(int32_t integer)
 	{
-		this->json = new GInteger(_interger);
+		this->json = MakePtr<GInteger>(integer);
 	}
 	
-	JSON::Json::Json(uint32_t _interger)
+	JSON::Json::Json(uint32_t integer)
 	{
-		this->json = new GInteger(_interger);
+		this->json = MakePtr<GInteger>(integer);
 	}
 	
-	JSON::Json::Json(int64_t _interger)
+	JSON::Json::Json(int64_t integer)
 	{
-		this->json = new GInteger(_interger);
+		this->json = MakePtr<GInteger>(integer);
 	}
 	
 	JSON::Json::Json(double_t _float)
 	{
-		this->json = new GFloat(_float);
+		this->json = MakePtr<GFloat>(_float);
 	}
 	
 	JSON::Json::Json(const TString &_string)
 	{
-		this->json = new GString(_string);
+		this->json = MakePtr<GString>(_string);
 	}
 	
 	JSON::Json::Json(const TChar *_string)
 	{
-		this->json = new GString(_string);
+		this->json = MakePtr<GString>(_string);
 	}
 	
-	JSON::Json::Json(nullptr_t _null)
+	JSON::Json::Json(nullptr_t)
 	{
-		this->json = new GNull();
+		this->json = MakePtr<GNull>();
 	}
 	
 	JSON::Json::Json(const Json &_other)
@@ -68,7 +68,7 @@ namespace GenesisCube
 	
 	JSON::Json &JSON::Json::operator[](size_t index) const
 	{
-		if (JArray *arr = this->json.Cast<JArray>())
+		if (auto arr = CastPtr<JArray>(this->json))
 		{
 			for (size_t i = arr->values.size(); i <= index; i++)
 			{
@@ -82,7 +82,7 @@ namespace GenesisCube
 	
 	JSON::Json &JSON::Json::operator[](size_t index)
 	{
-		if (JArray *arr = this->json.Cast<JArray>())
+		if (auto arr = CastPtr<JArray>(this->json))
 		{
 			for (size_t i = arr->values.size(); i <= index; i++)
 			{
@@ -92,7 +92,7 @@ namespace GenesisCube
 			return arr->values[index];
 		}
 		if (!Is<GNull>()) throw EInvalidArgumentException(__FUNCSIG__ TEXT(":: This is not an array"));
-		auto *arr = new JArray();
+		auto arr = MakePtr<JArray>();
 		
 		for (size_t i = arr->values.size(); i <= index; i++)
 		{
@@ -100,7 +100,7 @@ namespace GenesisCube
 			arr->values.push_back(buffer);
 		}
 		this->json = arr;
-		return this->json.Cast<JArray>()->values[index];
+		return CastPtr<JArray>(this->json)->values[index];
 	}
 	
 	JSON::Json &JSON::Json::operator[](int32_t index) const
@@ -115,7 +115,7 @@ namespace GenesisCube
 	
 	JSON::Json &JSON::Json::operator[](const TCHAR *key) const
 	{
-		if (JObject *arr = this->json.Cast<JObject>())
+		if (auto arr = CastPtr<JObject>(this->json))
 		{
 			return arr->values[key];
 		}
@@ -124,12 +124,12 @@ namespace GenesisCube
 	
 	JSON::Json &JSON::Json::operator[](const TCHAR *key)
 	{
-		if (JObject *arr = this->json.Cast<JObject>())
+		if (auto arr = CastPtr<JObject>(this->json))
 		{
 			return arr->values[key];
 		}
 		if (!Is<GNull>()) throw EInvalidArgumentException(__FUNCSIG__ TEXT(":: This is not an array"));
-		auto *arr = new JObject();
+		auto arr = MakePtr<JObject>();
 		
 		JSON::Json buffer;
 		this->json = arr;
@@ -138,7 +138,7 @@ namespace GenesisCube
 	
 	JSON::Json &JSON::Json::operator[](const TString &key) const
 	{
-		if (JObject *arr = this->json.Cast<JObject>())
+		if (auto arr = CastPtr<JObject>(this->json))
 		{
 			return arr->values[key];
 		}
@@ -147,13 +147,13 @@ namespace GenesisCube
 	
 	JSON::Json &JSON::Json::operator[](const TString &key)
 	{
-		if (JObject *arr = this->json.Cast<JObject>())
+		if (auto arr = CastPtr<JObject>(this->json))
 		{
 			return arr->values[key];
 		}
 		if (!Is<GNull>()) throw EInvalidArgumentException(__FUNCSIG__ TEXT(":: This is not an array"));
-		JObject *arr;
-		this->json = arr = new JObject();
+		TPtr<JObject> arr;
+		this->json = arr = MakePtr<JObject>();
 		
 		JSON::Json buffer;
 		return arr->values[key] = buffer;
@@ -161,14 +161,12 @@ namespace GenesisCube
 	
 	bool JSON::Json::operator==(const JSON::Json &_other)
 	{
-		if (this->json.TypeId() != _other.TypeId()) return false;
-		return this->json->operator==(*_other.json.Get());
+		return this->json == _other.json;
 	}
 	
 	bool JSON::Json::operator!=(const JSON::Json &_other)
 	{
-		if (this->json.TypeId() != _other.TypeId()) return true;
-		return this->json->operator!=(*_other.json.Get());
+		return this->json != _other.json;
 	}
 	
 	JSON::Json::operator bool() const
@@ -198,20 +196,20 @@ namespace GenesisCube
 	
 	void JSON::Json::Push(const Json &_json)
 	{
-		if (JArray *arr = this->json.Cast<JArray>())
+		if (auto arr = CastPtr<JArray>(this->json))
 		{
 			arr->values.push_back(_json);
 			return;
 		}
 		if (!Is<GNull>()) throw EInvalidArgumentException(__FUNCSIG__ TEXT(":: This is not an array"));
-		JArray *arr = new JArray();
+		auto arr = MakePtr<JArray>();
 		arr->values.push_back(_json);
 		this->json = arr;
 	}
 	
 	void JSON::Json::Pop()
 	{
-		if (JArray *arr = this->json.Cast<JArray>())
+		if (auto arr = CastPtr<JArray>(this->json))
 		{
 			arr->values.pop_back();
 			return;
@@ -221,7 +219,7 @@ namespace GenesisCube
 	
 	bool JSON::Json::Has(size_t index) const
 	{
-		if (JArray *arr = this->json.Cast<JArray>())
+		if (auto arr = CastPtr<JArray>(this->json))
 		{
 			return index < arr->values.size();
 		}
@@ -230,7 +228,7 @@ namespace GenesisCube
 	
 	bool JSON::Json::Has(const TString &key) const
 	{
-		if (JObject *obj = this->json.Cast<JObject>())
+		if (auto obj = CastPtr<JObject>(this->json))
 		{
 			return obj->values.find(key) != obj->values.end();
 		}
@@ -239,7 +237,7 @@ namespace GenesisCube
 	
 	JSON::Json::ArrayIterator JSON::Json::Remove(size_t index)
 	{
-		if (JArray *arr = this->json.Cast<JArray>())
+		if (auto arr = CastPtr<JArray>(this->json))
 		{
 			if (index >= arr->values.size()) throw EOutOfRangeException(__FUNCSIG__ TEXT(":: out of range"));
 			return arr->values.erase(arr->values.begin() + index);
@@ -249,7 +247,7 @@ namespace GenesisCube
 	
 	JSON::Json::ArrayIterator JSON::Json::Remove(const ArrayIterator &_First, const ArrayIterator &_Last)
 	{
-		if (JArray *arr = this->json.Cast<JArray>())
+		if (auto arr = CastPtr<JArray>(this->json))
 		{
 			return arr->values.erase(_First, _Last);
 		}
@@ -258,7 +256,7 @@ namespace GenesisCube
 	
 	JSON::Json::ArrayIterator JSON::Json::Remove(const ArrayIterator &_Where)
 	{
-		if (JArray *arr = this->json.Cast<JArray>())
+		if (auto arr = CastPtr<JArray>(this->json))
 		{
 			return arr->values.erase(_Where);
 		}
@@ -267,7 +265,7 @@ namespace GenesisCube
 	
 	size_t JSON::Json::Remove(const TString &key)
 	{
-		if (JObject *obj = this->json.Cast<JObject>())
+		if (auto obj = CastPtr<JObject>(this->json))
 		{
 			return obj->values.erase(key);
 		}
@@ -276,7 +274,7 @@ namespace GenesisCube
 	
 	JSON::Json::ObjectIterator JSON::Json::Remove(const ObjectIterator &_First, const ObjectIterator &_Last)
 	{
-		if (JObject *obj = this->json.Cast<JObject>())
+		if (auto obj = CastPtr<JObject>(this->json))
 		{
 			return obj->values.erase(_First, _Last);
 		}
@@ -285,7 +283,7 @@ namespace GenesisCube
 	
 	JSON::Json::ObjectIterator JSON::Json::Remove(const ObjectIterator &_Where)
 	{
-		if (JObject *obj = this->json.Cast<JObject>())
+		if (auto obj = CastPtr<JObject>(this->json))
 		{
 			return obj->values.erase(_Where);
 		}
@@ -294,7 +292,7 @@ namespace GenesisCube
 	
 	JSON::Json::ObjectIterator JSON::Json::begin() const
 	{
-		if (JObject *obj = this->json.Cast<JObject>())
+		if (auto obj = CastPtr<JObject>(this->json))
 		{
 			return obj->values.begin();
 		}
@@ -303,7 +301,7 @@ namespace GenesisCube
 	
 	JSON::Json::ObjectIterator JSON::Json::end() const
 	{
-		if (JObject *obj = this->json.Cast<JObject>())
+		if (auto obj = CastPtr<JObject>(this->json))
 		{
 			return obj->values.end();
 		}
@@ -312,11 +310,11 @@ namespace GenesisCube
 	
 	size_t JSON::Json::Size() const
 	{
-		if (JArray *arr = this->json.Cast<JArray>())
+		if (auto arr = CastPtr<JArray>(this->json))
 		{
 			return arr->values.size();
 		}
-		if (JObject *obj = this->json.Cast<JObject>())
+		if (auto obj = CastPtr<JObject>(this->json))
 		{
 			return obj->values.size();
 		}
@@ -325,7 +323,7 @@ namespace GenesisCube
 	
 	JSON::Json::ArrayIterator JSON::Json::ArrayBegin() const
 	{
-		if (JArray *arr = this->json.Cast<JArray>())
+		if (auto arr = CastPtr<JArray>(this->json))
 		{
 			return arr->values.begin();
 		}
@@ -334,7 +332,7 @@ namespace GenesisCube
 	
 	JSON::Json::ArrayIterator JSON::Json::ArrayEnd() const
 	{
-		if (JArray *arr = this->json.Cast<JArray>())
+		if (auto arr = CastPtr<JArray>(this->json))
 		{
 			return arr->values.end();
 		}
@@ -343,7 +341,7 @@ namespace GenesisCube
 	
 	JSON::Json::ArrayReverseIterator JSON::Json::ArrayRBegin() const
 	{
-		if (JArray *arr = this->json.Cast<JArray>())
+		if (auto arr = CastPtr<JArray>(this->json))
 		{
 			return arr->values.rbegin();
 		}
@@ -352,7 +350,7 @@ namespace GenesisCube
 	
 	JSON::Json::ArrayReverseIterator JSON::Json::ArrayREnd() const
 	{
-		if (JArray *arr = this->json.Cast<JArray>())
+		if (auto arr = CastPtr<JArray>(this->json))
 		{
 			return arr->values.rend();
 		}
@@ -361,7 +359,7 @@ namespace GenesisCube
 	
 	JSON::Json::ObjectIterator JSON::Json::ObjectBegin() const
 	{
-		if (JObject *obj = this->json.Cast<JObject>())
+		if (auto obj = CastPtr<JObject>(this->json))
 		{
 			return obj->values.begin();
 		}
@@ -370,7 +368,7 @@ namespace GenesisCube
 	
 	JSON::Json::ObjectIterator JSON::Json::ObjectEnd() const
 	{
-		if (JObject *obj = this->json.Cast<JObject>())
+		if (auto obj = CastPtr<JObject>(this->json))
 		{
 			return obj->values.end();
 		}
@@ -379,7 +377,7 @@ namespace GenesisCube
 	
 	JSON::Json::ObjectReverseIterator JSON::Json::ObjectRBegin() const
 	{
-		if (JObject *obj = this->json.Cast<JObject>())
+		if (auto obj = CastPtr<JObject>(this->json))
 		{
 			return obj->values.rbegin();
 		}
@@ -388,7 +386,7 @@ namespace GenesisCube
 	
 	JSON::Json::ObjectReverseIterator JSON::Json::ObjectREnd() const
 	{
-		if (JObject *obj = this->json.Cast<JObject>())
+		if (auto obj = CastPtr<JObject>(this->json))
 		{
 			return obj->values.rend();
 		}
@@ -397,7 +395,7 @@ namespace GenesisCube
 	
 	JSON::Json::Array &JSON::Json::ToArray() const
 	{
-		if (JArray *arr = this->json.Cast<JArray>())
+		if (auto arr = CastPtr<JArray>(this->json))
 		{
 			return arr->values;
 		}
@@ -406,7 +404,7 @@ namespace GenesisCube
 	
 	JSON::Json::Object &JSON::Json::ToMap() const
 	{
-		if (JObject *obj = this->json.Cast<JObject>())
+		if (auto obj = CastPtr<JObject>(this->json))
 		{
 			return obj->values;
 		}
@@ -415,7 +413,7 @@ namespace GenesisCube
 	
 	void JSON::Json::Reset()
 	{
-		this->json = new GNull();
+		this->json = MakePtr<GNull>();
 	}
 	
 	TString JSON::Json::ToString() const noexcept

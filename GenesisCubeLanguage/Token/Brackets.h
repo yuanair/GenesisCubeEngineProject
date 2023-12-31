@@ -30,8 +30,7 @@ namespace GenesisCube::Token
 	{
 	public:
 		
-		[[nodiscard]]
-		inline TString GetName() const noexcept override { return TEXT("LeftParen"); }
+		void GetPrefixExpression(TPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept override;
 		
 		[[nodiscard]]
 		Precedence GetPrecedence() const noexcept override { return Lowest; }
@@ -41,6 +40,8 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline LeftParenToken *Clone() const noexcept override { return new LeftParenToken(); }
+		
+		GCLASS_BODY(LeftParenToken)
 		
 	};
 	
@@ -52,9 +53,6 @@ namespace GenesisCube::Token
 	public:
 		
 		[[nodiscard]]
-		inline TString GetName() const noexcept override { return TEXT("RightParen"); }
-		
-		[[nodiscard]]
 		Precedence GetPrecedence() const noexcept override { return Lowest; }
 		
 		[[nodiscard]]
@@ -62,6 +60,8 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline RightParenToken *Clone() const noexcept override { return new RightParenToken(); }
+		
+		GCLASS_BODY(RightParenToken)
 		
 	};
 	
@@ -73,9 +73,6 @@ namespace GenesisCube::Token
 	public:
 		
 		[[nodiscard]]
-		inline TString GetName() const noexcept override { return TEXT("LeftBracket"); }
-		
-		[[nodiscard]]
 		Precedence GetPrecedence() const noexcept override { return Lowest; }
 		
 		[[nodiscard]]
@@ -83,6 +80,8 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline LeftBracketToken *Clone() const noexcept override { return new LeftBracketToken(); }
+		
+		GCLASS_BODY(LeftBracketToken)
 		
 	};
 	
@@ -94,9 +93,6 @@ namespace GenesisCube::Token
 	public:
 		
 		[[nodiscard]]
-		inline TString GetName() const noexcept override { return TEXT("RightBracket"); }
-		
-		[[nodiscard]]
 		Precedence GetPrecedence() const noexcept override { return Lowest; }
 		
 		[[nodiscard]]
@@ -104,6 +100,8 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline RightBracketToken *Clone() const noexcept override { return new RightBracketToken(); }
+		
+		GCLASS_BODY(RightBracketToken)
 		
 	};
 	
@@ -115,9 +113,6 @@ namespace GenesisCube::Token
 	public:
 		
 		[[nodiscard]]
-		inline TString GetName() const noexcept override { return TEXT("LeftBrace"); }
-		
-		[[nodiscard]]
 		Precedence GetPrecedence() const noexcept override { return Lowest; }
 		
 		[[nodiscard]]
@@ -125,6 +120,8 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline LeftBraceToken *Clone() const noexcept override { return new LeftBraceToken(); }
+		
+		GCLASS_BODY(LeftBraceToken)
 		
 	};
 	
@@ -136,9 +133,6 @@ namespace GenesisCube::Token
 	public:
 		
 		[[nodiscard]]
-		inline TString GetName() const noexcept override { return TEXT("RightBrace"); }
-		
-		[[nodiscard]]
 		Precedence GetPrecedence() const noexcept override { return Lowest; }
 		
 		[[nodiscard]]
@@ -146,6 +140,8 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline RightBraceToken *Clone() const noexcept override { return new RightBraceToken(); }
+		
+		GCLASS_BODY(RightBraceToken)
 		
 	};
 	

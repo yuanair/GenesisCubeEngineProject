@@ -10,15 +10,15 @@ void MainWindow::OnDropFiles(HDROP hDropInfo)
 	std::list<TPtr<GFileName>> files;
 	GFileName::DragQuery(hDropInfo, files);
 	TString message;
-	for (auto& file : files)
+	for (auto &file: files)
 	{
 		message.append(file->GetFileName()).push_back(TEXT('\n'));
-		if (auto *ptr = file.Cast<GDirectoryName>()) ptr->Find(files);
+		if (auto ptr = CastPtr<GDirectoryName>(file)) ptr->Find(files);
 	}
 	FLogger::Inst().LogInfoODS(message);
 }
 
-MainWindow::MainWindow(MyProgram &program)
+MainWindow::MainWindow(MyProgram *program)
 	: program(program)
 {
 	// 注册窗口类
@@ -28,15 +28,15 @@ MainWindow::MainWindow(MyProgram &program)
 	bEnableOnChar = true;
 	
 	// 创建窗口
-	Create(wndClassName, program.Text("windowName"));
+	Create(wndClassName, program->Text("windowName"));
 	
 	// 显示窗口
-	ShowAndUpdate(program.nShowCmd);
+	ShowAndUpdate(program->nShowCmd);
 	
 	// directX
-	this->program.factory.CreateHwndRenderTarget(hwndRenderTarget, *this).ThrowIfThrow();
+	this->program->factory.CreateHwndRenderTarget(hwndRenderTarget, *this).ThrowIfThrow();
 	
-	this->program.writeFactory.CreateTextFormat(textFormat, TEXT("Consolas"), TEXT("Consolas"), 50.0f).ThrowIfThrow();
+	this->program->writeFactory.CreateTextFormat(textFormat, TEXT("Consolas"), TEXT("Consolas"), 50.0f).ThrowIfThrow();
 	this->hwndRenderTarget.CreateSolidBrush(brush, D2D1::ColorF(0.1f, 0.1f, 0.1f)).ThrowIfThrow();
 	
 	FImageData data;
@@ -127,7 +127,7 @@ void MyProgram::Start()
 		if (ifStream.is_open())
 		{
 			JSON::JsonReader jsonReader(ifStream);
-			this->zh_cn.LoadFromJson(*jsonReader.NextSafe());
+			this->zh_cn.LoadFromJson(*jsonReader.Next());
 			ifStream.close();
 		}
 		else
@@ -138,7 +138,7 @@ void MyProgram::Start()
 		if (ifStream.is_open())
 		{
 			JSON::JsonReader jsonReader(ifStream);
-			this->en_us.LoadFromJson(*jsonReader.NextSafe());
+			this->en_us.LoadFromJson(*jsonReader.Next());
 			ifStream.close();
 		}
 		else
@@ -150,7 +150,7 @@ void MyProgram::Start()
 		if (ifStream.is_open())
 		{
 			JSON::JsonReader jsonReader(ifStream);
-			this->language_debug.LoadFromJson(*jsonReader.NextSafe());
+			this->language_debug.LoadFromJson(*jsonReader.Next());
 			ifStream.close();
 		}
 		else
@@ -161,7 +161,7 @@ void MyProgram::Start()
 	
 	GD2D1Factory::Create(this->factory.ReleaseAndGetAddressOf()).ThrowIfThrow();
 	GDWriteFactory::Create(this->writeFactory.ReleaseAndGetAddressOf()).ThrowIfThrow();
-	mainWindow = new MainWindow(*this);
+	mainWindow = MakePtr<MainWindow>(this);
 }
 
 void MyProgram::End()

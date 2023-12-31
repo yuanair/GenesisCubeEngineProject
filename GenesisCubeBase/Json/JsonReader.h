@@ -30,10 +30,6 @@ namespace GenesisCube::JSON
 		bool Eof() const;
 		
 		///
-		/// \return 获取
-		inline TPtr<Json> NextSafe() { return Next(); }
-		
-		///
 		/// \return good
 		[[nodiscard]]
 		bool Good() const;
@@ -41,7 +37,7 @@ namespace GenesisCube::JSON
 		///
 		/// 获取JSON
 		/// \return
-		Json *Next();
+		TPtr<Json> Next();
 	
 	public:
 		
@@ -52,9 +48,9 @@ namespace GenesisCube::JSON
 	
 	private:
 		
-		Json *ReadArray();
+		TPtr<JSON::Json> ReadArray();
 		
-		Json *ReadObject();
+		TPtr<JSON::Json> ReadObject();
 		
 		TString ReadString(TCHAR stopChar);
 		

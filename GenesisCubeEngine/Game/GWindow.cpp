@@ -202,8 +202,6 @@ namespace GenesisCube
 				
 				ImmReleaseContext(hWnd, hIMC);
 				return 0;
-				
-				return 0;
 			}
 			case WM_IME_COMPOSITION:
 			{

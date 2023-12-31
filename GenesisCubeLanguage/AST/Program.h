@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Node.h"
+#include "Function.h"
 
 namespace GenesisCube::AST
 {
@@ -16,14 +17,16 @@ namespace GenesisCube::AST
 	public:
 		
 		[[nodiscard]]
-		TString GetName() const noexcept override { return TEXT("Program"); }
+		JSON::Json ToJson() const noexcept override;
 		
 		[[nodiscard]]
-		JSON::Json ToJson() const noexcept override;
+		Program *Clone() const noexcept override;
+		
+		GCLASS_BODY(Program)
 	
 	public:
 		
-		std::list<TPtr<Statement>> statements;
+		std::list<TPtr<Function>> functions;
 		
 	};
 	

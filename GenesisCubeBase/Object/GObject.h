@@ -17,10 +17,6 @@ namespace GenesisCube
 	//
 	class GObject
 	{
-		
-		template<class T> friend
-		class TPtr;
-	
 	public:
 		
 		GObject() noexcept;
@@ -65,33 +61,6 @@ namespace GenesisCube
 		/// \return 类名
 		[[nodiscard]]
 		inline virtual TString GetName() const noexcept = 0;
-	
-	private:
-		
-		///
-		/// 添加引用，无需手动调用
-		///
-		/// \return 引用计数
-		size_t AddRef() noexcept;
-		
-		///
-		/// 释放，无需手动调用
-		///
-		/// \return 引用计数
-		size_t Release() noexcept;
-	
-	public:
-		
-		///
-		/// 获取引用计数
-		///
-		/// \return 引用计数
-		[[nodiscard]]
-		inline size_t GetRef() const noexcept { return this->ref; }
-	
-	private:
-		
-		size_t ref;
 		
 	};
 	

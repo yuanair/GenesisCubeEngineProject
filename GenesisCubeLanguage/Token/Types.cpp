@@ -3,24 +3,46 @@
 //
 
 #include "Types.h"
-#include "../AST/Integer.h"
-#include "../AST/String.h"
-#include "../AST/Float.h"
 
 namespace GenesisCube::Token
 {
-	void StringToken::GetPrefix(TPtr<AST::Expression> &expression) noexcept
+	void StringToken::GetPrefixExpression(TPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept
 	{
 		expression = NewNode<AST::String>();
 	}
 	
-	void IntegerToken::GetPrefix(TPtr<AST::Expression> &expression) noexcept
+	JSON::Json StringToken::ToJson() const
+	{
+		JSON::Json json;
+		json[TEXT("value")] = this->value;
+		json[TEXT("type")] = GetName();
+		return json;
+	}
+	
+	void IntegerToken::GetPrefixExpression(TPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept
 	{
 		expression = NewNode<AST::Integer>();
 	}
 	
-	void FloatToken::GetPrefix(TPtr<AST::Expression> &expression) noexcept
+	JSON::Json IntegerToken::ToJson() const
+	{
+		JSON::Json json;
+		json[TEXT("value")] = this->value;
+		json[TEXT("type")] = GetName();
+		return json;
+	}
+	
+	void FloatToken::GetPrefixExpression(TPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept
 	{
 		expression = NewNode<AST::Float>();
 	}
+	
+	JSON::Json FloatToken::ToJson() const
+	{
+		JSON::Json json;
+		json[TEXT("value")] = this->value;
+		json[TEXT("type")] = GetName();
+		return json;
+	}
+	
 }

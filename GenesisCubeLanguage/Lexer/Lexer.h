@@ -76,10 +76,7 @@ namespace GenesisCube::Lexer
 		void UnreadChar();
 		
 		template<class T, class... Args>
-		T *NewToken(Args... args) const;
-		
-		template<class T, class... Args>
-		T *NewToken(Args... args);
+		TPtr<T> NewToken(Args... args) const;
 		
 		void ReadNumber(TPtr<Token::Token> &token);
 		
@@ -113,17 +110,9 @@ namespace GenesisCube::Lexer
 	};
 	
 	template<class T, class... Args>
-	T *Lexer::NewToken(Args... args) const
+	TPtr<T> Lexer::NewToken(Args... args) const
 	{
-		auto *ptr = new T(args...);
-		ptr->pos = tokenPos;
-		return ptr;
-	}
-	
-	template<class T, class... Args>
-	T *Lexer::NewToken(Args... args)
-	{
-		auto *ptr = new T(args...);
+		auto ptr = MakePtr<T>(args...);
 		ptr->pos = tokenPos;
 		return ptr;
 	}

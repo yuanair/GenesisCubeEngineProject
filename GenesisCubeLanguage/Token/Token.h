@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "../../GenesisCubeBase/Core/FCore.h"
 #include "../../GenesisCubeBase/Json/Json.h"
@@ -6,6 +6,11 @@
 namespace GenesisCube::AST
 {
 	class Expression;
+}
+
+namespace GenesisCube::Parser
+{
+	class Parser;
 }
 
 namespace GenesisCube::Token
@@ -30,15 +35,14 @@ namespace GenesisCube::Token
 	};
 	
 	/// 符号类
-	class Token : public GObject
+	class Token : public GObject, public std::enable_shared_from_this<Token>
 	{
 	public:
 		
 		/// 优先级
 		enum Precedence : int32_t
 		{
-			NullPrecedence = 0,     // 无优先级
-			Lowest,                // 最低优先级
+			Lowest = 0,                // 最低优先级
 			Sum,                    // +与-优先级
 			Product,                // *与/优先级
 		};
@@ -80,7 +84,7 @@ namespace GenesisCube::Token
 		///
 		/// \return 优先级
 		[[nodiscard]]
-		inline virtual Precedence GetPrecedence() const noexcept { return NullPrecedence; }
+		inline virtual Precedence GetPrecedence() const noexcept { return Lowest; }
 		
 		///
 		/// \return 类别
@@ -89,12 +93,14 @@ namespace GenesisCube::Token
 		
 		///
 		/// \return 前缀表达式
-		inline virtual void GetPrefix(TPtr<class AST::Expression> &expression) noexcept {}
+		inline virtual void
+		GetPrefixExpression(TPtr<class AST::Expression> &expression, class Parser::Parser &parser) noexcept {}
 		
 		///
 		/// \return 中缀表达式
-		inline virtual void GetInfix(TPtr<class AST::Expression> &expression,
-									 const TPtr<class AST::Expression> &left) noexcept {}
+		inline virtual void
+		GetInfixExpression(TPtr<class AST::Expression> &expression, const TPtr<class AST::Expression> &left,
+						   class Parser::Parser &parser) noexcept {}
 	
 	public:
 		
@@ -102,19 +108,16 @@ namespace GenesisCube::Token
 		[[nodiscard]] TokenPos GetPos() const;
 		
 		/// 以json表示
-		[[nodiscard]] JSON::Json ToJson() const;
+		virtual JSON::Json ToJson() const;
 		
 		/// 类型是否为EOF
 		[[nodiscard]] bool IsEOF() const;
 		
-		template<class T>
-		bool Is() const { return typeid(*this) == typeid(T); }
-		
 		template<class T, class... Args>
-		inline T *NewNode(Args... args) noexcept
+		inline TPtr<T> NewNode(Args... args) noexcept
 		{
-			T *ptr = new T(args...);
-			ptr->token = this;
+			TPtr<T> ptr = MakePtr<T>(args...);
+			ptr->token = shared_from_this();
 			return ptr;
 		}
 	

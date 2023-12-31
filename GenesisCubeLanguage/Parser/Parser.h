@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Lexer/Lexer.h"
+#include "../AST/AST.h"
 
 
 namespace GenesisCube::Parser
@@ -51,6 +52,37 @@ namespace GenesisCube::Parser
 	public:
 		
 		///
+		/// 解析程序
+		/// \param program 程序
+		void ParseProgram(TPtr<AST::Program> &program);
+		
+		///
+		/// 解析函数
+		/// \param function 函数
+		void ParseFunction(TPtr<AST::Function> &function);
+		
+		///
+		/// 解析语句
+		/// \param statement 语句
+		void ParseStatement(TPtr<AST::Statement> &statement);
+		
+		///
+		/// 解析表达式语句
+		/// \param expressionStatement 目标
+		void ParseExpressionStatement(TPtr<AST::ExpressionStatement> &expressionStatement);
+		
+		///
+		/// 解析表达式
+		/// \param expression 目标
+		void ParseExpression(TPtr<AST::Expression> &expression, Token::Token::Precedence precedence);
+		
+		///
+		/// 解析表达式
+		/// \param infix 目标
+		/// \param left
+		void ParseInfix(TPtr<AST::Infix> &infix, const TPtr<AST::Expression> &left);
+		
+		///
 		/// 下一个符号
 		///
 		void NextToken();
@@ -85,16 +117,23 @@ namespace GenesisCube::Parser
 		inline void PeekTokenError();
 		
 		///
+		/// 前缀表达式解析错误
+		inline void NoPrefixParseFnError(const TString &message)
+		{
+			NewError(Error::Error_NoPrefixParseFnError, message);
+		}
+		
+		///
 		/// \tparam T 类型
 		/// \return 当前符号是否为T
 		template<class T>
-		inline bool CurrTokenIs() const { return currToken->Is<T>(); }
+		inline bool CurrTokenIs() const { return Is<T>(currToken); }
 		
 		///
 		/// \tparam T 类型
 		/// \return 下一个符号是否为T
 		template<class T>
-		inline bool PeekTokenIs() const { return currToken->Is<T>(); }
+		inline bool PeekTokenIs() const { return Is<T>(peekToken); }
 		
 		///
 		/// \return 当前运算符的优先级
@@ -126,7 +165,7 @@ namespace GenesisCube::Parser
 	template<class T>
 	inline bool Parser::ExpectPeekToken()
 	{
-		if (peekToken->Is<T>())
+		if (PeekTokenIs<T>())
 		{
 			NextToken();
 			return true;

@@ -22,6 +22,9 @@ namespace GenesisCube::AST
 		
 		[[nodiscard]]
 		JSON::Json ToJson() const noexcept override;
+		
+		[[nodiscard]]
+		Infix *Clone() const noexcept override;
 	
 	public:
 		

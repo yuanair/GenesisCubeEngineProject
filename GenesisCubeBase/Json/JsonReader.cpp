@@ -114,7 +114,7 @@ namespace GenesisCube
 		return Eof();
 	}
 	
-	JSON::Json *JSON::JsonReader::Next()
+	TPtr<JSON::Json> JSON::JsonReader::Next()
 	{
 		do
 		{
@@ -122,13 +122,13 @@ namespace GenesisCube
 			{
 				case TEXT('\"'):
 				{
-					if (!NextChar()) return new Json(TEXT("<error string>"));
-					return new Json(ReadString(TEXT('\"')));
+					if (!NextChar()) return MakePtr<Json>(TEXT("<error string>"));
+					return MakePtr<Json>(ReadString(TEXT('\"')));
 				}
 				case TEXT('\''):
 				{
-					if (!NextChar()) return new Json(TEXT("<error string>"));
-					return new Json(ReadString(TEXT('\'')));
+					if (!NextChar()) return MakePtr<Json>(TEXT("<error string>"));
+					return MakePtr<Json>(ReadString(TEXT('\'')));
 				}
 				case TEXT('0'):
 				case TEXT('1'):
@@ -195,15 +195,15 @@ namespace GenesisCube
 					}
 					while (true);
 					
-					if (bError) return new Json(TEXT("<error number>"));
+					if (bError) return MakePtr<Json>(TEXT("<error number>"));
 					
 					if (bIsFloat)
 					{
-						return new Json(std::stof(buffer));
+						return MakePtr<Json>(std::stof(buffer));
 					}
 					else
 					{
-						return new Json(std::stoll(buffer));
+						return MakePtr<Json>(std::stoll(buffer));
 					}
 				}
 				case TEXT('f'):
@@ -213,8 +213,8 @@ namespace GenesisCube
 					if (!NextChar() || ch != TEXT('l')) bError = true;
 					if (!NextChar() || ch != TEXT('s')) bError = true;
 					if (!NextChar() || ch != TEXT('e')) bError = true;
-					if (bError) return new Json(TEXT("<error>"));
-					return new Json(false);
+					if (bError) return MakePtr<Json>(TEXT("<error>"));
+					return MakePtr<Json>(false);
 				}
 				case TEXT('t'):
 				{
@@ -222,17 +222,17 @@ namespace GenesisCube
 					if (!NextChar() || ch != TEXT('r')) bError = true;
 					if (!NextChar() || ch != TEXT('u')) bError = true;
 					if (!NextChar() || ch != TEXT('e')) bError = true;
-					if (bError) return new Json(TEXT("<error>"));
-					return new Json(true);
+					if (bError) return MakePtr<Json>(TEXT("<error>"));
+					return MakePtr<Json>(true);
 				}
 				case TEXT('{'):
 				{
-					if (!NextChar()) return new Json(TEXT("<error object>"));
+					if (!NextChar()) return MakePtr<Json>(TEXT("<error object>"));
 					return ReadObject();
 				}
 				case TEXT('['):
 				{
-					if (!NextChar()) return new Json(TEXT("<error array>"));
+					if (!NextChar()) return MakePtr<Json>(TEXT("<error array>"));
 					return ReadArray();
 				}
 				case TEXT('n'):
@@ -241,8 +241,8 @@ namespace GenesisCube
 					if (!NextChar() || ch != TEXT('u')) bError = true;
 					if (!NextChar() || ch != TEXT('l')) bError = true;
 					if (!NextChar() || ch != TEXT('l')) bError = true;
-					if (bError) return new Json(TEXT("<error>"));
-					return new Json(nullptr);
+					if (bError) return MakePtr<Json>(TEXT("<error>"));
+					return MakePtr<Json>(nullptr);
 				}
 				case TEXT(' '):
 				case TEXT('\f'):
@@ -256,7 +256,7 @@ namespace GenesisCube
 					break;
 				case TEXT('/'):
 				{
-					if (!NextChar()) return new Json(TEXT("<error>"));
+					if (!NextChar()) return MakePtr<Json>(TEXT("<error>"));
 					if (ch == TEXT('/'))
 					{
 						while (NextChar())
@@ -270,31 +270,31 @@ namespace GenesisCube
 						{
 							if (ch == TEXT('*'))
 							{
-								if (!NextChar()) return new Json(TEXT("<error>"));
+								if (!NextChar()) return MakePtr<Json>(TEXT("<error>"));
 								if (ch == TEXT('/')) break;
 							}
 						}
 					}
 					else
 					{
-						return new Json(TEXT("<error>"));
+						return MakePtr<Json>(TEXT("<error>"));
 					}
 				}
 					break;
 				default:
 				{
-					//return new Json(TEXT("<error>"));
+					//return MakePtr< Json(TEXT("<error>"));
 				}
 					break;
 			}
 		}
 		while (NextChar());
-		return new Json(nullptr);
+		return MakePtr<Json>(nullptr);
 	}
 	
-	JSON::Json *JSON::JsonReader::ReadArray()
+	TPtr<JSON::Json> JSON::JsonReader::ReadArray()
 	{
-		auto *json = new Json();
+		auto json = MakePtr<Json>();
 		do
 		{
 			if (ch == TEXT(']')) break;
@@ -304,18 +304,17 @@ namespace GenesisCube
 			}
 			else
 			{
-				JSON::Json *ptr = Next();
+				auto ptr = Next();
 				json->Push(*ptr);
-				delete ptr;
 			}
 		}
 		while (NextChar());
 		return json;
 	}
 	
-	JSON::Json *JSON::JsonReader::ReadObject()
+	TPtr<JSON::Json> JSON::JsonReader::ReadObject()
 	{
-		auto *json = new Json();
+		auto json = MakePtr<Json>();
 		do
 		{
 			if (ch == TEXT('}')) break;
@@ -325,7 +324,7 @@ namespace GenesisCube
 			}
 			else
 			{
-				JSON::Json *key = Next();
+				auto key = Next();
 				do
 				{
 					if (ch == TEXT(':')) break;
@@ -333,12 +332,10 @@ namespace GenesisCube
 				while (NextChar());
 				if (key->Is<GString>())
 				{
-					TString buffer = *key;
-					JSON::Json *ptr = Next();
+					TString buffer = key->operator TString();
+					auto ptr = Next();
 					json->operator[](buffer) = *ptr;
-					delete ptr;
 				}
-				delete key;
 			}
 		}
 		while (NextChar());

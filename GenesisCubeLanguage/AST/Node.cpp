@@ -7,10 +7,6 @@
 
 namespace GenesisCube::AST
 {
-	
-	JSON::Json Statement::ToJson() const noexcept
-	{
-		return nullptr;
-	}
+
 	
 }

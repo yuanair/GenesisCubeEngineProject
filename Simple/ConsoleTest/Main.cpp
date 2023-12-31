@@ -102,7 +102,7 @@ int main()
 					break;
 			}
 			
-			if (token->Is<Token::SemicolonToken>())
+			if (Is<Token::SemicolonToken>(token))
 			{
 				wcout << token->ToString() << TEXT("\n");
 				for (int32_t i = 0; i < level; i++)
@@ -110,7 +110,7 @@ int main()
 					wcout << TEXT("\t");
 				}
 			}
-			else if (token->Is<Token::RightBraceToken>())
+			else if (Is<Token::RightBraceToken>(token))
 			{
 				level--;
 				wcout << TEXT("\n");
@@ -124,7 +124,7 @@ int main()
 					wcout << TEXT("\t");
 				}
 			}
-			else if (token->Is<Token::LeftBraceToken>())
+			else if (Is<Token::LeftBraceToken>(token))
 			{
 				wcout << TEXT("\n");
 				for (int32_t i = 0; i < level; i++)
@@ -138,7 +138,7 @@ int main()
 					wcout << TEXT("\t");
 				}
 			}
-			else if (token->Is<Token::StringToken>())
+			else if (Is<Token::StringToken>(token))
 				wcout << TEXT("\"") << FFormatter::ToShowString(token->ToString()) << TEXT("\"");
 			else wcout << TEXT(" ") << token->ToString();
 			
@@ -156,7 +156,7 @@ int main()
 		}
 		InfoColor();
 		
-		TOFStream ofs(TEXT("Lexer.json"));
+		TOFStream ofs(TEXT("../../../../Lexer.json"));
 		if (ofs.is_open())
 		{
 			ofs << json.ToString();
@@ -168,6 +168,33 @@ int main()
 	{
 		TPtr<Lexer::Lexer> lexer(new Lexer::Lexer(TEXT("Data/test.c")));
 		TPtr<Parser::Parser> parser(new Parser::Parser(lexer));
+		
+		TPtr<AST::Function> function;
+		parser->ParseFunction(function);
+		
+		ErrorColor();
+		for (auto &error: lexer->GetErrors())
+		{
+			std::wcout << std::format(
+				TEXT("Lexer::Error: {}({}, {}): {}\n"), (int32_t) error.type, error.pos.line, error.pos.ch,
+				error.message
+			);
+		}
+		for (auto &error: parser->GetErrors())
+		{
+			std::wcout << std::format(
+				TEXT("Parser::Error: {}({}, {}): {}\n"), (int32_t) error.type, error.pos.line, error.pos.ch,
+				error.message
+			);
+		}
+		InfoColor();
+		
+		if (function)
+		{
+			TOFStream ofs(TEXT("../../../../Parser.json"));
+			ofs << function->ToJson().ToString();
+			ofs.close();
+		}
 
 //		auto program = parser->ParseProgram();
 //

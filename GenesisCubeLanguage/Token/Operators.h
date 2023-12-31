@@ -16,6 +16,9 @@ namespace GenesisCube::Token
 	{
 	public:
 		
+		void GetInfixExpression(TPtr<AST::Expression> &expression, const TPtr<AST::Expression> &left,
+								Parser::Parser &parser) noexcept override;
+		
 		[[nodiscard]]
 		inline Type GetType() const noexcept override { return OperatorType; }
 		
@@ -40,8 +43,8 @@ namespace GenesisCube::Token
 	{
 	public:
 		
-		[[nodiscard]]
-		inline TString GetName() const noexcept override { return TEXT("Plus"); }
+		void GetInfixExpression(TPtr<AST::Expression> &expression, const TPtr<AST::Expression> &left,
+								Parser::Parser &parser) noexcept override;
 		
 		[[nodiscard]]
 		inline Precedence GetPrecedence() const noexcept override { return Sum; }
@@ -52,6 +55,8 @@ namespace GenesisCube::Token
 		[[nodiscard]]
 		inline PlusToken *Clone() const noexcept override { return new PlusToken(); }
 		
+		GCLASS_BODY(PlusToken)
+		
 	};
 	
 	///
@@ -61,8 +66,8 @@ namespace GenesisCube::Token
 	{
 	public:
 		
-		[[nodiscard]]
-		inline TString GetName() const noexcept override { return TEXT("Minus"); }
+		void GetInfixExpression(TPtr<AST::Expression> &expression, const TPtr<AST::Expression> &left,
+								Parser::Parser &parser) noexcept override;
 		
 		[[nodiscard]]
 		inline Precedence GetPrecedence() const noexcept override { return Sum; }
@@ -73,6 +78,8 @@ namespace GenesisCube::Token
 		[[nodiscard]]
 		inline MinusToken *Clone() const noexcept override { return new MinusToken(); }
 		
+		GCLASS_BODY(MinusToken)
+		
 	};
 	
 	///
@@ -82,8 +89,8 @@ namespace GenesisCube::Token
 	{
 	public:
 		
-		[[nodiscard]]
-		inline TString GetName() const noexcept override { return TEXT("Multiply"); }
+		void GetInfixExpression(TPtr<AST::Expression> &expression, const TPtr<AST::Expression> &left,
+								Parser::Parser &parser) noexcept override;
 		
 		[[nodiscard]]
 		inline Precedence GetPrecedence() const noexcept override { return Product; }
@@ -94,6 +101,8 @@ namespace GenesisCube::Token
 		[[nodiscard]]
 		inline MultiplyToken *Clone() const noexcept override { return new MultiplyToken(); }
 		
+		GCLASS_BODY(MultiplyToken)
+		
 	};
 	
 	///
@@ -103,8 +112,8 @@ namespace GenesisCube::Token
 	{
 	public:
 		
-		[[nodiscard]]
-		inline TString GetName() const noexcept override { return TEXT("Divide"); }
+		void GetInfixExpression(TPtr<AST::Expression> &expression, const TPtr<AST::Expression> &left,
+								Parser::Parser &parser) noexcept override;
 		
 		[[nodiscard]]
 		inline Precedence GetPrecedence() const noexcept override { return Product; }
@@ -115,6 +124,8 @@ namespace GenesisCube::Token
 		[[nodiscard]]
 		inline DivideToken *Clone() const noexcept override { return new DivideToken(); }
 		
+		GCLASS_BODY(DivideToken)
+		
 	};
 	
 	///
@@ -124,8 +135,8 @@ namespace GenesisCube::Token
 	{
 	public:
 		
-		[[nodiscard]]
-		inline TString GetName() const noexcept override { return TEXT("Mod"); }
+		void GetInfixExpression(TPtr<AST::Expression> &expression, const TPtr<AST::Expression> &left,
+								Parser::Parser &parser) noexcept override;
 		
 		[[nodiscard]]
 		inline Precedence GetPrecedence() const noexcept override { return Product; }
@@ -135,6 +146,8 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline ModToken *Clone() const noexcept override { return new ModToken(); }
+		
+		GCLASS_BODY(ModToken)
 		
 	};
 	

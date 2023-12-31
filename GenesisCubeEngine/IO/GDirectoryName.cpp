@@ -59,12 +59,12 @@ namespace GenesisCube
 			// 如果为目录
 			if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 			{
-				fileNames.push_back(new GDirectoryName(fileName + TEXT("\\") + fd.cFileName));
+				fileNames.push_back(MakePtr<GDirectoryName>(fileName + TEXT("\\") + fd.cFileName));
 			}
 				// 如果为文件
 			else
 			{
-				fileNames.push_back(new GFileName(fileName + TEXT("\\") + fd.cFileName));
+				fileNames.push_back(MakePtr<GFileName>(fileName + TEXT("\\") + fd.cFileName));
 			}
 		}
 		while (::FindNextFile(hFind, &fd));
@@ -90,12 +90,12 @@ namespace GenesisCube
 			// 如果为目录
 			if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 			{
-				args.fileName = new GDirectoryName(fileName + TEXT("\\") + fd.cFileName);
+				args.fileName = MakePtr<GDirectoryName>(fileName + TEXT("\\") + fd.cFileName);
 			}
 				// 如果为文件
 			else
 			{
-				args.fileName = new GFileName(fileName + TEXT("\\") + fd.cFileName);
+				args.fileName = MakePtr<GFileName>(fileName + TEXT("\\") + fd.cFileName);
 			}
 			_event.Trigger(args);
 		}
@@ -122,12 +122,12 @@ namespace GenesisCube
 			// 如果为目录
 			if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 			{
-				args.fileName = new GDirectoryName(fileName + TEXT("\\") + fd.cFileName);
+				args.fileName = MakePtr<GDirectoryName>(fileName + TEXT("\\") + fd.cFileName);
 			}
 				// 如果为文件
 			else
 			{
-				args.fileName = new GFileName(fileName + TEXT("\\") + fd.cFileName);
+				args.fileName = MakePtr<GFileName>(fileName + TEXT("\\") + fd.cFileName);
 			}
 			_event.Trigger(args);
 		}

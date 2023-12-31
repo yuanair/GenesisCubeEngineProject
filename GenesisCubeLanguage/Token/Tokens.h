@@ -26,13 +26,12 @@ namespace GenesisCube::Token
 		inline Type GetType() const noexcept override { return IllegalType; }
 		
 		[[nodiscard]]
-		inline TString GetName() const noexcept override { return TEXT("Illegal"); }
-		
-		[[nodiscard]]
 		inline TString ToString() const noexcept override { return value; }
 		
 		[[nodiscard]]
 		inline IllegalToken *Clone() const noexcept override { return new IllegalToken(value); }
+		
+		GCLASS_BODY(IllegalToken)
 	
 	public:
 		
@@ -55,13 +54,12 @@ namespace GenesisCube::Token
 		inline Type GetType() const noexcept override { return IdentifierType; }
 		
 		[[nodiscard]]
-		inline TString GetName() const noexcept override { return TEXT("Identifier"); }
-		
-		[[nodiscard]]
 		inline TString ToString() const noexcept override { return value; }
 		
 		[[nodiscard]]
 		inline IdentifierToken *Clone() const noexcept override { return new IdentifierToken(value); }
+		
+		GCLASS_BODY(IdentifierToken)
 	
 	public:
 		
@@ -80,13 +78,12 @@ namespace GenesisCube::Token
 		inline Type GetType() const noexcept override { return IllegalType; }
 		
 		[[nodiscard]]
-		inline TString GetName() const noexcept override { return TEXT("EOF"); }
-		
-		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("EOF"); }
 		
 		[[nodiscard]]
 		inline EOFToken *Clone() const noexcept override { return new EOFToken(); }
+		
+		GCLASS_BODY(EOFToken)
 		
 	};
 	
@@ -101,13 +98,12 @@ namespace GenesisCube::Token
 		inline Type GetType() const noexcept override { return SemicolonType; }
 		
 		[[nodiscard]]
-		inline TString GetName() const noexcept override { return TEXT("Semicolon"); }
-		
-		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT(";"); }
 		
 		[[nodiscard]]
 		inline SemicolonToken *Clone() const noexcept override { return new SemicolonToken(); }
+		
+		GCLASS_BODY(SemicolonToken)
 		
 	};
 	

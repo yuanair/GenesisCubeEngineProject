@@ -20,6 +20,7 @@ namespace GenesisCube::AST
 		[[nodiscard]]
 		JSON::Json ToJson() const noexcept override { return token->ToJson(); }
 		
+		[[nodiscard]]
 		String *Clone() const noexcept override { return new String(); }
 		
 		GCLASS_BODY(String)

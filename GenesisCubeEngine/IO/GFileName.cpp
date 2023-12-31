@@ -33,12 +33,12 @@ namespace GenesisCube
 			// 如果为目录
 			if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 			{
-				fileNames.push_back(new GDirectoryName(fd.cFileName));
+				fileNames.push_back(MakePtr<GDirectoryName>(fd.cFileName));
 			}
 				// 如果为文件
 			else
 			{
-				fileNames.push_back(new GFileName(fd.cFileName));
+				fileNames.push_back(MakePtr<GFileName>(fd.cFileName));
 			}
 		}
 		while (::FindNextFile(hFind, &fd));
@@ -62,11 +62,11 @@ namespace GenesisCube
 			// 是否为文件夹
 			if (dwAttribute & FILE_ATTRIBUTE_DIRECTORY)
 			{
-				fileNames.push_back(new GDirectoryName(szFileName));
+				fileNames.push_back(MakePtr<GDirectoryName>(szFileName));
 			}
 			else
 			{
-				fileNames.push_back(new GFileName(szFileName));
+				fileNames.push_back(MakePtr<GFileName>(szFileName));
 			}
 		}
 		return true;

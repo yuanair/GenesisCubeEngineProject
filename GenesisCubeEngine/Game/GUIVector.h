@@ -26,8 +26,8 @@ namespace GenesisCube
 		/// \param renderTarget 目标
 		void Render(ID2D1RenderTarget *renderTarget);
 		
-		template<class T>
-		TPtr<T> AddUI();
+		template<class T, class... Args>
+		TPtr<T> AddUI(Args... args);
 	
 	public:
 		
@@ -42,10 +42,10 @@ namespace GenesisCube
 		
 	};
 	
-	template<class T>
-	TPtr<T> GUIVector::AddUI()
+	template<class T, class... Args>
+	TPtr<T> GUIVector::AddUI(Args... args)
 	{
-		T *ptr = new T;
+		auto ptr = MakePtr<T>(args...);
 		guis.push_back(ptr);
 		return ptr;
 	}

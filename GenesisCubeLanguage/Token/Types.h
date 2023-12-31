@@ -6,6 +6,7 @@
 
 #include "../AST/Node.h"
 #include "Token.h"
+#include "../Parser/Parser.h"
 
 
 namespace GenesisCube::Token
@@ -16,6 +17,9 @@ namespace GenesisCube::Token
 	class TypeToken : public Token
 	{
 	public:
+		
+		[[nodiscard]]
+		inline JSON::Json ToJson() const override = 0;
 		
 		[[nodiscard]]
 		inline Type GetType() const noexcept override = 0;
@@ -42,7 +46,9 @@ namespace GenesisCube::Token
 	
 	public:
 		
-		void GetPrefix(TPtr<AST::Expression> &expression) noexcept override;
+		void GetPrefixExpression(TPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept override;
+		
+		JSON::Json ToJson() const override;
 		
 		[[nodiscard]]
 		inline Type GetType() const noexcept override { return StringType; }
@@ -53,7 +59,7 @@ namespace GenesisCube::Token
 		[[nodiscard]]
 		inline StringToken *Clone() const noexcept override { return new StringToken(value); }
 		
-		GCLASS_BODY(String)
+		GCLASS_BODY(StringToken)
 	
 	public:
 		
@@ -72,7 +78,9 @@ namespace GenesisCube::Token
 	
 	public:
 		
-		void GetPrefix(TPtr<AST::Expression> &expression) noexcept override;
+		void GetPrefixExpression(TPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept override;
+		
+		JSON::Json ToJson() const override;
 		
 		[[nodiscard]]
 		inline Type GetType() const noexcept override { return NumberType; }
@@ -83,7 +91,7 @@ namespace GenesisCube::Token
 		[[nodiscard]]
 		inline IntegerToken *Clone() const noexcept override { return new IntegerToken(value); }
 		
-		GCLASS_BODY(Integer)
+		GCLASS_BODY(IntegerToken)
 	
 	public:
 		
@@ -102,7 +110,9 @@ namespace GenesisCube::Token
 	
 	public:
 		
-		void GetPrefix(TPtr<AST::Expression> &expression) noexcept override;
+		void GetPrefixExpression(TPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept override;
+		
+		JSON::Json ToJson() const override;
 		
 		[[nodiscard]]
 		inline Type GetType() const noexcept override { return NumberType; }
@@ -113,7 +123,7 @@ namespace GenesisCube::Token
 		[[nodiscard]]
 		inline FloatToken *Clone() const noexcept override { return new FloatToken(value); }
 		
-		GCLASS_BODY(Float)
+		GCLASS_BODY(FloatToken)
 	
 	public:
 		
