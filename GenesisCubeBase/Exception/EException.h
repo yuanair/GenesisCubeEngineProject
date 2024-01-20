@@ -23,7 +23,7 @@ namespace GenesisCube
 		/// <summary>
 		/// 有参构造
 		/// </summary>
-		/// <param name="_message">消息</param>
+		/// <param showName="_message">消息</param>
 		inline explicit EException(TString _message) : message(std::move(_message)) {}
 		
 		/// <summary>

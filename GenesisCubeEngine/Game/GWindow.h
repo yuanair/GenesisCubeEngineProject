@@ -6,12 +6,13 @@
 
 #include "../Core/Header.h"
 
-#include "../Core/FCore.h"
+#include "../../GenesisCubeBase/Win32/Win32.h"
 #include "../../GenesisCubeBase/Object/GObject.h"
 #include "../../GenesisCubeBase/Core/TEvent.h"
 #include "../../GenesisCubeBase/Core/FTimer.h"
 #include "../Helpers/Helpers.h"
-#include "../Debug/Debug.h"
+#include "../../GenesisCubeBase/Core/Debug.h"
+#include "../Core/FCore.h"
 
 namespace GenesisCube
 {
@@ -41,12 +42,12 @@ namespace GenesisCube
 		{
 			
 			//
-			// 鼠标x坐标偏移
+			// 鼠标x坐标
 			//
 			int32_t mouseX;
 			
 			//
-			// 鼠标y坐标偏移
+			// 鼠标y坐标
 			//
 			int32_t mouseY;
 			
@@ -105,22 +106,9 @@ namespace GenesisCube
 				HICON hIconSm = LoadIcon(nullptr, IDI_APPLICATION),
 				UINT style = CS_HREDRAW | CS_VREDRAW,
 				HCURSOR hCursor = LoadCursor(nullptr, IDC_ARROW),
-				HBRUSH hbrBackground = (HBRUSH) GetStockBrush(NULL_BRUSH),
+				HBRUSH hbrBackground = (HBRUSH) GetStockObject(NULL_BRUSH),
 				const TString &menuName = TString()
 			);
-		
-		///
-		/// 消息框
-		///
-		/// \param text 文字
-		/// \param caption 标题
-		/// \param uType 类型
-		/// \param hwnd 窗口句柄
-		/// \param wLanguageId 语言ID
-		/// \return 按下的按钮
-		///
-		static int MBox(const TString &text, const TString &caption, UINT uType = MB_OK, HWND hWnd = nullptr,
-						WORD wLanguageId = MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT));
 		
 		///
 		/// 窗口创建
@@ -151,23 +139,6 @@ namespace GenesisCube
 		bool SubWindowCreate(const TString &className, HWND hWndParent, const TString &windowName = TEXT(""),
 							 DWORD dwStyle = WS_OVERLAPPED | WS_CHILD | WS_VISIBLE,
 							 DWORD dwExStyle = WS_EX_ACCEPTFILES, HMENU hMenu = nullptr);
-		
-		///
-		/// 消息框
-		///
-		/// \param text 显示的文字
-		/// \param caption 消息框标题
-		/// \param uType 类型
-		/// \param wLanguageId 语言ID
-		/// \return 按下的按钮
-		///
-		int SubMBox(const TString &text, const TString &caption, UINT uType = MB_OK,
-					WORD wLanguageId = MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT));
-		
-		///
-		/// 触发事件（有多少消息触发多少事件）
-		/// \return 是否成功，返回false说明程序已经调用了FCore::Exit()
-		static bool PeekEvents();
 		
 		///
 		/// 第一次显示窗口时调用
@@ -358,10 +329,8 @@ namespace GenesisCube
 		[[nodiscard]]
 		inline auto GetWindowRect() const noexcept { return this->windowRect; }
 		
-		///
-		/// \return 无法克隆窗口，只会返回一个新的GWindow对象
 		[[nodiscard]]
-		GWindow *Clone() const noexcept override;
+		GWindow *Clone() const noexcept override { return new GWindow(); }
 		
 		GCLASS_BODY(GWindow)
 	

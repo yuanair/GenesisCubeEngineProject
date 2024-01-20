@@ -7,7 +7,8 @@
 
 namespace GenesisCube::Token
 {
-	void LeftParenToken::GetPrefixExpression(TPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept
+	void
+	LeftParenToken::GetPrefixExpression(TSharedPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept
 	{
 		parser.NextToken();
 		parser.ParseExpression(expression, Lowest);

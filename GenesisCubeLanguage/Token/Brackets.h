@@ -30,7 +30,8 @@ namespace GenesisCube::Token
 	{
 	public:
 		
-		void GetPrefixExpression(TPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept override;
+		void
+		GetPrefixExpression(TSharedPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept override;
 		
 		[[nodiscard]]
 		Precedence GetPrecedence() const noexcept override { return Lowest; }

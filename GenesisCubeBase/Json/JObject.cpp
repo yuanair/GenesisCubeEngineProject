@@ -3,11 +3,6 @@
 
 namespace GenesisCube
 {
-	JSON::JObject::JObject()
-	= default;
-	
-	JSON::JObject::~JObject()
-	= default;
 	
 	JSON::JObject *JSON::JObject::Clone() const noexcept
 	{
@@ -20,7 +15,7 @@ namespace GenesisCube
 	{
 		if (this->values.empty())
 		{
-			return TEXT("{ <empty> }");
+			return TEXT("{ }");
 		}
 		TString buffer;
 		buffer.append(TEXT("{ "));

@@ -53,10 +53,8 @@ namespace GenesisCube
 		enum RunningMode
 		{
 			ErrorRunningMode = 0,
-			GameRelease,
-			GameDebug,
-			EditorRelease,
-			EditorDebug
+			Debug = 1,
+			Release = 2
 		};
 		
 		///
@@ -64,12 +62,6 @@ namespace GenesisCube
 		static TString ToString(RunningMode runningMode);
 	
 	public:
-		
-		///
-		/// 退出主循环
-		/// \param nExitCode 退出码
-		///
-		static void Exit(int nExitCode = 0);
 		
 		///
 		/// 运行命令
@@ -95,51 +87,18 @@ namespace GenesisCube
 		///
 		/// \return 运行模式
 		static RunningMode GetRunningMode();
-		
-		///
-		/// 应用实例
-		///
-		static HINSTANCE GetInstance();
-		
-		///
-		/// 运行参数
-		///
-		static TString GetCmdLine();
-		
-		///
-		/// 获取图标
-		/// \param iconName 图标名
-		/// \param hInstance 应用实例
-		/// \return 图标
-		static HICON GetIcon(const TString &iconName, HINSTANCE hInstance);
-		
-		
-		///
-		/// 获取图标
-		/// \param iconId 图标ID
-		/// \param hInstance 应用实例
-		/// \return 图标
-		static HICON GetIcon(short iconId, HINSTANCE hInstance);
-		
-		///
-		/// 获取图标
-		/// \param iconName 图标名
-		/// \return 图标
-		static HICON GetIcon(const TString &iconName);
-		
-		
-		///
-		/// 获取图标
-		/// \param iconId 图标ID
-		/// \return 图标
-		static HICON GetIcon(short iconId);
 	
 	public:
 		
 		///
 		/// 项目名称
 		///
-		static const TCHAR name[];
+		static const TCHAR appName[];
+		
+		///
+		/// 显示名称
+		///
+		static TString showName;
 		
 		///
 		/// 版本字符串
@@ -167,4 +126,5 @@ namespace GenesisCube
 	
 } // GenesisCube
 
-
+// 入口函数
+int main();

@@ -5,7 +5,7 @@
 #pragma once
 
 #include "Header.h"
-#include "../Debug/Debug.h"
+#include "../../GenesisCubeBase/Core/Debug.h"
 
 namespace GenesisCube
 {

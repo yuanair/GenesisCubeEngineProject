@@ -3,6 +3,7 @@
 //
 
 #include "GWindow.h"
+#include "windowsx.h"
 
 namespace GenesisCube
 {
@@ -52,12 +53,12 @@ namespace GenesisCube
 				this->windowRect.height,
 				hWndParent,
 				hMenu,
-				FCore::GetInstance(),
+				(HINSTANCE) Win32::GetInstance(),
 				this
 			);
 		if (!this->hWnd)
 			throw EBadException(
-				(__FUNCSIG__ TEXT(":: GWindow::Create(")) + windowName + TEXT(") Failed")
+				(__FUNCSIG__ TEXT(":: FWindow::Create(")) + windowName + TEXT(") Failed")
 			);
 		return true;
 	}
@@ -78,12 +79,12 @@ namespace GenesisCube
 				this->windowRect.height,
 				hWndParent,
 				hMenu,
-				FCore::GetInstance(),
+				(HINSTANCE) Win32::GetInstance(),
 				this
 			);
 		if (!this->hWnd)
 			throw EBadException(
-				(__FUNCSIG__ TEXT(":: GWindow::Create(")) + windowName + TEXT(") Failed")
+				(__FUNCSIG__ TEXT(":: FWindow::Create(")) + windowName + TEXT(") Failed")
 			);
 		return true;
 	}
@@ -98,7 +99,7 @@ namespace GenesisCube
 				.lpfnWndProc = GWindow::WindowProc,
 				.cbClsExtra = 0,
 				.cbWndExtra = sizeof(GWindow *),
-				.hInstance = FCore::GetInstance(),
+				.hInstance = (HINSTANCE) Win32::GetInstance(),
 				.hIcon = hIcon,
 				.hCursor = hCursor,
 				.hbrBackground = hbrBackground,
@@ -289,16 +290,6 @@ namespace GenesisCube
 		ImmSetCandidateWindow(hIMC, &candidateForm);
 	}
 	
-	int GWindow::SubMBox(const TString &text, const TString &caption, UINT uType, WORD wLanguageId)
-	{
-		return ::MessageBoxEx(this->hWnd, text.c_str(), caption.c_str(), uType, wLanguageId);
-	}
-	
-	int GWindow::MBox(const TString &text, const TString &caption, UINT uType, HWND hWnd, WORD wLanguageId)
-	{
-		return ::MessageBoxEx(hWnd, text.c_str(), caption.c_str(), uType, wLanguageId);
-	}
-	
 	void GWindow::ShowAndUpdate(int nCmdShow)
 	{
 		::ShowWindow(this->hWnd, nCmdShow);
@@ -355,23 +346,6 @@ namespace GenesisCube
 	{
 		if (this->hWnd == nullptr) return;
 		::SetWindowText(this->hWnd, name.c_str());
-	}
-	
-	bool GWindow::PeekEvents()
-	{
-		MSG msg = {};
-		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-		
-		return msg.message != WM_QUIT;
-	}
-	
-	GWindow *GWindow::Clone() const noexcept
-	{
-		return new GWindow();
 	}
 	
 	void GWindow::Tick(float deltaTime)

@@ -6,12 +6,12 @@
 
 #include "../Core/FCore.h"
 
-#define GCLASS_BODY(className) \
-inline TString GetName() const noexcept override { return TEXT(# className); } \
-inline static TString GetStaticName() noexcept { return TEXT(# className); }
+#define GCLASS_BODY(className)
+
 
 namespace GenesisCube
 {
+	
 	//
 	// 对象
 	//
@@ -23,7 +23,7 @@ namespace GenesisCube
 		
 		virtual ~GObject() noexcept(false);
 		
-		GObject(const GObject &) = delete;
+		GObject(const GObject &object) = delete;
 		
 		GObject &operator=(const GObject &) = delete;
 	
@@ -55,12 +55,6 @@ namespace GenesisCube
 		/// \return 字符串
 		[[nodiscard]]
 		inline virtual TString ToString() const noexcept;
-		
-		///
-		/// 获取类名
-		/// \return 类名
-		[[nodiscard]]
-		inline virtual TString GetName() const noexcept = 0;
 		
 	};
 	

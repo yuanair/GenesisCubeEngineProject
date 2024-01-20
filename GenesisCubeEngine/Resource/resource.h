@@ -14,3 +14,8 @@
 ///
 #define IDI_ICON_MainSm 102
 
+///
+/// 鼠标
+///
+#define IDI_CURSOR_Main 203
+

@@ -42,9 +42,50 @@ namespace GenesisCube::Token
 		/// 优先级
 		enum Precedence : int32_t
 		{
-			Lowest = 0,                // 最低优先级
-			Sum,                    // +与-优先级
-			Product,                // *与/优先级
+			// 最低优先级
+			Lowest = 0,
+			
+			// 逗号 ,
+			Comma,
+			
+			// 赋值运算符 =, +=, -=, ...
+			Assign,
+			
+			// 逻辑或运算符 ||
+			OR,
+			
+			// 逻辑与运算符 &&
+			AND,
+			
+			// 位或运算符 |
+			BitOR,
+			
+			// 位异或运算符 ^
+			BitXOR,
+			
+			// 位与运算符 &
+			BitAND,
+			
+			// 比较运算符 ==, !=
+			Comparison,
+			
+			// 大于小于运算符 <, >, <=, >=
+			GreaterLess,
+			
+			// 位移运算符 <<, >>
+			Shift,
+			
+			// 加减运算符 +, -
+			PlusMinus,
+			
+			// 乘除运算符 *, /, %
+			MultiplyDivide,
+			
+			// 一元运算符
+			Unary,
+			
+			// 最高优先级.与::
+			Highest
 		};
 		
 		/// 类别
@@ -77,11 +118,6 @@ namespace GenesisCube::Token
 	public:
 		
 		///
-		/// \return 符号名
-		[[nodiscard]]
-		inline TString GetName() const noexcept override = 0;
-		
-		///
 		/// \return 优先级
 		[[nodiscard]]
 		inline virtual Precedence GetPrecedence() const noexcept { return Lowest; }
@@ -94,12 +130,12 @@ namespace GenesisCube::Token
 		///
 		/// \return 前缀表达式
 		inline virtual void
-		GetPrefixExpression(TPtr<class AST::Expression> &expression, class Parser::Parser &parser) noexcept {}
+		GetPrefixExpression(TSharedPtr<class AST::Expression> &expression, class Parser::Parser &parser) noexcept {}
 		
 		///
 		/// \return 中缀表达式
 		inline virtual void
-		GetInfixExpression(TPtr<class AST::Expression> &expression, const TPtr<class AST::Expression> &left,
+		GetInfixExpression(TSharedPtr<class AST::Expression> &expression, const TSharedPtr<class AST::Expression> &left,
 						   class Parser::Parser &parser) noexcept {}
 	
 	public:
@@ -114,9 +150,9 @@ namespace GenesisCube::Token
 		[[nodiscard]] bool IsEOF() const;
 		
 		template<class T, class... Args>
-		inline TPtr<T> NewNode(Args... args) noexcept
+		inline TSharedPtr<T> NewNode(Args... args) noexcept
 		{
-			TPtr<T> ptr = MakePtr<T>(args...);
+			TSharedPtr<T> ptr = MakeShared<T>(args...);
 			ptr->token = shared_from_this();
 			return ptr;
 		}

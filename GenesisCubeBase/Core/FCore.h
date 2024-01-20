@@ -123,6 +123,23 @@ namespace GenesisCube
 	
 	typedef std::basic_ofstream<NTChar> NTOFStream;
 	
+	// stl
+	
+	template<class Type>
+	using TVector = std::vector<Type>;
+	
+	template<class Type>
+	using TList = std::list<Type>;
+	
+	template<class Type, size_t Size>
+	using TArray = std::array<Type, Size>;
+	
+	template<class KeyType, class Type>
+	using TMap = std::map<KeyType, Type>;
+	
+	template<class... Types>
+	using TTuple = std::tuple<Types...>;
+	
 }
 
 

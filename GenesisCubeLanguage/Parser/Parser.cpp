@@ -1,13 +1,12 @@
 ﻿#include "Parser.h"
 
 #include "../Token/Tokens.h"
-#include "../AST/Infix.h"
 
 namespace GenesisCube::Parser
 {
 	
-	Parser::Parser(const TPtr<Lexer::Lexer> &lexer)
-		: lexer(lexer)
+	Parser::Parser(TUniquePtr<Lexer::Lexer> &lexer)
+		: lexer(std::move(lexer))
 	{
 		NextToken();
 		NextToken();
@@ -19,20 +18,21 @@ namespace GenesisCube::Parser
 		lexer->NextToken(peekToken);
 	}
 	
-	void Parser::ParseExpression(TPtr<AST::Expression> &expression,
+	void Parser::ParseExpression(TSharedPtr<AST::Expression> &expression,
 								 Token::Token::Precedence precedence)
 	{
-		TPtr<AST::Expression> e;
+		TSharedPtr<AST::Expression> e;
 		currToken->GetPrefixExpression(e, *this);
 		if (!e)
 		{
-			NoPrefixParseFnError(std::format(TEXT("{} can not prefix parse"), currToken->GetName()));
+			NoPrefixParseFnError(
+				std::format(TEXT("{} can not prefix parse"), FFormatter::GetTypeName(currToken.get())));
 			return;
 		}
 		while (!PeekTokenIs<Token::SemicolonToken>() && precedence < PeekTokenPrecedence())
 		{
 			NextToken();
-			TPtr<AST::Expression> infix;
+			TSharedPtr<AST::Expression> infix;
 			currToken->GetInfixExpression(infix, e, *this);
 			if (!infix) break;
 			e = infix;
@@ -41,9 +41,9 @@ namespace GenesisCube::Parser
 		expression = e;
 	}
 	
-	void Parser::ParseInfix(TPtr<AST::Infix> &infix, const TPtr<AST::Expression> &left)
+	void Parser::ParseInfix(TSharedPtr<AST::Infix> &infix, const TSharedPtr<AST::Expression> &left)
 	{
-		infix = MakePtr<AST::Infix>();
+		infix = MakeShared<AST::Infix>();
 		infix->token = currToken;
 		infix->left = left;
 		Token::Token::Precedence precedence = CurrTokenPrecedence();
@@ -51,26 +51,26 @@ namespace GenesisCube::Parser
 		ParseExpression(infix->right, precedence);
 	}
 	
-	void Parser::ParseStatement(TPtr<AST::Statement> &statement)
+	void Parser::ParseStatement(TSharedPtr<AST::Statement> &statement)
 	{
-		TPtr<AST::ExpressionStatement> p;
+		TSharedPtr<AST::ExpressionStatement> p;
 		ParseExpressionStatement(p);
 		statement = p;
 	}
 	
-	void Parser::ParseProgram(TPtr<AST::Program> &program)
+	void Parser::ParseProgram(TSharedPtr<AST::Program> &program)
 	{
-		program = MakePtr<AST::Program>();
+		program = MakeShared<AST::Program>();
 		while (!CurrTokenIs<Token::EOFToken>())
 		{
-			TPtr<AST::Function> function;
+			TSharedPtr<AST::Function> function;
 			ParseFunction(function);
 		}
 	}
 	
-	void Parser::ParseExpressionStatement(TPtr<AST::ExpressionStatement> &expressionStatement)
+	void Parser::ParseExpressionStatement(TSharedPtr<AST::ExpressionStatement> &expressionStatement)
 	{
-		expressionStatement = MakePtr<AST::ExpressionStatement>();
+		expressionStatement = MakeShared<AST::ExpressionStatement>();
 		expressionStatement->token = currToken;
 		ParseExpression(expressionStatement->expression, Token::Token::Lowest);
 		while (PeekTokenIs<Token::SemicolonToken>())
@@ -79,12 +79,12 @@ namespace GenesisCube::Parser
 		}
 	}
 	
-	void Parser::ParseFunction(TPtr<AST::Function> &function)
+	void Parser::ParseFunction(TSharedPtr<AST::Function> &function)
 	{
-		function = MakePtr<AST::Function>();
+		function = MakeShared<AST::Function>();
 		while (!CurrTokenIs<Token::EOFToken>())
 		{
-			TPtr<AST::Statement> statement;
+			TSharedPtr<AST::Statement> statement;
 			ParseStatement(statement);
 			function->statements.push_back(statement);
 			NextToken();

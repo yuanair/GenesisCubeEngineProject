@@ -12,6 +12,10 @@ namespace GenesisCube
 	{
 	public:
 		
+		typedef int64_t ValueType;
+	
+	public:
+		
 		GInteger() : value(0) {}
 		
 		explicit GInteger(int64_t value) : value(value) {}
@@ -20,13 +24,16 @@ namespace GenesisCube
 	
 	public:
 		
-		[[nodiscard]] inline GInteger *Clone() const noexcept override { return new GInteger(this->value); }
+		[[nodiscard]]
+		inline GInteger *Clone() const noexcept override { return new GInteger(this->value); }
 		
 		GCLASS_BODY(GInteger)
 		
-		[[nodiscard]] inline TString ToString() const noexcept override { return ToTString(this->value); }
+		[[nodiscard]]
+		inline TString ToString() const noexcept override { return ToTString(this->value); }
 		
-		[[nodiscard]] inline int64_t Get() const noexcept { return this->value; }
+		[[nodiscard]]
+		inline int64_t Get() const noexcept { return this->value; }
 	
 	private:
 		

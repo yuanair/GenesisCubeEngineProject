@@ -12,6 +12,10 @@ namespace GenesisCube
 	{
 	public:
 		
+		typedef double_t ValueType;
+	
+	public:
+		
 		GFloat() : value(0.0) {}
 		
 		explicit GFloat(double_t value) : value(value) {}
@@ -24,9 +28,11 @@ namespace GenesisCube
 		
 		GCLASS_BODY(GFloat)
 		
-		[[nodiscard]] inline TString ToString() const noexcept override { return ToTString(this->value); }
+		[[nodiscard]]
+		inline TString ToString() const noexcept override { return ToTString(this->value); }
 		
-		[[nodiscard]] inline double_t Get() const noexcept { return this->value; }
+		[[nodiscard]]
+		inline double_t Get() const noexcept { return this->value; }
 	
 	private:
 		

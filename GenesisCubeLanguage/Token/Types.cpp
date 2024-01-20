@@ -6,7 +6,8 @@
 
 namespace GenesisCube::Token
 {
-	void StringToken::GetPrefixExpression(TPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept
+	void
+	StringToken::GetPrefixExpression(TSharedPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept
 	{
 		expression = NewNode<AST::String>();
 	}
@@ -15,11 +16,12 @@ namespace GenesisCube::Token
 	{
 		JSON::Json json;
 		json[TEXT("value")] = this->value;
-		json[TEXT("type")] = GetName();
+		json[TEXT("type")] = FFormatter::GetTypeName(this);
 		return json;
 	}
 	
-	void IntegerToken::GetPrefixExpression(TPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept
+	void
+	IntegerToken::GetPrefixExpression(TSharedPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept
 	{
 		expression = NewNode<AST::Integer>();
 	}
@@ -28,11 +30,11 @@ namespace GenesisCube::Token
 	{
 		JSON::Json json;
 		json[TEXT("value")] = this->value;
-		json[TEXT("type")] = GetName();
+		json[TEXT("type")] = FFormatter::GetTypeName(this);
 		return json;
 	}
 	
-	void FloatToken::GetPrefixExpression(TPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept
+	void FloatToken::GetPrefixExpression(TSharedPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept
 	{
 		expression = NewNode<AST::Float>();
 	}
@@ -41,8 +43,20 @@ namespace GenesisCube::Token
 	{
 		JSON::Json json;
 		json[TEXT("value")] = this->value;
-		json[TEXT("type")] = GetName();
+		json[TEXT("type")] = FFormatter::GetTypeName(this);
 		return json;
 	}
 	
+	void CharToken::GetPrefixExpression(TSharedPtr<AST::Expression> &expression, Parser::Parser &parser) noexcept
+	{
+		expression = NewNode<AST::Char>();
+	}
+	
+	JSON::Json CharToken::ToJson() const
+	{
+		JSON::Json json;
+		json[TEXT("value")] = ToString();
+		json[TEXT("type")] = FFormatter::GetTypeName(this);
+		return json;
+	}
 }

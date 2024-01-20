@@ -3,8 +3,7 @@ project(test)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
 # executable
-add_executable(test WIN32 "Source/Main.cpp" "../../GenesisCubeEngine/Resource/resource.rc"
-        ../../GenesisCubeEngine/Resource/resource.h)
+add_executable(test WIN32 "Source/Main.cpp" "Source/Game.cpp" "../../GenesisCubeEngine/Resource/resource.rc")
 
 # include
 target_include_directories(test PRIVATE "../..")

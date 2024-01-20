@@ -1,0 +1,30 @@
+{
+	"$schema": "./../languageSchema.json",
+	"name": "zh_cn",
+	"displayName": "简体中文",
+	"main window": {
+		"window name": "原神演奏器",
+		"window class name": "Genshin Impact Pianist Window Class Name"
+	},
+	"bound window": {
+		"window name": "原神",
+		"error text": "无法绑定“原神”窗口"
+	},
+	"background": {
+		"image": "./Data/images/background.png"
+	},
+	"show text": {
+		"text": "将文件拖放至该窗口即可开始演奏",
+		"color": [
+			0.0,
+			0.0,
+			0.0
+		]
+	},
+	"OnDropFiles": {
+		"error texts": {
+			"more files": "仅需一个文件",
+			"open file error": "无法打开文件"
+		}
+	}
+}

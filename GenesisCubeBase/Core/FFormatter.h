@@ -3,6 +3,14 @@
 #include "Header.h"
 #include "FCore.h"
 
+#ifdef UNICODE
+#define GText(str) (GenesisCube::FFormatter::StringToWString(str))
+#define FromGText(str) (GenesisCube::FFormatter::WStringToString(str))
+#else
+#define GText(str) (str)
+#define FromGText(str) (str)
+#endif
+
 namespace GenesisCube
 {
 	
@@ -16,8 +24,8 @@ namespace GenesisCube
 		union NumberToChars
 		{
 			int32_t number;
-			char chars[4];
-			wchar_t wchars[2];
+			Char chars[4];
+			WChar wchars[2];
 			char32_t uchar;
 		};
 	
@@ -70,12 +78,26 @@ namespace GenesisCube
 		/// \param dwLanguageId 语言ID
 		/// \param dwBufferSize 缓冲区大小，包括'\0'字符，以TChar为单位
 		/// \return 字符串
-		static TString GFormatMessage
+		static TString FormatMessageT
 			(
 				DWORD dwMessageId,
 				DWORD dwLanguageId = MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),
 				DWORD dwBufferSize = 256
 			);
+		
+		/// 获取类型名
+		template<class T>
+		inline static TString GetTypeName()
+		{
+			return GText(typeid(T).name());
+		}
+		
+		/// 获取类型名
+		template<class Ptr>
+		inline static TString GetTypeName(const Ptr &ptr)
+		{
+			return GText(typeid(*ptr).name());
+		}
 		
 		
 	};

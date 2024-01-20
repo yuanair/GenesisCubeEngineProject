@@ -51,14 +51,21 @@ void BracketColor()
 	SetConsoleTextAttribute(hConsole, 0x08);
 }
 
+#ifdef UNICODE
+#define TOut std::wcout
+#else
+#define TOut std::cout
+#endif
+
 int main()
 {
 #ifdef _DEBUG
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
+	system("chcp 65001");
 	InfoColor();
 	{
-		TPtr<Lexer::Lexer> lexer(new Lexer::Lexer(TEXT("Data/test.c")));
+		TUniquePtr<Lexer::Lexer> lexer(new Lexer::Lexer(TEXT("Data/test.c")));
 		Json json;
 		Json &json1 = json[TEXT("tokens")];
 		
@@ -66,7 +73,7 @@ int main()
 		
 		while (true)
 		{
-			TPtr<Token::Token> token;
+			TSharedPtr<Token::Token> token;
 			lexer->NextToken(token);
 			if (!token) throw ENullptrException();
 			json1.Push(token->ToJson());
@@ -104,59 +111,52 @@ int main()
 			
 			if (Is<Token::SemicolonToken>(token))
 			{
-				wcout << token->ToString() << TEXT("\n");
+				TOut << token->ToString() << TEXT("\n");
 				for (int32_t i = 0; i < level; i++)
 				{
-					wcout << TEXT("\t");
+					TOut << TEXT("\t");
 				}
 			}
 			else if (Is<Token::RightBraceToken>(token))
 			{
 				level--;
-				wcout << TEXT("\n");
+				TOut << TEXT("\n");
 				for (int32_t i = 0; i < level; i++)
 				{
-					wcout << TEXT("\t");
+					TOut << TEXT("\t");
 				}
-				wcout << token->ToString() << TEXT("\n");
+				TOut << token->ToString() << TEXT("\n");
 				for (int32_t i = 0; i < level; i++)
 				{
-					wcout << TEXT("\t");
+					TOut << TEXT("\t");
 				}
 			}
 			else if (Is<Token::LeftBraceToken>(token))
 			{
-				wcout << TEXT("\n");
+				TOut << TEXT("\n");
 				for (int32_t i = 0; i < level; i++)
 				{
-					wcout << TEXT("\t");
+					TOut << TEXT("\t");
 				}
-				wcout << token->ToString() << TEXT("\n");
+				TOut << token->ToString() << TEXT("\n");
 				level++;
 				for (int32_t i = 0; i < level; i++)
 				{
-					wcout << TEXT("\t");
+					TOut << TEXT("\t");
 				}
 			}
 			else if (Is<Token::StringToken>(token))
-				wcout << TEXT("\"") << FFormatter::ToShowString(token->ToString()) << TEXT("\"");
-			else wcout << TEXT(" ") << token->ToString();
+				TOut << TEXT(" \"") << FFormatter::ToShowString(token->ToString()) << TEXT("\"");
+			else if (Is<Token::CharToken>(token))
+				TOut << TEXT(" '") << FFormatter::ToShowString(token->ToString()) << TEXT("'");
+			else
+				TOut << TEXT(" ") << token->ToString();
 			
 			
 		}
-		wcout << endl;
+		TOut << endl;
 		
-		ErrorColor();
-		for (auto &error: lexer->GetErrors())
-		{
-			std::wcout << std::format(
-				TEXT("Lexer::Error: {}({}, {}): {}\n"), (int32_t) error.type, error.pos.line, error.pos.ch,
-				error.message
-			);
-		}
-		InfoColor();
-		
-		TOFStream ofs(TEXT("../../../../Lexer.json"));
+		TOFStream ofs(TEXT("../../../../Lexer.json "));
 		if (ofs.is_open())
 		{
 			ofs << json.ToString();
@@ -166,23 +166,24 @@ int main()
 	}
 	
 	{
-		TPtr<Lexer::Lexer> lexer(new Lexer::Lexer(TEXT("Data/test.c")));
-		TPtr<Parser::Parser> parser(new Parser::Parser(lexer));
+		TUniquePtr<Lexer::Lexer> lexer = MakeUnique<Lexer::Lexer>(TEXT("Data/test.c"));
+		TUniquePtr<Parser::Parser> parser(new Parser::Parser(lexer));
 		
-		TPtr<AST::Function> function;
+		
+		TSharedPtr<AST::Function> function;
 		parser->ParseFunction(function);
 		
 		ErrorColor();
-		for (auto &error: lexer->GetErrors())
+		for (auto &error: parser->lexer->GetErrors())
 		{
-			std::wcout << std::format(
+			TOut << std::format(
 				TEXT("Lexer::Error: {}({}, {}): {}\n"), (int32_t) error.type, error.pos.line, error.pos.ch,
 				error.message
 			);
 		}
 		for (auto &error: parser->GetErrors())
 		{
-			std::wcout << std::format(
+			TOut << std::format(
 				TEXT("Parser::Error: {}({}, {}): {}\n"), (int32_t) error.type, error.pos.line, error.pos.ch,
 				error.message
 			);
@@ -214,6 +215,7 @@ int main()
 //			ofs.close();
 //		}
 	}
+	
 	
 	InfoColor();
 	getchar();

@@ -14,21 +14,27 @@ namespace GenesisCube::JSON
 	{
 	public:
 		
+		typedef std::vector<Json> ValueType;
+	
+	public:
+		
 		JArray() = default;
 		
 		~JArray() override = default;
 	
 	public:
 		
-		[[nodiscard]] JArray *Clone() const noexcept override;
+		[[nodiscard]]
+		JArray *Clone() const noexcept override;
 		
 		GCLASS_BODY(JArray)
 		
-		[[nodiscard]] TString ToString() const noexcept override;
+		[[nodiscard]]
+		TString ToString() const noexcept override;
 	
 	public:
 		
-		std::vector<Json> values;
+		ValueType values;
 		
 	};
 }

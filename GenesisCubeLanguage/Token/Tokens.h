@@ -50,6 +50,8 @@ namespace GenesisCube::Token
 	
 	public:
 		
+		void GetPrefixExpression(TSharedPtr<AST::Expression> &expression, Parser::Parser &parser) noexcept override;
+		
 		[[nodiscard]]
 		inline Type GetType() const noexcept override { return IdentifierType; }
 		
@@ -106,5 +108,6 @@ namespace GenesisCube::Token
 		GCLASS_BODY(SemicolonToken)
 		
 	};
+	
 	
 } // GenesisCube

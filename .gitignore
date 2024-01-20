@@ -1,14 +1,7 @@
 
-
-# cmake build directorys
-/cmake-build-editordebug/
-/cmake-build-editorrelease/
-/cmake-build-gamedebug/
-/cmake-build-gamerelease/
-
-/DebugView/
-/GenesisCube/Resource/Icon/GenesisCubeEngineIconSm.png
-/GenesisCube/Resource/Icon/GenesisCubeEngineIconSm.psd
-
-/out/
-/.vs/
+out/
+.vs/
+.idea/
+*.sqlite
+*.vsidx
+.vs/cmake.db

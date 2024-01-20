@@ -13,6 +13,10 @@ namespace GenesisCube
 	{
 	public:
 		
+		typedef TString ValueType;
+	
+	public:
+		
 		GString() : str() {}
 		
 		explicit GString(TString str) : str(std::move(str)) {}
@@ -23,13 +27,16 @@ namespace GenesisCube
 	
 	public:
 		
-		[[nodiscard]] inline GString *Clone() const noexcept override { return new GString(this->str); }
+		[[nodiscard]]
+		inline GString *Clone() const noexcept override { return new GString(this->str); }
 		
 		GCLASS_BODY(GString)
 		
-		[[nodiscard]] TString ToString() const noexcept override;
+		[[nodiscard]]
+		TString ToString() const noexcept override;
 		
-		[[nodiscard]] inline TString Get() const noexcept { return this->str; }
+		[[nodiscard]]
+		inline TString Get() const noexcept { return this->str; }
 	
 	private:
 		

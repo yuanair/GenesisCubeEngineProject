@@ -4,7 +4,8 @@
 
 #pragma once
 
-#include <windows.h>
+#include <msctf.h>
+#include <wrl.h>
 
 #include <typeinfo>
 #include <fstream>
@@ -14,7 +15,9 @@
 #include <list>
 #include <map>
 
-#if defined(_DEBUG) || defined(DEBUG) || defined(GenesisCubeEditor)
+#pragma comment(lib, "Imm32.lib")
+
+#if defined(_DEBUG) || defined(DEBUG)
 
 #define _CRTDBG_MAP_ALLOC
 

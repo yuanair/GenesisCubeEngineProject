@@ -31,7 +31,7 @@ namespace GenesisCube::AST
 	
 	public:
 		
-		std::list<TPtr<Statement>> statements;
+		std::list<TSharedPtr<Statement>> statements;
 		
 	};
 	

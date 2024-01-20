@@ -1,5 +1,12 @@
+#include <sstream>
+#include <iostream>
 #include "Lexer.h"
 #include "../Token/Tokens.h"
+#include "../Token/ComparisonOperators.h"
+#include "../Token/Brackets.h"
+#include "../Token/ShiftOperators.h"
+#include "../Token/AssignOperators.h"
+#include "../Token/ShiftOperators.h"
 
 using namespace GenesisCube::Token;
 
@@ -17,11 +24,7 @@ namespace GenesisCube::Lexer
 	{
 		
 		TIFStream ifs(file);
-		if (!ifs.good())
-		{
-			std::wcerr << TEXT("file not found: \"") << file << TEXT("\"") << std::endl;
-			return;
-		}
+		if (!ifs.good()) throw ENotFindException(std::format(__FUNCSIG__ TEXT(":: file not found: \"{}\""), file));
 		
 		TOStringStream oss;
 		oss << ifs.rdbuf();
@@ -29,12 +32,109 @@ namespace GenesisCube::Lexer
 		input = oss.str();
 	}
 	
-	void Lexer::NextToken(TPtr<Token::Token> &token)
+	void Lexer::NextToken(TSharedPtr<Token::Token> &token)
 	{
 		ReadChar();
 		SkipWhiteSpace();
 		switch (ch)
 		{
+			case TEXT(':'):
+			{
+				if (PeekChar() == TEXT(':'))
+				{
+					token = NewToken<ScopeToken>();
+					ReadChar();
+					return;
+				}
+				else
+				{
+					NewError(Error::Error_Illegal, std::format(TEXT("invalid character '{}'"), ch));
+					TString buffer;
+					buffer.push_back(ch);
+					token = NewToken<IllegalToken>(buffer);
+				}
+			}
+			case TEXT(','):
+			{
+				token = NewToken<CommaToken>();
+				return;
+			}
+			case TEXT('.'):
+			{
+				token = NewToken<PointToken>();
+				return;
+			}
+			case TEXT('!'):
+			{
+				if (PeekChar() == TEXT('='))
+				{
+					token = NewToken<UnequalToken>();
+					ReadChar();
+					return;
+				}
+				else
+				{
+					token = NewToken<IllegalToken>(TEXT("!"));
+					return;
+				}
+			}
+			case TEXT('='):
+			{
+				if (PeekChar() == TEXT('='))
+				{
+					token = NewToken<EqualToken>();
+					ReadChar();
+					return;
+				}
+				else
+				{
+					
+					token = NewToken<AssignmentToken>();
+					return;
+				}
+			}
+			case TEXT('<'):
+			{
+				TChar peekChar = PeekChar();
+				if (peekChar == TEXT('='))
+				{
+					token = NewToken<LessThanEqualToken>();
+					ReadChar();
+					return;
+				}
+				else if (peekChar == TEXT('<'))
+				{
+					token = NewToken<LeftShiftToken>();
+					ReadChar();
+					return;
+				}
+				else
+				{
+					token = NewToken<LessThanToken>();
+					return;
+				}
+			}
+			case TEXT('>'):
+			{
+				TChar peekChar = PeekChar();
+				if (peekChar == TEXT('='))
+				{
+					token = NewToken<GreaterThanEqualToken>();
+					ReadChar();
+					return;
+				}
+				else if (peekChar == TEXT('>'))
+				{
+					token = NewToken<RightShiftToken>();
+					ReadChar();
+					return;
+				}
+				else
+				{
+					token = NewToken<GreaterThanToken>();
+					return;
+				}
+			}
 			case TEXT('+'):
 			{
 				token = NewToken<PlusToken>();
@@ -48,6 +148,11 @@ namespace GenesisCube::Lexer
 			case TEXT('*'):
 			{
 				token = NewToken<MultiplyToken>();
+				return;
+			}
+			case TEXT('%'):
+			{
+				token = NewToken<ModToken>();
 				return;
 			}
 			case TEXT('/'):
@@ -140,19 +245,43 @@ namespace GenesisCube::Lexer
 			}
 			case TEXT('"'):
 			{
+				TString buffer;
 				ReadChar();
-				ReadString(token, '"');
+				ReadString(buffer, '"');
+				token = NewToken<StringToken>(buffer);
 				return;
 			}
 			case TEXT('\''):
 			{
+				TString buffer;
 				ReadChar();
-				ReadString(token, '\'');
+				ReadString(buffer, '\'');
+				if (buffer.empty())
+				{
+					NewError(Error::Error_ErrorChar, TEXT("empty character"));
+					token = NewToken<IllegalToken>(buffer);
+				}
+				else if (buffer.size() == 1)
+				{
+					token = NewToken<CharToken>(buffer[0]);
+				}
+				else
+				{
+					NewError(Error::Error_ErrorChar, TEXT("redundant character"));
+					token = NewToken<IllegalToken>(buffer);
+				}
+				return;
+			}
+			case TEXT('_'):
+			case TEXT('@'):
+			{
+				ReadIdentifier(token);
+				UnreadChar();
 				return;
 			}
 			default:
 			{
-				if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '_' || ch == '@')
+				if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z'))
 				{
 					ReadIdentifier(token);
 					UnreadChar();
@@ -212,7 +341,7 @@ namespace GenesisCube::Lexer
 		pos--;
 	}
 	
-	void Lexer::ReadNumber(TPtr<Token::Token> &token)
+	void Lexer::ReadNumber(TSharedPtr<Token::Token> &token)
 	{
 		TString buffer;
 		bool bIsFloat = false;
@@ -230,34 +359,111 @@ namespace GenesisCube::Lexer
 					token = NewToken<IllegalToken>(buffer);
 					return;
 				}
-				else
-				{
-					bIsFloat = true;
-				}
+				bIsFloat = true;
 			}
 		}
 		if (bIsFloat)
 		{
+#ifdef UNICODE
 			token = NewToken<FloatToken>(_wtof(buffer.c_str()));
+#else
+			token = NewToken<FloatToken>(std::atof(buffer.c_str()));
+#endif
+			return;
 		}
-		else
-		{
-			token = NewToken<IntegerToken>(_wtoi(buffer.c_str()));
-		}
+#ifdef UNICODE
+		token = NewToken<IntegerToken>(_wtoi(buffer.c_str()));
+#else
+		token = NewToken<IntegerToken>(std::atoi(buffer.c_str()));
+#endif
 	}
 	
-	void Lexer::ReadString(TPtr<Token::Token> &token, TChar stopChar)
+	void Lexer::ReadString(TString &buffer, TChar stopChar)
 	{
-		TString buffer;
-		while (ch != stopChar)
+		for (; ch != stopChar; ReadChar())
 		{
-			buffer.push_back(ch);
+			if (ch != TEXT('\\'))
+			{
+				buffer.push_back(ch);
+				continue;
+			}
+			if (ch == TEXT('\0'))
+			{
+				NewError(Error::Error_ErrorChar, TEXT("error char: '\\0'"));
+				return;
+			}
 			ReadChar();
+			switch (ch)
+			{
+				case TEXT('a'):
+					buffer.push_back(TEXT('\a'));
+					break;
+				case TEXT('b'):
+					buffer.push_back(TEXT('\b'));
+					break;
+				case TEXT('f'):
+					buffer.push_back(TEXT('\f'));
+					break;
+				case TEXT('n'):
+					buffer.push_back(TEXT('\n'));
+					break;
+				case TEXT('r'):
+					buffer.push_back(TEXT('\r'));
+					break;
+				case TEXT('t'):
+					buffer.push_back(TEXT('\t'));
+					break;
+				case TEXT('v'):
+					buffer.push_back(TEXT('\v'));
+					break;
+				case TEXT('0'):
+				case TEXT('1'):
+				case TEXT('2'):
+				case TEXT('3'):
+				case TEXT('4'):
+				case TEXT('5'):
+				case TEXT('6'):
+				case TEXT('7'):
+				{
+					//
+					//buffer.push_back(TEXT('\x'));
+					break;
+				}
+				case TEXT('u'):
+				case TEXT('x'):
+				{
+					ReadChar();
+					NumberToChars number{};
+					ReadHex(number, 8);
+					UnreadChar();
+					if (number.wStr[1] == 0)
+					{
+						buffer.push_back(number.str[0]);
+						buffer.push_back(number.str[1]);
+						break;
+					}
+					buffer.append(number.tStr, sizeof(number.tStr) / sizeof(number.tStr[0]));
+					break;
+				}
+				case TEXT('"'):
+				case TEXT('\''):
+				case TEXT('\\'):
+				case TEXT('\?'):
+					buffer.push_back(ch);
+					break;
+				case TEXT('\0'):
+					NewError(Error::Error_ErrorChar, TEXT("error char: '\\0'"));
+					break;
+				default:
+					buffer.push_back(ch);
+					NewError(Error::Warning_ErrorChar, std::format(TEXT("unknown escape sequence: '\\{}'"), ch));
+					break;
+			}
 		}
-		token = NewToken<StringToken>(buffer);
 	}
 	
-	void Lexer::ReadIdentifier(TPtr<Token::Token> &token)
+	
+	void Lexer::ReadIdentifier(TSharedPtr<Token::Token> &token)
 	{
 		TString buffer;
 		while ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '_' || ch == '@')
@@ -280,9 +486,33 @@ namespace GenesisCube::Lexer
 	
 	Lexer *Lexer::Clone() const noexcept
 	{
-		Lexer *lexer = new Lexer;
+		auto lexer = new Lexer;
 		lexer->input = input;
 		return lexer;
 	}
+	
+	void Lexer::ReadHex(NumberToChars &number, int32_t count)
+	{
+		std::vector<uint8_t> buffer;
+		for (; count > 0; count--, ReadChar())
+		{
+			if (ch >= TEXT('0') && ch <= TEXT('9'))
+				buffer.push_back(ch - TEXT('0'));
+			else if (ch >= TEXT('a') && ch <= TEXT('f'))
+				buffer.push_back(ch - TEXT('a'));
+			else if (ch >= TEXT('A') && ch <= TEXT('F'))
+				buffer.push_back(ch - TEXT('A'));
+			else break;
+		}
+		number.number = 0;
+		if (buffer.empty()) return;
+		int32_t hex = 1;
+		for (size_t index = buffer.size() - 1; index < buffer.size(); index--)
+		{
+			number.number += buffer[index] * hex;
+			hex <<= 4;
+		}
+	}
+	
 	
 }

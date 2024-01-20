@@ -14,9 +14,6 @@ namespace GenesisCube::AST
 	public:
 		
 		[[nodiscard]]
-		TString GetName() const noexcept override { return TEXT("ExpressionStatement"); }
-		
-		[[nodiscard]]
 		JSON::Json ToJson() const noexcept override
 		{
 			return expression != nullptr ? expression->ToJson() : JSON::Json(
@@ -35,7 +32,7 @@ namespace GenesisCube::AST
 	
 	public:
 		
-		TPtr <Expression> expression;
+		TSharedPtr<Expression> expression;
 		
 	};
 	

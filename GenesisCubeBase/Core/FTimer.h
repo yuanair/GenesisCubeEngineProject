@@ -45,7 +45,7 @@ namespace GenesisCube
 		/// 获取现在的时间
 		///
 		/// \return 单位：秒
-		static double_t NowSecond();
+		static double NowSecond();
 		
 		///
 		/// 暂停当前线程
@@ -92,29 +92,29 @@ namespace GenesisCube
 		///
 		/// \return 单位：秒
 		[[nodiscard]]
-		double_t TotalTime() const;
+		double TotalTime() const;
 		
 		///
 		/// 设置时间膨胀倍数（仅对DeltaTime()有影响）
 		///
 		/// \param value 时间膨胀倍数。小于1.0为减速，大于1.0为加速。
-		void SetTimeDilation(double_t value);
+		void SetTimeDilation(double value);
 	
 	public:
 		
 		///
 		/// 时间膨胀最小值
 		///
-		static const double_t TimeDilationMinimum;
+		static const double TimeDilationMinimum;
 		
 		///
 		/// 时间膨胀最大值
 		///
-		static const double_t TimeDilationMaximum;
+		static const double TimeDilationMaximum;
 	
 	private:
 		
-		static double_t secondsPerCount;
+		static double secondsPerCount;
 	
 	public:
 		
@@ -123,21 +123,21 @@ namespace GenesisCube
 		///
 		/// \return 时间膨胀倍数
 		[[nodiscard]]
-		inline double_t GetTimeDilation() const noexcept { return this->timeDilation; }
+		inline double GetTimeDilation() const noexcept { return this->timeDilation; }
 		
 		///
 		/// 获取帧间隔时间
 		///
 		/// \return 单位：秒
 		[[nodiscard]]
-		inline double_t GetDeltaTime() const noexcept { return this->deltaTime; }
+		inline double GetDeltaTime() const noexcept { return this->deltaTime; }
 		
 		///
 		/// 获取帧率
 		///
 		/// \return 帧率
 		[[nodiscard]]
-		inline double_t GetFps() const noexcept { return this->fps; }
+		inline double GetFps() const noexcept { return this->fps; }
 		
 		///
 		/// 是否已经暂停
@@ -148,9 +148,9 @@ namespace GenesisCube
 	
 	private:
 		
-		double_t deltaTime = 0.0;
-		double_t fps = 0.0;
-		double_t timeDilation = 1.0;
+		double deltaTime = 0.0;
+		double fps = 0.0;
+		double timeDilation = 1.0;
 		
 		int64_t baseTime = 0;
 		int64_t pausedTime = 0;

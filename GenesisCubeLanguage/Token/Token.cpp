@@ -30,7 +30,7 @@ namespace GenesisCube::Token
 	{
 		JSON::Json json;
 		json[TEXT("value")] = ToString();
-		json[TEXT("type")] = GetName();
+		json[TEXT("type")] = FFormatter::GetTypeName(this);
 		return json;
 	}
 	

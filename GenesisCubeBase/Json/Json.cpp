@@ -6,50 +6,51 @@
 namespace GenesisCube
 {
 	
+	JSON::Json JSON::Json::errorJson{};
 	
 	JSON::Json::Json()
 	{
-		this->json = MakePtr<GNull>();
+		this->json = MakeShared<GNull>();
 	}
 	
 	JSON::Json::Json(bool _bool)
 	{
-		this->json = MakePtr<GBool>(_bool);
+		this->json = MakeShared<GBool>(_bool);
 	}
 	
 	JSON::Json::Json(int32_t integer)
 	{
-		this->json = MakePtr<GInteger>(integer);
+		this->json = MakeShared<GInteger>(integer);
 	}
 	
 	JSON::Json::Json(uint32_t integer)
 	{
-		this->json = MakePtr<GInteger>(integer);
+		this->json = MakeShared<GInteger>(integer);
 	}
 	
 	JSON::Json::Json(int64_t integer)
 	{
-		this->json = MakePtr<GInteger>(integer);
+		this->json = MakeShared<GInteger>(integer);
 	}
 	
 	JSON::Json::Json(double_t _float)
 	{
-		this->json = MakePtr<GFloat>(_float);
+		this->json = MakeShared<GFloat>(_float);
 	}
 	
 	JSON::Json::Json(const TString &_string)
 	{
-		this->json = MakePtr<GString>(_string);
+		this->json = MakeShared<GString>(_string);
 	}
 	
 	JSON::Json::Json(const TChar *_string)
 	{
-		this->json = MakePtr<GString>(_string);
+		this->json = MakeShared<GString>(_string);
 	}
 	
 	JSON::Json::Json(nullptr_t)
 	{
-		this->json = MakePtr<GNull>();
+		this->json = MakeShared<GNull>();
 	}
 	
 	JSON::Json::Json(const Json &_other)
@@ -68,7 +69,7 @@ namespace GenesisCube
 	
 	JSON::Json &JSON::Json::operator[](size_t index) const
 	{
-		if (auto arr = CastPtr<JArray>(this->json))
+		if (auto arr = PtrCast<JArray>(this->json))
 		{
 			for (size_t i = arr->values.size(); i <= index; i++)
 			{
@@ -77,12 +78,12 @@ namespace GenesisCube
 			}
 			return arr->values[index];
 		}
-		throw EInvalidArgumentException(__FUNCSIG__ TEXT(":: This is not an array"));
+		return errorJson = __FUNCSIG__ TEXT(":: This is not an array");
 	}
 	
 	JSON::Json &JSON::Json::operator[](size_t index)
 	{
-		if (auto arr = CastPtr<JArray>(this->json))
+		if (auto arr = PtrCast<JArray>(this->json))
 		{
 			for (size_t i = arr->values.size(); i <= index; i++)
 			{
@@ -91,8 +92,8 @@ namespace GenesisCube
 			}
 			return arr->values[index];
 		}
-		if (!Is<GNull>()) throw EInvalidArgumentException(__FUNCSIG__ TEXT(":: This is not an array"));
-		auto arr = MakePtr<JArray>();
+		if (!Is<GNull>()) return errorJson = (__FUNCSIG__ TEXT(":: This is not an array"));
+		auto arr = MakeShared<JArray>();
 		
 		for (size_t i = arr->values.size(); i <= index; i++)
 		{
@@ -100,7 +101,7 @@ namespace GenesisCube
 			arr->values.push_back(buffer);
 		}
 		this->json = arr;
-		return CastPtr<JArray>(this->json)->values[index];
+		return PtrCast<JArray>(this->json)->values[index];
 	}
 	
 	JSON::Json &JSON::Json::operator[](int32_t index) const
@@ -115,21 +116,21 @@ namespace GenesisCube
 	
 	JSON::Json &JSON::Json::operator[](const TCHAR *key) const
 	{
-		if (auto arr = CastPtr<JObject>(this->json))
+		if (auto arr = PtrCast<JObject>(this->json))
 		{
 			return arr->values[key];
 		}
-		throw EInvalidArgumentException(__FUNCSIG__ TEXT(":: This is not an array"));
+		return errorJson = (__FUNCSIG__ TEXT(":: This is not an array"));
 	}
 	
 	JSON::Json &JSON::Json::operator[](const TCHAR *key)
 	{
-		if (auto arr = CastPtr<JObject>(this->json))
+		if (auto arr = PtrCast<JObject>(this->json))
 		{
 			return arr->values[key];
 		}
-		if (!Is<GNull>()) throw EInvalidArgumentException(__FUNCSIG__ TEXT(":: This is not an array"));
-		auto arr = MakePtr<JObject>();
+		if (!Is<GNull>()) return errorJson = (__FUNCSIG__ TEXT(":: This is not an array"));
+		auto arr = MakeShared<JObject>();
 		
 		JSON::Json buffer;
 		this->json = arr;
@@ -138,22 +139,22 @@ namespace GenesisCube
 	
 	JSON::Json &JSON::Json::operator[](const TString &key) const
 	{
-		if (auto arr = CastPtr<JObject>(this->json))
+		if (auto arr = PtrCast<JObject>(this->json))
 		{
 			return arr->values[key];
 		}
-		throw EInvalidArgumentException(__FUNCSIG__ TEXT(":: This is not an array"));
+		return errorJson = (__FUNCSIG__ TEXT(":: This is not an array"));
 	}
 	
 	JSON::Json &JSON::Json::operator[](const TString &key)
 	{
-		if (auto arr = CastPtr<JObject>(this->json))
+		if (auto arr = PtrCast<JObject>(this->json))
 		{
 			return arr->values[key];
 		}
-		if (!Is<GNull>()) throw EInvalidArgumentException(__FUNCSIG__ TEXT(":: This is not an array"));
-		TPtr<JObject> arr;
-		this->json = arr = MakePtr<JObject>();
+		if (!Is<GNull>()) return errorJson = (__FUNCSIG__ TEXT(":: This is not an array"));
+		TSharedPtr<JObject> arr;
+		this->json = arr = MakeShared<JObject>();
 		
 		JSON::Json buffer;
 		return arr->values[key] = buffer;
@@ -169,47 +170,22 @@ namespace GenesisCube
 		return this->json != _other.json;
 	}
 	
-	JSON::Json::operator bool() const
-	{
-		return Get<GBool>();
-	}
-	
-	JSON::Json::operator int64_t() const
-	{
-		return Get<GInteger>();
-	}
-	
-	JSON::Json::operator double_t() const
-	{
-		return Get<GFloat>();
-	}
-	
-	JSON::Json::operator TString() const
-	{
-		return Get<GString>();
-	}
-	
-	JSON::Json::operator nullptr_t() const
-	{
-		return Get<GNull>();
-	}
-	
 	void JSON::Json::Push(const Json &_json)
 	{
-		if (auto arr = CastPtr<JArray>(this->json))
+		if (auto arr = PtrCast<JArray>(this->json))
 		{
 			arr->values.push_back(_json);
 			return;
 		}
 		if (!Is<GNull>()) throw EInvalidArgumentException(__FUNCSIG__ TEXT(":: This is not an array"));
-		auto arr = MakePtr<JArray>();
+		auto arr = MakeShared<JArray>();
 		arr->values.push_back(_json);
 		this->json = arr;
 	}
 	
 	void JSON::Json::Pop()
 	{
-		if (auto arr = CastPtr<JArray>(this->json))
+		if (auto arr = PtrCast<JArray>(this->json))
 		{
 			arr->values.pop_back();
 			return;
@@ -219,7 +195,7 @@ namespace GenesisCube
 	
 	bool JSON::Json::Has(size_t index) const
 	{
-		if (auto arr = CastPtr<JArray>(this->json))
+		if (auto arr = PtrCast<JArray>(this->json))
 		{
 			return index < arr->values.size();
 		}
@@ -228,7 +204,7 @@ namespace GenesisCube
 	
 	bool JSON::Json::Has(const TString &key) const
 	{
-		if (auto obj = CastPtr<JObject>(this->json))
+		if (auto obj = PtrCast<JObject>(this->json))
 		{
 			return obj->values.find(key) != obj->values.end();
 		}
@@ -237,7 +213,7 @@ namespace GenesisCube
 	
 	JSON::Json::ArrayIterator JSON::Json::Remove(size_t index)
 	{
-		if (auto arr = CastPtr<JArray>(this->json))
+		if (auto arr = PtrCast<JArray>(this->json))
 		{
 			if (index >= arr->values.size()) throw EOutOfRangeException(__FUNCSIG__ TEXT(":: out of range"));
 			return arr->values.erase(arr->values.begin() + index);
@@ -247,7 +223,7 @@ namespace GenesisCube
 	
 	JSON::Json::ArrayIterator JSON::Json::Remove(const ArrayIterator &_First, const ArrayIterator &_Last)
 	{
-		if (auto arr = CastPtr<JArray>(this->json))
+		if (auto arr = PtrCast<JArray>(this->json))
 		{
 			return arr->values.erase(_First, _Last);
 		}
@@ -256,7 +232,7 @@ namespace GenesisCube
 	
 	JSON::Json::ArrayIterator JSON::Json::Remove(const ArrayIterator &_Where)
 	{
-		if (auto arr = CastPtr<JArray>(this->json))
+		if (auto arr = PtrCast<JArray>(this->json))
 		{
 			return arr->values.erase(_Where);
 		}
@@ -265,7 +241,7 @@ namespace GenesisCube
 	
 	size_t JSON::Json::Remove(const TString &key)
 	{
-		if (auto obj = CastPtr<JObject>(this->json))
+		if (auto obj = PtrCast<JObject>(this->json))
 		{
 			return obj->values.erase(key);
 		}
@@ -274,7 +250,7 @@ namespace GenesisCube
 	
 	JSON::Json::ObjectIterator JSON::Json::Remove(const ObjectIterator &_First, const ObjectIterator &_Last)
 	{
-		if (auto obj = CastPtr<JObject>(this->json))
+		if (auto obj = PtrCast<JObject>(this->json))
 		{
 			return obj->values.erase(_First, _Last);
 		}
@@ -283,7 +259,7 @@ namespace GenesisCube
 	
 	JSON::Json::ObjectIterator JSON::Json::Remove(const ObjectIterator &_Where)
 	{
-		if (auto obj = CastPtr<JObject>(this->json))
+		if (auto obj = PtrCast<JObject>(this->json))
 		{
 			return obj->values.erase(_Where);
 		}
@@ -292,7 +268,7 @@ namespace GenesisCube
 	
 	JSON::Json::ObjectIterator JSON::Json::begin() const
 	{
-		if (auto obj = CastPtr<JObject>(this->json))
+		if (auto obj = PtrCast<JObject>(this->json))
 		{
 			return obj->values.begin();
 		}
@@ -301,7 +277,7 @@ namespace GenesisCube
 	
 	JSON::Json::ObjectIterator JSON::Json::end() const
 	{
-		if (auto obj = CastPtr<JObject>(this->json))
+		if (auto obj = PtrCast<JObject>(this->json))
 		{
 			return obj->values.end();
 		}
@@ -310,11 +286,11 @@ namespace GenesisCube
 	
 	size_t JSON::Json::Size() const
 	{
-		if (auto arr = CastPtr<JArray>(this->json))
+		if (auto arr = PtrCast<JArray>(this->json))
 		{
 			return arr->values.size();
 		}
-		if (auto obj = CastPtr<JObject>(this->json))
+		if (auto obj = PtrCast<JObject>(this->json))
 		{
 			return obj->values.size();
 		}
@@ -323,7 +299,7 @@ namespace GenesisCube
 	
 	JSON::Json::ArrayIterator JSON::Json::ArrayBegin() const
 	{
-		if (auto arr = CastPtr<JArray>(this->json))
+		if (auto arr = PtrCast<JArray>(this->json))
 		{
 			return arr->values.begin();
 		}
@@ -332,7 +308,7 @@ namespace GenesisCube
 	
 	JSON::Json::ArrayIterator JSON::Json::ArrayEnd() const
 	{
-		if (auto arr = CastPtr<JArray>(this->json))
+		if (auto arr = PtrCast<JArray>(this->json))
 		{
 			return arr->values.end();
 		}
@@ -341,7 +317,7 @@ namespace GenesisCube
 	
 	JSON::Json::ArrayReverseIterator JSON::Json::ArrayRBegin() const
 	{
-		if (auto arr = CastPtr<JArray>(this->json))
+		if (auto arr = PtrCast<JArray>(this->json))
 		{
 			return arr->values.rbegin();
 		}
@@ -350,7 +326,7 @@ namespace GenesisCube
 	
 	JSON::Json::ArrayReverseIterator JSON::Json::ArrayREnd() const
 	{
-		if (auto arr = CastPtr<JArray>(this->json))
+		if (auto arr = PtrCast<JArray>(this->json))
 		{
 			return arr->values.rend();
 		}
@@ -359,7 +335,7 @@ namespace GenesisCube
 	
 	JSON::Json::ObjectIterator JSON::Json::ObjectBegin() const
 	{
-		if (auto obj = CastPtr<JObject>(this->json))
+		if (auto obj = PtrCast<JObject>(this->json))
 		{
 			return obj->values.begin();
 		}
@@ -368,7 +344,7 @@ namespace GenesisCube
 	
 	JSON::Json::ObjectIterator JSON::Json::ObjectEnd() const
 	{
-		if (auto obj = CastPtr<JObject>(this->json))
+		if (auto obj = PtrCast<JObject>(this->json))
 		{
 			return obj->values.end();
 		}
@@ -377,7 +353,7 @@ namespace GenesisCube
 	
 	JSON::Json::ObjectReverseIterator JSON::Json::ObjectRBegin() const
 	{
-		if (auto obj = CastPtr<JObject>(this->json))
+		if (auto obj = PtrCast<JObject>(this->json))
 		{
 			return obj->values.rbegin();
 		}
@@ -386,7 +362,7 @@ namespace GenesisCube
 	
 	JSON::Json::ObjectReverseIterator JSON::Json::ObjectREnd() const
 	{
-		if (auto obj = CastPtr<JObject>(this->json))
+		if (auto obj = PtrCast<JObject>(this->json))
 		{
 			return obj->values.rend();
 		}
@@ -395,7 +371,7 @@ namespace GenesisCube
 	
 	JSON::Json::Array &JSON::Json::ToArray() const
 	{
-		if (auto arr = CastPtr<JArray>(this->json))
+		if (auto arr = PtrCast<JArray>(this->json))
 		{
 			return arr->values;
 		}
@@ -404,7 +380,7 @@ namespace GenesisCube
 	
 	JSON::Json::Object &JSON::Json::ToMap() const
 	{
-		if (auto obj = CastPtr<JObject>(this->json))
+		if (auto obj = PtrCast<JObject>(this->json))
 		{
 			return obj->values;
 		}
@@ -413,7 +389,7 @@ namespace GenesisCube
 	
 	void JSON::Json::Reset()
 	{
-		this->json = MakePtr<GNull>();
+		this->json = MakeShared<GNull>();
 	}
 	
 	TString JSON::Json::ToString() const noexcept

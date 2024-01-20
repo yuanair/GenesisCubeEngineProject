@@ -7,11 +7,11 @@
 namespace GenesisCube
 {
 	
-	const double_t FTimer::TimeDilationMinimum = 1e-5;
+	const double FTimer::TimeDilationMinimum = 1e-5;
 	
-	const double_t FTimer::TimeDilationMaximum = 1e+3;
+	const double FTimer::TimeDilationMaximum = 1e+3;
 	
-	double_t FTimer::secondsPerCount = 1.0 / (double_t) QueryPerformanceFrequency();
+	double FTimer::secondsPerCount = 1.0 / (double) QueryPerformanceFrequency();
 	
 	int64_t FTimer::QueryPerformanceFrequency()
 	{
@@ -20,15 +20,15 @@ namespace GenesisCube
 		return countsPerSec;
 	}
 	
-	double_t FTimer::TotalTime() const
+	double FTimer::TotalTime() const
 	{
 		if (bIsStopped)
 		{
-			return double_t(stopTime - pausedTime - baseTime) * secondsPerCount;
+			return double(stopTime - pausedTime - baseTime) * secondsPerCount;
 		}
 		else
 		{
-			return double_t(currTime - pausedTime - baseTime) * secondsPerCount;
+			return double(currTime - pausedTime - baseTime) * secondsPerCount;
 		}
 	}
 	
@@ -46,11 +46,11 @@ namespace GenesisCube
 		return st;
 	}
 	
-	double_t FTimer::NowSecond()
+	double FTimer::NowSecond()
 	{
 		int64_t curr = 0;
 		::QueryPerformanceCounter((LARGE_INTEGER *) &curr);
-		return (double_t) curr * secondsPerCount;
+		return (double) curr * secondsPerCount;
 	}
 	
 	void FTimer::Reset()
@@ -105,7 +105,7 @@ namespace GenesisCube
 		::QueryPerformanceCounter((LARGE_INTEGER *) &curr);
 		currTime = curr;
 		
-		deltaTime = double_t(currTime - prevTime) * secondsPerCount * timeDilation;
+		deltaTime = double(currTime - prevTime) * secondsPerCount * timeDilation;
 		
 		prevTime = currTime;
 		
@@ -116,10 +116,10 @@ namespace GenesisCube
 		}
 		
 		tickCount++;
-		double_t calculatorFpsDeltaTime = double_t(currTime - lastCalculatorFpsTime) * secondsPerCount;
+		double calculatorFpsDeltaTime = double(currTime - lastCalculatorFpsTime) * secondsPerCount;
 		if (calculatorFpsDeltaTime > 1.0)
 		{
-			fps = double_t(tickCount) / calculatorFpsDeltaTime;
+			fps = double(tickCount) / calculatorFpsDeltaTime;
 			
 			tickCount = 0;
 			lastCalculatorFpsTime = currTime;
@@ -128,7 +128,7 @@ namespace GenesisCube
 		
 	}
 	
-	void FTimer::SetTimeDilation(double_t value)
+	void FTimer::SetTimeDilation(double value)
 	{
 		if (_isnan(value))
 		{

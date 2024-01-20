@@ -4,10 +4,7 @@
 
 #pragma once
 
-#include <windows.h>
-#include <windowsx.h>
-#include <msctf.h>
-#include <wrl.h>
+#include "../../GenesisCubeBase/Core/Header.h"
 
 #include <d3d11.h>
 #include <d2d1.h>
@@ -19,20 +16,17 @@
 
 #include <DirectXMath.h>
 
-#include <typeinfo>
-#include <fstream>
-#include <format>
-#include <string>
-#include <vector>
-#include <list>
-#include <map>
-
-#pragma comment(lib, "Imm32.lib")
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d2d1.lib")
 #pragma comment(lib, "dWrite.lib")
 
-#if defined(_DEBUG) || defined(DEBUG) || defined(GenesisCubeEditor)
+#ifdef UNICODE
+#pragma comment(linker, "/entry:wWinMainCRTStartup")
+#else
+#pragma comment(linker, "/entry:WinMainCRTStartup")
+#endif
+
+#if defined(_DEBUG) || defined(DEBUG)
 
 #define _CRTDBG_MAP_ALLOC
 

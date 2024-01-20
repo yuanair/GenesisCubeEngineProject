@@ -7,6 +7,19 @@ namespace GenesisCube
 {
 	
 	/// <summary>
+	/// HRESULT异常
+	/// </summary>
+	class EHResultException : public EException
+	{
+	public:
+		
+		inline EHResultException() = default;
+		
+		inline explicit EHResultException(const TString &message) : EException(message) {}
+		
+	};
+	
+	/// <summary>
 	/// 越界异常
 	/// </summary>
 	class EOutOfRangeException : public EException
@@ -68,6 +81,19 @@ namespace GenesisCube
 		inline EBadException() = default;
 		
 		inline explicit EBadException(const TString &message) : EException(message) {}
+		
+	};
+	
+	/// <summary>
+	/// 未找到异常
+	/// </summary>
+	class ENotFindException : public EException
+	{
+	public:
+		
+		inline ENotFindException() = default;
+		
+		inline explicit ENotFindException(const TString &message) : EException(message) {}
 		
 	};
 	

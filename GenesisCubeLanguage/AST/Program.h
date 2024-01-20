@@ -26,7 +26,7 @@ namespace GenesisCube::AST
 	
 	public:
 		
-		std::list<TPtr<Function>> functions;
+		std::list<TSharedPtr<Function>> functions;
 		
 	};
 	

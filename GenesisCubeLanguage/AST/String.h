@@ -22,9 +22,26 @@ namespace GenesisCube::AST
 		
 		[[nodiscard]]
 		String *Clone() const noexcept override { return new String(); }
+	
+	GCLASS_BODY(String)
 		
-		GCLASS_BODY(String)
+	};
+	
+	///
+	/// 抽象语法树字符
+	///
+	class Char : public Expression
+	{
+	public:
 		
+		[[nodiscard]]
+		JSON::Json ToJson() const noexcept override { return token->ToJson(); }
+		
+		[[nodiscard]]
+		Char *Clone() const noexcept override { return new Char(); }
+	
+	GCLASS_BODY(Char)
+	
 	};
 	
 	

@@ -16,7 +16,7 @@ namespace GenesisCube::JSON
 	/// 
 	/// json对象
 	/// 
-	class Json : public GObject
+	class Json
 	{
 	public:
 		
@@ -56,7 +56,7 @@ namespace GenesisCube::JSON
 		
 		Json(const Json &_other);
 		
-		~Json() override;
+		~Json();
 	
 	public:
 		
@@ -85,36 +85,12 @@ namespace GenesisCube::JSON
 		bool operator==(const Json &_other);
 		
 		bool operator!=(const Json &_other);
-		
-		operator bool() const;
-		
-		operator int64_t() const;
-		
-		operator double_t() const;
-		
-		operator TString() const;
-		
-		operator nullptr_t() const;
-		
-		operator int8_t() const = delete;
-		
-		operator uint8_t() const = delete;
-		
-		operator int16_t() const = delete;
-		
-		operator uint16_t() const = delete;
-		
-		operator int32_t() const = delete;
-		
-		operator uint32_t() const = delete;
-		
-		operator uint64_t() const = delete;
-		
-		operator TChar() const = delete;
-		
-		operator NTChar() const = delete;
 	
 	public:
+		
+		///
+		/// 错误JSON，当调用该类的函数出现错误时返回
+		static Json errorJson;
 		
 		/// 
 		/// 数组：添加元素
@@ -271,35 +247,69 @@ namespace GenesisCube::JSON
 		template<class T>
 		[[nodiscard]] inline bool Is() const { return GenesisCube::Is<T>(this->json); }
 		
+		///
+		/// \return
+		[[nodiscard]]
+		inline GString::ValueType GetString(const GString::ValueType &defaultValue) const
+		{
+			return Get<GString>(defaultValue);
+		}
+		
+		///
+		/// \return
+		[[nodiscard]]
+		inline GInteger::ValueType GetInteger(const GInteger::ValueType &defaultValue = 0) const
+		{
+			return Get<GInteger>(defaultValue);
+		}
+		
+		///
+		/// \return
+		[[nodiscard]]
+		inline float_t GetFloat(const float_t &defaultValue = 0.0f) const
+		{
+			return (float_t) Get<GFloat>((double_t) defaultValue);
+		}
+		
+		///
+		/// \return
+		[[nodiscard]]
+		inline GFloat::ValueType GetDouble(const GFloat::ValueType &defaultValue = 0.0) const
+		{
+			return Get<GFloat>(defaultValue);
+		}
+		
+		///
+		/// \return
+		[[nodiscard]]
+		inline GBool::ValueType GetBool(const GBool::ValueType &defaultValue) const
+		{
+			return Get<GBool>(defaultValue);
+		}
+		
 		/// 
 		/// 转换类型并获取
 		/// 
-		/// \return auto
-		template<class T>
-		inline auto Get() const;
+		/// \return
+		template<class T, class U = T::ValueType>
+		inline U Get(const U &defaultValue) const;
+	
+	public:
 		
-		[[nodiscard]] Json *Clone() const noexcept override
-		{
-			Json *ptr = new Json();
-			ptr->json = this->json;
-			return ptr;
-		}
-		
-		GCLASS_BODY(Json)
-		
-		[[nodiscard]] TString ToString() const noexcept override;
+		[[nodiscard]]
+		TString ToString() const noexcept;
 	
 	private:
 		
-		TPtr<GObject> json;
+		TSharedPtr<GObject> json;
 		
 	};
 	
-	template<class T>
-	inline auto Json::Get() const
+	template<class T, class U>
+	inline U Json::Get(const U &defaultValue) const
 	{
-		const TPtr<T> ptr = CastPtr<T>(this->json);
-		if (ptr == nullptr) throw ENullptrException(__FUNCSIG__ TEXT(":: cannot cast to be a T"));
+		const TSharedPtr<T> ptr = PtrCast<T>(this->json);
+		if (ptr == nullptr) return defaultValue;
 		return ptr->Get();
 	}
 	

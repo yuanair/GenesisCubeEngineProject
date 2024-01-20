@@ -12,6 +12,10 @@ namespace GenesisCube
 	{
 	public:
 		
+		typedef bool ValueType;
+	
+	public:
+		
 		GBool() : value(false) {}
 		
 		explicit GBool(bool value) : value(value) {}

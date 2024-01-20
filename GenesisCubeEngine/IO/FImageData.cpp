@@ -1,9 +1,10 @@
-//
+﻿//
 // Created by admin on 2023/12/27.
 //
 
 #include "FImageData.h"
-#include "../DoNotInclude/stb_image.h"
+#include "../../GenesisCubeBase/Core/Debug.h"
+#include "../includes/stb_image.h"
 
 namespace GenesisCube
 {
@@ -18,27 +19,33 @@ namespace GenesisCube
 		Reset();
 	}
 	
-	bool FImageData::LoadFromFile(const TString &file, int32_t desiredChannels)
+	void FImageData::LoadFromFile(const TString &file, int32_t desiredChannels)
 	{
 		Reset();
 		FILE *pFile;
 #ifdef UNICODE
 		_wfopen_s
 #else
-			_fopen_s
+			fopen_s
 #endif
 			(&pFile, file.c_str(), TEXT("rb"));
-		if (pFile == nullptr) return false;
+		if (pFile == nullptr)
+			return FLogger::Inst().LogErrorODS(std::format(TEXT("can not to open file \"{}\""), file));
 		this->data = stbi_load_from_file(pFile, &this->width, &this->height, &this->n, desiredChannels);
 		fclose(pFile);
-		return this->data != nullptr;
+		if (this->data == nullptr)
+			return FLogger::Inst().LogErrorODS(
+				std::format(TEXT("can not to load file \"{}\"(FILE 0x{:016X})"), file, (uintptr_t) pFile));
 	}
 	
-	bool FImageData::LoadFromFile(FILE *pFile, int32_t desiredChannels)
+	void FImageData::LoadFromFile(FILE *pFile, int32_t desiredChannels)
 	{
 		Reset();
+		if (pFile == nullptr)
+			return FLogger::Inst().LogErrorODS(std::format(TEXT("can not to load FILE(0x{:016X})"), (uintptr_t) pFile));
 		this->data = stbi_load_from_file(pFile, &this->width, &this->height, &this->n, desiredChannels);
-		return this->data != nullptr;
+		if (this->data == nullptr)
+			return FLogger::Inst().LogErrorODS(std::format(TEXT("can not to load FILE(0x{:016X})"), (uintptr_t) pFile));
 	}
 	
 	void FImageData::Reset()
@@ -48,6 +55,18 @@ namespace GenesisCube
 		this->width = 0;
 		this->height = 0;
 		this->n = 0;
+	}
+	
+	FImageData::FImageData(const TString &file, int32_t desiredChannels)
+		: FImageData()
+	{
+		LoadFromFile(file, desiredChannels);
+	}
+	
+	FImageData::FImageData(FILE *pFile, int32_t desiredChannels)
+		: FImageData()
+	{
+		LoadFromFile(pFile, desiredChannels);
 	}
 	
 	

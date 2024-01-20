@@ -12,6 +12,10 @@ namespace GenesisCube
 	{
 	public:
 		
+		typedef nullptr_t ValueType;
+	
+	public:
+		
 		GNull() = default;
 		
 		explicit GNull(nullptr_t) {}
@@ -20,13 +24,16 @@ namespace GenesisCube
 	
 	public:
 		
-		[[nodiscard]] inline GNull *Clone() const noexcept override { return new GNull(); }
+		[[nodiscard]]
+		inline GNull *Clone() const noexcept override { return new GNull(); }
 		
 		GCLASS_BODY(GNull)
 		
-		[[nodiscard]] inline TString ToString() const noexcept override { return TEXT("null"); }
+		[[nodiscard]]
+		inline TString ToString() const noexcept override { return TEXT("null"); }
 		
-		[[nodiscard]] static inline nullptr_t Get() noexcept { return {}; }
+		[[nodiscard]]
+		static inline nullptr_t Get() noexcept { return {}; }
 		
 	};
 }

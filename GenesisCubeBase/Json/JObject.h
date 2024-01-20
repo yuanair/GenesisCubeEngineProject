@@ -13,9 +13,13 @@ namespace GenesisCube::JSON
 	{
 	public:
 		
-		JObject();
+		typedef std::map<TString, Json> ValueType;
+	
+	public:
 		
-		~JObject() override;
+		JObject() = default;
+		
+		~JObject() override = default;
 	
 	public:
 		
@@ -29,7 +33,7 @@ namespace GenesisCube::JSON
 	
 	public:
 		
-		std::map<TString, Json> values;
+		ValueType values;
 		
 	};
 }

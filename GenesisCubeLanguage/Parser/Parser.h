@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../../GenesisCubeBase/Core/FFormatter.h"
+
 #include "../Lexer/Lexer.h"
 #include "../AST/AST.h"
 
@@ -7,7 +9,7 @@
 namespace GenesisCube::Parser
 {
 	// 语法分析类
-	class Parser : public GObject
+	class Parser
 	{
 	public:
 		
@@ -29,7 +31,7 @@ namespace GenesisCube::Parser
 			~Error() {}
 			
 			Error(Type type, TString message, Token::TokenPos pos)
-				: type(type), message(message), pos(pos) {}
+				: type(type), message(std::move(message)), pos(pos) {}
 		
 		public:
 			
@@ -45,42 +47,42 @@ namespace GenesisCube::Parser
 		
 		///
 		/// \param lexer 词法分析器
-		Parser(const TPtr<Lexer::Lexer> &lexer);
+		Parser(TUniquePtr<Lexer::Lexer> &lexer);
 		
-		~Parser() override = default;
+		~Parser() = default;
 	
 	public:
 		
 		///
 		/// 解析程序
 		/// \param program 程序
-		void ParseProgram(TPtr<AST::Program> &program);
+		void ParseProgram(TSharedPtr<AST::Program> &program);
 		
 		///
 		/// 解析函数
 		/// \param function 函数
-		void ParseFunction(TPtr<AST::Function> &function);
+		void ParseFunction(TSharedPtr<AST::Function> &function);
 		
 		///
 		/// 解析语句
 		/// \param statement 语句
-		void ParseStatement(TPtr<AST::Statement> &statement);
+		void ParseStatement(TSharedPtr<AST::Statement> &statement);
 		
 		///
 		/// 解析表达式语句
 		/// \param expressionStatement 目标
-		void ParseExpressionStatement(TPtr<AST::ExpressionStatement> &expressionStatement);
+		void ParseExpressionStatement(TSharedPtr<AST::ExpressionStatement> &expressionStatement);
 		
 		///
 		/// 解析表达式
 		/// \param expression 目标
-		void ParseExpression(TPtr<AST::Expression> &expression, Token::Token::Precedence precedence);
+		void ParseExpression(TSharedPtr<AST::Expression> &expression, Token::Token::Precedence precedence);
 		
 		///
 		/// 解析表达式
 		/// \param infix 目标
 		/// \param left
-		void ParseInfix(TPtr<AST::Infix> &infix, const TPtr<AST::Expression> &left);
+		void ParseInfix(TSharedPtr<AST::Infix> &infix, const TSharedPtr<AST::Expression> &left);
 		
 		///
 		/// 下一个符号
@@ -98,7 +100,7 @@ namespace GenesisCube::Parser
 		/// 新错误
 		/// \param type
 		/// \param message
-		inline void NewError(Error::Type type, TString message) noexcept
+		inline void NewError(Error::Type type, const TString &message) noexcept
 		{
 			errors.emplace_back(type, message, this->currToken->GetPos());
 		}
@@ -127,36 +129,37 @@ namespace GenesisCube::Parser
 		/// \tparam T 类型
 		/// \return 当前符号是否为T
 		template<class T>
+		[[nodiscard]]
 		inline bool CurrTokenIs() const { return Is<T>(currToken); }
 		
 		///
 		/// \tparam T 类型
 		/// \return 下一个符号是否为T
 		template<class T>
+		[[nodiscard]]
 		inline bool PeekTokenIs() const { return Is<T>(peekToken); }
 		
 		///
 		/// \return 当前运算符的优先级
+		[[nodiscard]]
 		inline auto CurrTokenPrecedence() const { return currToken->GetPrecedence(); }
 		
 		///
 		/// \return 下一个运算符的优先级
-		inline auto PeekTokenPrecedence() const { return peekToken->GetPrecedence(); }
-	
-	public:
-		
 		[[nodiscard]]
-		Parser *Clone() const noexcept override { return new Parser(lexer); }
+		inline auto PeekTokenPrecedence() const { return peekToken->GetPrecedence(); }
 		
 		GCLASS_BODY(Parser)
 	
+	public:
+		
+		TUniquePtr<Lexer::Lexer> lexer;
+	
 	private:
 		
-		TPtr<Lexer::Lexer> lexer;
+		TSharedPtr<Token::Token> currToken;
 		
-		TPtr<Token::Token> currToken;
-		
-		TPtr<Token::Token> peekToken;
+		TSharedPtr<Token::Token> peekToken;
 		
 		std::list<Error> errors;
 		
@@ -182,7 +185,8 @@ namespace GenesisCube::Parser
 	{
 		NewError(
 			Error::Type::Error_NotAsExpected, std::format(
-				TEXT("expected {}, got {} instead"), T::GetStaticName(), peekToken->GetName()));
+				TEXT("expected {}, got {} instead"), FFormatter::GetTypeName<T>(),
+				FFormatter::GetTypeName(peekToken.get())));
 	}
 	
 }

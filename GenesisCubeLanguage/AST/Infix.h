@@ -18,9 +18,6 @@ namespace GenesisCube::AST
 	public:
 		
 		[[nodiscard]]
-		TString GetName() const noexcept override { return TEXT("Infix"); }
-		
-		[[nodiscard]]
 		JSON::Json ToJson() const noexcept override;
 		
 		[[nodiscard]]
@@ -29,10 +26,10 @@ namespace GenesisCube::AST
 	public:
 		
 		/// 左表达式
-		TPtr<Expression> left;
+		TSharedPtr<Expression> left;
 		
 		/// 右表达式
-		TPtr<Expression> right;
+		TSharedPtr<Expression> right;
 		
 	};
 	

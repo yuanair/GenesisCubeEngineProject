@@ -25,9 +25,6 @@ namespace GenesisCube::Token
 		inline Type GetType() const noexcept override = 0;
 		
 		[[nodiscard]]
-		inline TString GetName() const noexcept override = 0;
-		
-		[[nodiscard]]
 		inline TString ToString() const noexcept override = 0;
 		
 		[[nodiscard]]
@@ -46,7 +43,8 @@ namespace GenesisCube::Token
 	
 	public:
 		
-		void GetPrefixExpression(TPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept override;
+		void
+		GetPrefixExpression(TSharedPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept override;
 		
 		JSON::Json ToJson() const override;
 		
@@ -68,6 +66,39 @@ namespace GenesisCube::Token
 	};
 	
 	///
+	/// 字符
+	///
+	class CharToken : public TypeToken
+	{
+	public:
+		
+		explicit CharToken(TChar value) : value(value) {}
+	
+	public:
+		
+		void
+		GetPrefixExpression(TSharedPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept override;
+		
+		JSON::Json ToJson() const override;
+		
+		[[nodiscard]]
+		inline Type GetType() const noexcept override { return StringType; }
+		
+		[[nodiscard]]
+		inline TString ToString() const noexcept override { return TString({value}); }
+		
+		[[nodiscard]]
+		inline CharToken *Clone() const noexcept override { return new CharToken(value); }
+		
+		GCLASS_BODY(CharToken)
+	
+	public:
+		
+		TChar value;
+		
+	};
+	
+	///
 	/// 整数
 	///
 	class IntegerToken : public TypeToken
@@ -78,7 +109,8 @@ namespace GenesisCube::Token
 	
 	public:
 		
-		void GetPrefixExpression(TPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept override;
+		void
+		GetPrefixExpression(TSharedPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept override;
 		
 		JSON::Json ToJson() const override;
 		
@@ -110,7 +142,8 @@ namespace GenesisCube::Token
 	
 	public:
 		
-		void GetPrefixExpression(TPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept override;
+		void
+		GetPrefixExpression(TSharedPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept override;
 		
 		JSON::Json ToJson() const override;
 		

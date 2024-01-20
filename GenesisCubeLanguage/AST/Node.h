@@ -26,9 +26,6 @@ namespace GenesisCube::AST
 	public:
 		
 		[[nodiscard]]
-		inline TString GetName() const noexcept override = 0;
-		
-		[[nodiscard]]
 		virtual JSON::Json ToJson() const noexcept = 0;
 		
 		[[nodiscard]]
@@ -36,7 +33,7 @@ namespace GenesisCube::AST
 	
 	public:
 		
-		TPtr<class Token::Token> token;
+		TSharedPtr<class Token::Token> token;
 		
 	};
 	
