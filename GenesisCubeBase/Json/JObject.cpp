@@ -1,17 +1,17 @@
 ﻿#include "JObject.h"
 #include "../Core/FFormatter.h"
 
-namespace GenesisCube
+namespace GenesisCube::Json
 {
 	
-	JSON::JObject *JSON::JObject::Clone() const noexcept
+	JObject *JObject::Clone() const noexcept
 	{
-		auto *ptr = new JSON::JObject();
+		auto *ptr = new JObject();
 		ptr->values = this->values;
 		return ptr;
 	}
 	
-	TString JSON::JObject::ToString() const noexcept
+	TString JObject::ToString() const noexcept
 	{
 		if (this->values.empty())
 		{

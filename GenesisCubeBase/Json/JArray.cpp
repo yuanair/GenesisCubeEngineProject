@@ -1,7 +1,7 @@
 ﻿#include "JArray.h"
 
 
-namespace GenesisCube::JSON
+namespace GenesisCube::Json
 {
 	JArray *JArray::Clone() const noexcept
 	{

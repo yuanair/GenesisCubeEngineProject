@@ -108,8 +108,6 @@ namespace GenesisCube::Lexer
 		
 		[[nodiscard]]
 		Lexer *Clone() const noexcept override;
-		
-		GCLASS_BODY(Lexer)
 	
 	private:
 		

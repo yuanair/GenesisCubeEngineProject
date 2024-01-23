@@ -30,8 +30,6 @@ namespace GenesisCube
 		[[nodiscard]]
 		inline GString *Clone() const noexcept override { return new GString(this->str); }
 		
-		GCLASS_BODY(GString)
-		
 		[[nodiscard]]
 		TString ToString() const noexcept override;
 		

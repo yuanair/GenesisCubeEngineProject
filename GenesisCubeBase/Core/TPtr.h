@@ -39,6 +39,18 @@ namespace GenesisCube
 	}
 	
 	template<class T, class U>
+	T *PtrCast(U *ptr)
+	{
+		return dynamic_cast<T *>(ptr);
+	}
+	
+	template<class T, class U>
+	T *PtrCast(const TUniquePtr<U> &ptr)
+	{
+		return dynamic_cast<T *>(ptr.get());
+	}
+	
+	template<class T, class U>
 	TSharedPtr<T> PtrCast(const TSharedPtr<U> &ptr)
 	{
 		return std::dynamic_pointer_cast<T>(ptr);

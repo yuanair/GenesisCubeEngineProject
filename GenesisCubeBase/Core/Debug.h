@@ -6,9 +6,8 @@
 #include "../../GenesisCubeEngine/Core/Header.h"
 
 #include "../../GenesisCubeEngine/Core/FCore.h"
-#include "FTimer.h"
 #include "../Exception/Exception.h"
-#include "../Object/GObject.h"
+#include "FTimer.h"
 
 namespace GenesisCube
 {

@@ -21,12 +21,12 @@ namespace GenesisCube::AST
 		
 		explicit Node(class Token::Token *token) : token(token) {}
 		
-		~Node() override = default;
+		virtual ~Node() = default;
 	
 	public:
 		
 		[[nodiscard]]
-		virtual JSON::Json ToJson() const noexcept = 0;
+		virtual Json::Json ToJson() const noexcept = 0;
 		
 		[[nodiscard]]
 		inline Node *Clone() const noexcept override = 0;
@@ -44,10 +44,8 @@ namespace GenesisCube::AST
 	{
 	public:
 		
-		GCLASS_BODY(Expression)
-		
 		[[nodiscard]]
-		JSON::Json ToJson() const noexcept override = 0;
+		Json::Json ToJson() const noexcept override = 0;
 		
 	};
 	
@@ -58,10 +56,8 @@ namespace GenesisCube::AST
 	{
 	public:
 		
-		GCLASS_BODY(Statement)
-		
 		[[nodiscard]]
-		JSON::Json ToJson() const noexcept override = 0;
+		Json::Json ToJson() const noexcept override = 0;
 		
 	};
 	

@@ -16,9 +16,7 @@ namespace GenesisCube::AST
 	public:
 		
 		[[nodiscard]]
-		JSON::Json ToJson() const noexcept override;
-		
-		GCLASS_BODY(Function)
+		Json::Json ToJson() const noexcept override;
 		
 		[[nodiscard]]
 		Function *Clone() const noexcept override

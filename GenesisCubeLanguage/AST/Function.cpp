@@ -6,10 +6,10 @@
 
 namespace GenesisCube::AST
 {
-	JSON::Json Function::ToJson() const noexcept
+	Json::Json Function::ToJson() const noexcept
 	{
-		JSON::Json json;
-		JSON::Json &list = json[TEXT("statements")];
+		Json::Json json;
+		Json::Json &list = json[TEXT("statements")];
 		size_t index = 0;
 		for (auto &item: statements)
 		{

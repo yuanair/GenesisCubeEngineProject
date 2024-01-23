@@ -27,11 +27,11 @@ namespace GenesisCube
 	
 	public:
 		
-		UUI() {}
+		UUI() = default;
 		
 		UUI(const UUI &) = delete;
 		
-		virtual ~UUI() {}
+		virtual ~UUI() = default;
 		
 		UUI &operator=(const UUI &) = delete;
 	
@@ -44,7 +44,7 @@ namespace GenesisCube
 		///
 		/// \param point 点
 		/// \return 点是否在内部
-		virtual bool IsInnerPoint(const D2D1_POINT_2F &point) const { return false; }
+		virtual bool IsInnerPoint(const D2D1_POINT_2F &point) { return false; }
 	
 	protected:
 		
@@ -107,7 +107,7 @@ namespace GenesisCube
 	
 	public:
 		
-		PPanel() {}
+		PPanel() = default;
 		
 		~PPanel() override;
 	
@@ -130,7 +130,7 @@ namespace GenesisCube
 		void Render(RenderTarget *renderTarget) override;
 		
 		[[nodiscard]]
-		bool IsInnerPoint(const D2D1_POINT_2F &point) const override;
+		bool IsInnerPoint(const D2D1_POINT_2F &point) override;
 		
 		///
 		/// 创建子控件
@@ -164,46 +164,26 @@ namespace GenesisCube
 		///
 		/// 设置计算矩形
 		/// \param newRect 新计算矩形
-		void SetCalRect(const D2D1_RECT_F &newRect) noexcept
-		{
-			this->calculatorRect = newRect;
-			ReCalculator();
-		}
+		inline void SetCalRect(const D2D1_RECT_F &newRect) noexcept { this->calculatorRect = newRect; }
 		
 		///
 		/// 设置模式
 		/// \param newRect 新模式
-		void SetMode(Mode newMode) noexcept
-		{
-			this->mode = newMode;
-			ReCalculator();
-		}
+		inline void SetMode(Mode newMode) noexcept { this->mode = newMode; }
 		
 		///
 		/// 设置模式
 		/// \param newRect 新模式
-		void SetHorizontal(AlignmentMode newMode) noexcept
-		{
-			this->horizontal = newMode;
-			ReCalculator();
-		}
+		inline void SetHorizontal(AlignmentMode newMode) noexcept { this->horizontal = newMode; }
 		
 		///
 		/// 设置模式
 		/// \param newRect 新模式
-		void SetVertical(AlignmentMode newMode) noexcept
-		{
-			this->vertical = newMode;
-			ReCalculator();
-		}
+		inline void SetVertical(AlignmentMode newMode) noexcept { this->vertical = newMode; }
 	
 	private:
 		
-		void SetParent(PPanel *newParent) noexcept override
-		{
-			UUI::SetParent(newParent);
-			ReCalculator();
-		}
+		inline void SetParent(PPanel *newParent) noexcept override { UUI::SetParent(newParent); }
 	
 	public:
 		
@@ -215,7 +195,11 @@ namespace GenesisCube
 		///
 		/// \return 矩形
 		[[nodiscard]]
-		inline const D2D1_RECT_F &GetRect() const noexcept { return this->rect; };
+		inline const D2D1_RECT_F &GetRect() noexcept
+		{
+			ReCalculator();
+			return this->rect;
+		};
 		
 		///
 		/// \return 计算矩形

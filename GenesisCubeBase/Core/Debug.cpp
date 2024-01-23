@@ -67,7 +67,6 @@ namespace GenesisCube
 	
 	TString FLogger::TraceStack(uint16_t frameToSkip, uint16_t framesToCapture)
 	{
-		if (FCore::GetRunningMode() > FCore::Debug) return TEXT("no Debug");
 #if defined(_DEBUG) || defined(DEBUG)
 		auto pStack = new PVOID[framesToCapture];
 		TString szStackInfo(TEXT("\n"));
@@ -195,19 +194,10 @@ namespace GenesisCube
 	
 	TString FLoggerFormat::Format(const TString &message, LoggerLevel loggerLevel) const
 	{
-		if (FCore::GetRunningMode() <= FCore::Debug)
-		{
-			return std::format(
-				TEXT("[{}] [{}] [{}] {}\n"), Format(loggerLevel), Format(FTimer::LocalTime()),
-				FLogger::TraceStack(3, 16), message
-			);
-		}
-		else
-		{
-			return std::format(
-				TEXT("[{}] [{}] {}\n"), Format(loggerLevel), Format(FTimer::LocalTime()), message
-			);
-		}
+		return std::format(
+			TEXT("[{}] [{}] [{}] {}\n"), Format(loggerLevel), Format(FTimer::LocalTime()),
+			FLogger::TraceStack(3, 16), message
+		);
 	}
 	
 	TString FLoggerFormat::Format(LoggerLevel loggerLevel)

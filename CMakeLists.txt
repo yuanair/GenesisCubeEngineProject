@@ -19,5 +19,3 @@ add_subdirectory("./GenesisCubeLanguage")
 
 # Simple
 add_subdirectory("Simple")
-
-add_compile_options("/FR")

@@ -14,9 +14,9 @@ namespace GenesisCube::AST
 	public:
 		
 		[[nodiscard]]
-		JSON::Json ToJson() const noexcept override
+		Json::Json ToJson() const noexcept override
 		{
-			return expression != nullptr ? expression->ToJson() : JSON::Json(
+			return expression != nullptr ? expression->ToJson() : Json::Json(
 				nullptr
 			);
 		}

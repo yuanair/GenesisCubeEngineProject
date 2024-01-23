@@ -7,7 +7,7 @@
 #include "JObject.h"
 
 
-namespace GenesisCube::JSON
+namespace GenesisCube::Json
 {
 	
 	///
@@ -41,9 +41,9 @@ namespace GenesisCube::JSON
 	
 	private:
 		
-		TSharedPtr<JSON::Json> ReadArray();
+		TSharedPtr<Json> ReadArray();
 		
-		TSharedPtr<JSON::Json> ReadObject();
+		TSharedPtr<Json> ReadObject();
 		
 		TString ReadString(TCHAR stopChar);
 		

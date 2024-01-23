@@ -5,7 +5,6 @@
 #pragma once
 
 #include "Header.h"
-#include "../../GenesisCubeBase/Core/Debug.h"
 
 namespace GenesisCube
 {
@@ -17,18 +16,16 @@ namespace GenesisCube
 	public:
 		
 		///
-		/// 获取Logger
-		/// \return Logger
-		inline static FLogger *Logger() { return loggerInstance; }
-		
-		///
-		/// 提供Logger
-		/// \param logger Logger
-		inline static void ProvideLogger(FLogger *logger) { loggerInstance = logger; }
-	
-	private:
-		
-		static FLogger *loggerInstance;
+		/// 获取locale
+		/// \param locName 名（如果不为nullptr，则修改）
+		/// \return locale
+		//		inline static std::locale &GetLocale(const char *locName = nullptr)
+		//		{
+		//			static std::locale locale;
+		//			if (locName == nullptr) return locale;
+		//			locale = std::locale(locName);
+		//			return locale;
+		//		}
 		
 	};
 	

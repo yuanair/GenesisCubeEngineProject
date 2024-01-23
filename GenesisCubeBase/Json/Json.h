@@ -10,8 +10,44 @@
 #include "../Exception/Exception.h"
 #include "../Core/TPtr.h"
 
-namespace GenesisCube::JSON
+namespace GenesisCube::Json
 {
+	
+	template<class T>
+	struct JsonObject
+	{
+	
+	};
+	
+	template<>
+	struct JsonObject<std::nullptr_t>
+	{
+		typedef std::nullptr_t JsonType;
+	};
+	
+	template<>
+	struct JsonObject<int64_t>
+	{
+		typedef GInteger JsonType;
+	};
+	
+	template<>
+	struct JsonObject<double_t>
+	{
+		typedef GFloat JsonType;
+	};
+	
+	template<>
+	struct JsonObject<bool>
+	{
+		typedef GBool JsonType;
+	};
+	
+	template<>
+	struct JsonObject<TString>
+	{
+		typedef GString JsonType;
+	};
 	
 	/// 
 	/// json对象
@@ -125,14 +161,14 @@ namespace GenesisCube::JSON
 		/// \param _First 开始位置
 		/// \param _Last 结束位置
 		/// \return 
-		ArrayIterator Remove(const ArrayIterator &_First, const ArrayIterator &_Last);
+		ArrayIterator Remove(const ArrayIterator &First, const ArrayIterator &Last);
 		
 		/// 
 		/// 数组：删除元素
 		/// 
 		/// \param _Where 位置
 		/// \return 
-		ArrayIterator Remove(const ArrayIterator &_Where);
+		ArrayIterator Remove(const ArrayIterator &Where);
 		
 		/// 
 		/// 对象：删除元素
@@ -147,14 +183,14 @@ namespace GenesisCube::JSON
 		/// \param _First 开始位置
 		/// \param _Last 结束位置
 		/// \return 
-		ObjectIterator Remove(const ObjectIterator &_First, const ObjectIterator &_Last);
+		ObjectIterator Remove(const ObjectIterator &First, const ObjectIterator &Last);
 		
 		/// 
 		/// 对象：删除元素
 		/// 
 		/// \param _Where 位置
 		/// \return 
-		ObjectIterator Remove(const ObjectIterator &_Where);
+		ObjectIterator Remove(const ObjectIterator &Where);
 		
 		/// 
 		/// 数组：元素个数。
@@ -240,27 +276,28 @@ namespace GenesisCube::JSON
 		/// 
 		void Reset();
 		
-		/// 
+		///
 		/// 判断类型
-		/// 
+		///
 		/// \return bool
 		template<class T>
-		[[nodiscard]] inline bool Is() const { return GenesisCube::Is<T>(this->json); }
+		[[nodiscard]]
+		inline bool Is() const { return GenesisCube::Is<T>(this->json.get()); }
 		
 		///
 		/// \return
 		[[nodiscard]]
-		inline GString::ValueType GetString(const GString::ValueType &defaultValue) const
+		inline TString GetString(const TString &defaultValue) const
 		{
-			return Get<GString>(defaultValue);
+			return Get<TString>(defaultValue);
 		}
 		
 		///
 		/// \return
 		[[nodiscard]]
-		inline GInteger::ValueType GetInteger(const GInteger::ValueType &defaultValue = 0) const
+		inline int64_t GetInteger(const int64_t &defaultValue = 0) const
 		{
-			return Get<GInteger>(defaultValue);
+			return Get<int64_t>(defaultValue);
 		}
 		
 		///
@@ -268,31 +305,32 @@ namespace GenesisCube::JSON
 		[[nodiscard]]
 		inline float_t GetFloat(const float_t &defaultValue = 0.0f) const
 		{
-			return (float_t) Get<GFloat>((double_t) defaultValue);
+			return (float_t) Get<double_t>((double_t) defaultValue);
 		}
 		
 		///
 		/// \return
 		[[nodiscard]]
-		inline GFloat::ValueType GetDouble(const GFloat::ValueType &defaultValue = 0.0) const
+		inline double_t GetDouble(const double_t &defaultValue = 0.0) const
 		{
-			return Get<GFloat>(defaultValue);
+			return Get<double_t>(defaultValue);
 		}
 		
 		///
 		/// \return
 		[[nodiscard]]
-		inline GBool::ValueType GetBool(const GBool::ValueType &defaultValue) const
+		inline bool GetBool(const bool &defaultValue) const
 		{
-			return Get<GBool>(defaultValue);
+			return Get<bool>(defaultValue);
 		}
 		
 		/// 
 		/// 转换类型并获取
 		/// 
 		/// \return
-		template<class T, class U = T::ValueType>
-		inline U Get(const U &defaultValue) const;
+		template<class T, class U = JsonObject<T>::JsonType>
+		inline T Get(const T &defaultValue) const;
+	
 	
 	public:
 		
@@ -301,14 +339,14 @@ namespace GenesisCube::JSON
 	
 	private:
 		
-		TSharedPtr<GObject> json;
+		TUniquePtr<GObject> json;
 		
 	};
 	
 	template<class T, class U>
-	inline U Json::Get(const U &defaultValue) const
+	inline T Json::Get(const T &defaultValue) const
 	{
-		const TSharedPtr<T> ptr = PtrCast<T>(this->json);
+		U *ptr = PtrCast<U>(this->json);
 		if (ptr == nullptr) return defaultValue;
 		return ptr->Get();
 	}

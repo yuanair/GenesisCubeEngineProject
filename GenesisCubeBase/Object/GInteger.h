@@ -27,8 +27,6 @@ namespace GenesisCube
 		[[nodiscard]]
 		inline GInteger *Clone() const noexcept override { return new GInteger(this->value); }
 		
-		GCLASS_BODY(GInteger)
-		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return ToTString(this->value); }
 		

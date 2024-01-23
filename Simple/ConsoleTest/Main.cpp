@@ -12,7 +12,6 @@
 using namespace std;
 using namespace GenesisCube;
 using namespace GenesisCube;
-using namespace JSON;
 using Microsoft::WRL::ComPtr;
 
 void InfoColor()
@@ -66,8 +65,8 @@ int main()
 	InfoColor();
 	{
 		TUniquePtr<Lexer::Lexer> lexer(new Lexer::Lexer(TEXT("Data/test.c")));
-		Json json;
-		Json &json1 = json[TEXT("tokens")];
+		Json::Json json;
+		Json::Json &json1 = json[TEXT("tokens")];
 		
 		int32_t level = 0;
 		
@@ -156,7 +155,7 @@ int main()
 		}
 		TOut << endl;
 		
-		TOFStream ofs(TEXT("../../../../Lexer.json "));
+		TOFStream ofs(TEXT("../../../../Lexer.language "));
 		if (ofs.is_open())
 		{
 			ofs << json.ToString();
@@ -192,7 +191,7 @@ int main()
 		
 		if (function)
 		{
-			TOFStream ofs(TEXT("../../../../Parser.json"));
+			TOFStream ofs(TEXT("../../../../Parser.language"));
 			ofs << function->ToJson().ToString();
 			ofs.close();
 		}
@@ -208,7 +207,7 @@ int main()
 //		}
 //
 //		TString jsonBuffer = program->ToJsonString();
-//		TOFStream ofs(TEXT("Parser.json"));
+//		TOFStream ofs(TEXT("Parser.language"));
 //		if (ofs.is_open())
 //		{
 //			ofs << jsonBuffer;

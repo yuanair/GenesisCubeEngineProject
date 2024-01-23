@@ -21,9 +21,8 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("&&"); }
-	
-	GCLASS_BODY(ANDToken)
-	
+		
+		
 	};
 	
 	///
@@ -38,9 +37,8 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("||"); }
-	
-	GCLASS_BODY(ORToken)
-	
+		
+		
 	};
 	
 	
@@ -56,9 +54,8 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("&"); }
-	
-	GCLASS_BODY(BitANDToken)
-	
+		
+		
 	};
 	
 	///
@@ -73,9 +70,8 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("|"); }
-	
-	GCLASS_BODY(BitORToken)
-	
+		
+		
 	};
 	
 	///
@@ -90,9 +86,8 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("^"); }
-	
-	GCLASS_BODY(BitXORToken)
-	
+		
+		
 	};
 	
 	

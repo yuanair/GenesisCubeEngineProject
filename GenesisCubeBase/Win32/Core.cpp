@@ -8,6 +8,17 @@
 namespace GenesisCube::Win32
 {
 	
+	HINSTANCE ShellExecuteT(HWND hWnd, const TString &operation, const TString &file, const TString &parameters,
+							const TString &directory, int32_t showCmd)
+	{
+		return ::ShellExecute(hWnd, operation.c_str(), file.c_str(), parameters.c_str(), directory.c_str(), showCmd);
+	}
+	
+	bool ShellExecuteExT(SHELLEXECUTEINFO &info)
+	{
+		return ::ShellExecuteEx(&info);
+	}
+	
 	void Exit(int32_t result)
 	{
 		::PostQuitMessage(result);
@@ -52,24 +63,24 @@ namespace GenesisCube::Win32
 	void GainAdminPrivileges(const TString &strApp)
 	{
 		SHELLEXECUTEINFO execInfo;
-		memset(&execInfo, 0, sizeof(execInfo));
+		execInfo.cbSize = sizeof(execInfo);
 		execInfo.lpFile = strApp.c_str();
 		execInfo.cbSize = sizeof(execInfo);
 		execInfo.lpVerb = TEXT("runas");
 		execInfo.fMask = SEE_MASK_NO_CONSOLE;
 		execInfo.nShow = SW_SHOWDEFAULT;
 		
-		ShellExecuteEx(&execInfo);
+		ShellExecuteExT(execInfo);
 	}
 	
 	bool IsRunAsAdministrator()
 	{
-		BOOL fIsRunAsAdmin = FALSE;
-		DWORD dwError = ERROR_SUCCESS;
-		PSID pAdministratorsGroup = nullptr;
+		::BOOL fIsRunAsAdmin = FALSE;
+		::DWORD dwError = ERROR_SUCCESS;
+		::PSID pAdministratorsGroup = nullptr;
 		
-		SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
-		if (!AllocateAndInitializeSid(
+		::SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
+		if (!::AllocateAndInitializeSid(
 			&NtAuthority,
 			2,
 			SECURITY_BUILTIN_DOMAIN_RID,
@@ -78,13 +89,13 @@ namespace GenesisCube::Win32
 			&pAdministratorsGroup
 		))
 		{
-			dwError = GetLastError();
+			dwError = ::GetLastError();
 			goto Cleanup;
 		}
 		
-		if (!CheckTokenMembership(nullptr, pAdministratorsGroup, &fIsRunAsAdmin))
+		if (!::CheckTokenMembership(nullptr, pAdministratorsGroup, &fIsRunAsAdmin))
 		{
-			dwError = GetLastError();
+			dwError = ::GetLastError();
 			goto Cleanup;
 		}
 
@@ -92,7 +103,7 @@ Cleanup:
 		
 		if (pAdministratorsGroup)
 		{
-			FreeSid(pAdministratorsGroup);
+			::FreeSid(pAdministratorsGroup);
 			pAdministratorsGroup = nullptr;
 		}
 		

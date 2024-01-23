@@ -133,6 +133,13 @@ namespace GenesisCube
 		inline double GetDeltaTime() const noexcept { return this->deltaTime; }
 		
 		///
+		/// 获取帧间隔时间
+		///
+		/// \return 单位：秒
+		[[nodiscard]]
+		inline float GetDeltaTimeF() const noexcept { return (float) this->deltaTime; }
+		
+		///
 		/// 获取帧率
 		///
 		/// \return 帧率

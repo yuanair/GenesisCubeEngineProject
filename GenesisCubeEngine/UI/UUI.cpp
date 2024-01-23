@@ -28,7 +28,7 @@ namespace GenesisCube
 	}
 	
 	
-	bool PPanel::IsInnerPoint(const D2D1_POINT_2F &point) const
+	bool PPanel::IsInnerPoint(const D2D1_POINT_2F &point)
 	{
 		UUI::IsInnerPoint(point);
 		D2D1_RECT_F rect = GetRect();

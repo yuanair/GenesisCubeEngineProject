@@ -17,12 +17,10 @@ namespace GenesisCube::AST
 	public:
 		
 		[[nodiscard]]
-		JSON::Json ToJson() const noexcept override;
+		Json::Json ToJson() const noexcept override;
 		
 		[[nodiscard]]
 		Program *Clone() const noexcept override;
-		
-		GCLASS_BODY(Program)
 	
 	public:
 		

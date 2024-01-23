@@ -144,7 +144,7 @@ namespace GenesisCube::Token
 		[[nodiscard]] TokenPos GetPos() const;
 		
 		/// 以json表示
-		virtual JSON::Json ToJson() const;
+		virtual Json::Json ToJson() const;
 		
 		/// 类型是否为EOF
 		[[nodiscard]] bool IsEOF() const;

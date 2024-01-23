@@ -17,66 +17,52 @@ namespace GenesisCube
 	
 	const TCHAR FCore::buildTime[] = TEXT(__DATE__);
 	
-	const int FCore::version_code = 1;
+	const int FCore::version_code = 0x0001;
 	
-	static FCore::RunningMode globalRunningMode = FCore::ErrorRunningMode;
-	
-	HINSTANCE FCore::Shell(HWND hWnd, const TString &operation, const TString &file, const TString &parameters,
-						   const TString &directory, INT showCmd)
+	int32_t FCore::Running(FProgram *(*newProgramFn)())
 	{
-		return ShellExecute(hWnd, operation.c_str(), file.c_str(), parameters.c_str(), directory.c_str(), showCmd);
-	}
-	
-	int32_t FCore::Running(FProgram &program, RunningMode runningMode)
-	{
-		if (globalRunningMode != ErrorRunningMode)
+		FRectI desktopWindowRect;
 		{
-			throw EBadException(
-				__FUNCSIG__ TEXT(":: Duplicate runs are not allowed")
-			);
-		}
-		globalRunningMode = runningMode;
-		
-		if (runningMode == ErrorRunningMode)
-		{
-			throw EInvalidArgumentException(
-				__FUNCSIG__ TEXT(":: runningMode is invalid")
-			);
+			Win32::FWindow desktopWindow;
+			desktopWindow.Bind(Win32::FWindow::GetDesktopWindow());
+			desktopWindowRect = desktopWindow.GetWindowRect();
 		}
 		
-		// 当为DEBUG模式时，内存泄漏检测
-		if (runningMode <= Debug)
-		{
-			_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-		}
-		
-		TString buffer;
-		buffer += std::format(
-			TEXT(
-				R"(
+		FLogger::Inst().LogInfoODS(
+			std::format(
+				TEXT(
+					R"(
 	{0} {1} (code: {2})
 	[running path: {3}]
 	[logger file: {4}]
 	[build time: {5}]
-	[build type: {6}]
-	[command line: {7}]
-	[desktop size: {8}, {9}]
+	[command line: {6}]
+	[desktop size: {7}, {8}]
 )"),
-			FCore::appName, // 0
-			FCore::versionString, // 1
-			FCore::version_code, // 2
-			Win32::GetModuleFileNameT(), // 3
-			FLogger::Inst().GetFile(), // 4
-			FCore::buildTime, // 5
-			ToString(runningMode), // 6
-			Win32::GetCommandLineT(), // 7
-			Win32::FWindow::GetDesktopSize().width, // 8
-			Win32::FWindow::GetDesktopSize().height // 9
+				FCore::appName, // 0
+				FCore::versionString, // 1
+				FCore::version_code, // 2
+				Win32::GetModuleFileNameT(), // 3
+				FLogger::Inst().GetFile(), // 4
+				FCore::buildTime, // 5
+				Win32::GetCommandLineT(), // 6
+				desktopWindowRect.width, // 7
+				desktopWindowRect.height // 8
+			)
 		);
 		
-		FLogger::Inst().LogInfoODS(buffer);
+		if (newProgramFn == nullptr)
+		{
+			FLogger::Inst().LogFatalODS(TEXT("newProgramFn is nullptr"));
+			return 0;
+		}
 		
-		program.Start();
+		FProgram *program = newProgramFn();
+		if (program == nullptr)
+		{
+			FLogger::Inst().LogFatalODS(TEXT("program is nullptr"));
+			return 0;
+		}
 		
 		MSG msg = {};
 		while (msg.message != WM_QUIT)
@@ -88,83 +74,16 @@ namespace GenesisCube
 			}
 			else
 			{
-				program.Tick();
+				program->Tick();
 			}
 		}
 		
-		program.End();
+		delete program;
 		
-		globalRunningMode = FCore::ErrorRunningMode;
 		return (int) msg.wParam;
-	}
-	
-	FCore::RunningMode FCore::GetRunningMode()
-	{
-		if (globalRunningMode == FCore::ErrorRunningMode)
-		{
-			FLogger::Inst().LogFatalODS(__FUNCSIG__ TEXT("No call FCore::Running"));
-			exit(-1);
-		}
-		return globalRunningMode;
-	}
-	
-	TString FCore::ToString(FCore::RunningMode runningMode)
-	{
-		switch (runningMode)
-		{
-			case Release:
-				return TEXT("Release");
-			case Debug:
-				return TEXT("Debug");
-			case ErrorRunningMode:
-			default:
-				return TEXT("ErrorRunningMode");
-		}
 	}
 	
 } // GenesisCube
 
 
-///
-/// define TWinMain
-///
-#ifdef UNICODE
 
-#define TWinMain() WINAPI wWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
-
-#else
-
-#define TWinMain() WINAPI WinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
-
-#endif
-
-///
-/// TWinMain
-///
-#ifdef _DEBUG
-
-int TWinMain()
-{
-	return main();
-}
-
-#else
-
-int TWinMain()
-{
-	try
-	{
-		return main();
-	}
-	catch (const GenesisCube::EException &exception)
-	{
-		GenesisCube::FLogger::MessageBoxFromException(exception);
-	}
-	catch (const std::exception &ex)
-	{
-		GenesisCube::FLogger::MessageBoxFromException(ex);
-	}
-	return 0;
-}
-
-#endif

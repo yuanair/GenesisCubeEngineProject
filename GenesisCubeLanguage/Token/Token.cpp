@@ -26,9 +26,9 @@ namespace GenesisCube::Token
 		return typeid(*this) == typeid(EOFToken);
 	}
 	
-	JSON::Json Token::ToJson() const
+	Json::Json Token::ToJson() const
 	{
-		JSON::Json json;
+		Json::Json json;
 		json[TEXT("value")] = ToString();
 		json[TEXT("type")] = FFormatter::GetTypeName(this);
 		return json;

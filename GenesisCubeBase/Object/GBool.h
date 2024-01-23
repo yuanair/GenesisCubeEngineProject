@@ -27,8 +27,6 @@ namespace GenesisCube
 		[[nodiscard]]
 		inline GBool *Clone() const noexcept override { return new GBool(this->value); }
 		
-		GCLASS_BODY(GBool)
-		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override
 		{

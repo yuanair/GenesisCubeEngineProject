@@ -331,8 +331,6 @@ namespace GenesisCube
 		
 		[[nodiscard]]
 		GWindow *Clone() const noexcept override { return new GWindow(); }
-		
-		GCLASS_BODY(GWindow)
 	
 	public:
 		

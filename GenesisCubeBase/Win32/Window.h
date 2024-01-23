@@ -6,7 +6,6 @@
 
 #include "../Core/Header.h"
 #include "../Core/FCore.h"
-#include "../Object/GObject.h"
 #include "../Core/GenesisCubeDef.h"
 #include "Core.h"
 
@@ -29,7 +28,7 @@ namespace GenesisCube::Win32
 		
 		}
 		
-		inline ~FWindowClass() noexcept {}
+		inline ~FWindowClass() noexcept = default;
 	
 	public:
 		
@@ -142,7 +141,7 @@ namespace GenesisCube::Win32
 		///
 		/// 构造
 		inline FWindow() noexcept
-			: hWnd(INVALID_HANDLE_VALUE)
+			: hWnd(), hCursor(), bEnableOnChar(false), inputPoint(), mousePosition()
 		{
 		
 		}
@@ -162,34 +161,32 @@ namespace GenesisCube::Win32
 	public:
 		
 		///
-		/// \return 桌面分辨率
+		/// \return 桌面窗口
 		[[nodiscard]]
-		static FSize2I GetDesktopSize() noexcept;
+		static HWND GetDesktopWindow() noexcept;
 		
 		///
 		/// 查找窗口
-		static void *FindWindowFromName(const TString &windowName);
+		static HWND FindWindowFromName(const TString &windowName);
 		
 		///
 		/// 查找窗口
-		static void *FindWindowFromName(const TString &windowName, const TString &windowClassName);
+		static HWND FindWindowFromName(const TString &windowName, const TString &windowClassName);
 		
 		///
 		/// 设为前景窗口
 		/// \param hWnd 句柄
-		static void SetForegroundWindow(void *hWnd);
+		void SetForegroundWindow() const;
 		
 		///
-		/// 按下键
-		/// \param hwnd 句柄
+		/// 模拟按下键
 		/// \param vk 虚拟键
-		static void SeedKeyDown(void *hwnd, TChar vk);
+		void SeedKeyDown(TChar vk) const;
 		
 		///
-		/// 松开键
-		/// \param hwnd 句柄
+		/// 模拟松开键
 		/// \param vk 虚拟键
-		static void SeedKeyUp(void *hwnd, TChar vk);
+		void SeedKeyUp(TChar vk) const;
 		
 		///
 		/// 创建窗口
@@ -204,8 +201,13 @@ namespace GenesisCube::Win32
 		void Create(
 			const FWindowClass &windowClass, const TString &windowName,
 			int32_t x = INT_MIN, int32_t y = INT_MIN, int32_t w = INT_MIN, int32_t h = INT_MIN,
-			void *hInstance = nullptr, void *hWndParent = nullptr
+			void *hInstance = nullptr, HWND hWndParent = nullptr
 		) noexcept;
+		
+		///
+		/// 绑定句柄
+		/// \param pHwnd 窗口句柄
+		void Bind(HWND pHwnd) noexcept;
 		
 		///
 		/// 第一次显示窗口时调用
@@ -360,7 +362,7 @@ namespace GenesisCube::Win32
 		///
 		/// \return 窗口句柄
 		[[nodiscard]]
-		inline void *GetHWnd() const noexcept { return this->hWnd; }
+		inline HWND GetHWnd() const noexcept { return this->hWnd; }
 	
 	private:
 		
@@ -377,22 +379,22 @@ namespace GenesisCube::Win32
 		///
 		/// 是否启用OnChar事件
 		///
-		bool bEnableOnChar = false;
+		bool bEnableOnChar;
 		
 		///
 		/// 输入位置，用于输入法定位
 		///
-		POINT inputPoint = {};
+		POINT inputPoint;
 		
 		///
 		/// 鼠标光标
-		void *hCursor = nullptr;
+		HCURSOR hCursor;
 	
 	private:
 		
-		void *hWnd;
+		HWND hWnd;
 		
-		FPoint2I mousePosition{};
+		FPoint2I mousePosition;
 		
 	};
 	

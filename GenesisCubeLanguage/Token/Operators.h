@@ -50,8 +50,6 @@ namespace GenesisCube::Token
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("+"); }
 		
-		GCLASS_BODY(PlusToken)
-		
 	};
 	
 	///
@@ -66,8 +64,6 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("-"); }
-		
-		GCLASS_BODY(MinusToken)
 		
 	};
 	
@@ -84,8 +80,6 @@ namespace GenesisCube::Token
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("*"); }
 		
-		GCLASS_BODY(MultiplyToken)
-		
 	};
 	
 	///
@@ -100,8 +94,6 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("/"); }
-		
-		GCLASS_BODY(DivideToken)
 		
 	};
 	
@@ -118,8 +110,6 @@ namespace GenesisCube::Token
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("%"); }
 		
-		GCLASS_BODY(ModToken)
-		
 	};
 	
 	///
@@ -135,7 +125,6 @@ namespace GenesisCube::Token
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT(","); }
 		
-		GCLASS_BODY(CommaToken)
 	};
 	
 	///
@@ -150,8 +139,6 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("."); }
-		
-		GCLASS_BODY(PointToken)
 		
 	};
 	
@@ -169,8 +156,6 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("::"); }
-		
-		GCLASS_BODY(ScopeToken)
 		
 	};
 	

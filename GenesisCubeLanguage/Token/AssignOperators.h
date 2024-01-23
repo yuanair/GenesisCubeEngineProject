@@ -21,8 +21,7 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("="); }
-	
-	GCLASS_BODY(AssignmentToken)
+		
 		
 	};
 	

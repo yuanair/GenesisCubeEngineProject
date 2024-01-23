@@ -16,13 +16,11 @@ namespace GenesisCube::AST
 	public:
 		
 		[[nodiscard]]
-		JSON::Json ToJson() const noexcept override { return token->ToJson(); }
+		Json::Json ToJson() const noexcept override { return token->ToJson(); }
 		
 		[[nodiscard]]
 		Identifier *Clone() const noexcept override { return new Identifier(); }
-	
-	GCLASS_BODY(Identifier)
-	
+		
 	};
 	
 } // GenesisCube

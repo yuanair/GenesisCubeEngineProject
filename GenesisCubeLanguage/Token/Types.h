@@ -19,7 +19,7 @@ namespace GenesisCube::Token
 	public:
 		
 		[[nodiscard]]
-		inline JSON::Json ToJson() const override = 0;
+		inline Json::Json ToJson() const override = 0;
 		
 		[[nodiscard]]
 		inline Type GetType() const noexcept override = 0;
@@ -46,7 +46,7 @@ namespace GenesisCube::Token
 		void
 		GetPrefixExpression(TSharedPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept override;
 		
-		JSON::Json ToJson() const override;
+		Json::Json ToJson() const override;
 		
 		[[nodiscard]]
 		inline Type GetType() const noexcept override { return StringType; }
@@ -56,8 +56,6 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline StringToken *Clone() const noexcept override { return new StringToken(value); }
-		
-		GCLASS_BODY(StringToken)
 	
 	public:
 		
@@ -79,7 +77,7 @@ namespace GenesisCube::Token
 		void
 		GetPrefixExpression(TSharedPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept override;
 		
-		JSON::Json ToJson() const override;
+		Json::Json ToJson() const override;
 		
 		[[nodiscard]]
 		inline Type GetType() const noexcept override { return StringType; }
@@ -89,8 +87,6 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline CharToken *Clone() const noexcept override { return new CharToken(value); }
-		
-		GCLASS_BODY(CharToken)
 	
 	public:
 		
@@ -112,7 +108,7 @@ namespace GenesisCube::Token
 		void
 		GetPrefixExpression(TSharedPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept override;
 		
-		JSON::Json ToJson() const override;
+		Json::Json ToJson() const override;
 		
 		[[nodiscard]]
 		inline Type GetType() const noexcept override { return NumberType; }
@@ -122,8 +118,6 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline IntegerToken *Clone() const noexcept override { return new IntegerToken(value); }
-		
-		GCLASS_BODY(IntegerToken)
 	
 	public:
 		
@@ -145,7 +139,7 @@ namespace GenesisCube::Token
 		void
 		GetPrefixExpression(TSharedPtr<class AST::Expression> &expression, Parser::Parser &parser) noexcept override;
 		
-		JSON::Json ToJson() const override;
+		Json::Json ToJson() const override;
 		
 		[[nodiscard]]
 		inline Type GetType() const noexcept override { return NumberType; }
@@ -155,8 +149,6 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline FloatToken *Clone() const noexcept override { return new FloatToken(value); }
-		
-		GCLASS_BODY(FloatToken)
 	
 	public:
 		

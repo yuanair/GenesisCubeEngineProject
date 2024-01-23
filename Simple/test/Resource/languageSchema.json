@@ -3,7 +3,7 @@
 	"type": "object",
 	"required": [
 		"name",
-		"displayName"
+		"display name"
 	],
 	"properties": {
 		"$schema": {
@@ -14,7 +14,7 @@
 			"type": "string",
 			"description": "名称字符串，例如en_us, zh_cn, ..."
 		},
-		"displayName": {
+		"display name": {
 			"type": "string",
 			"description": "显示名称字符串，例如简体中文，English, ...."
 		}

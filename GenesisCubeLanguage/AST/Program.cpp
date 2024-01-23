@@ -6,10 +6,10 @@
 
 namespace GenesisCube::AST
 {
-	JSON::Json Program::ToJson() const noexcept
+	Json::Json Program::ToJson() const noexcept
 	{
-		JSON::Json json;
-		JSON::Json &list = json[TEXT("functions")];
+		Json::Json json;
+		Json::Json &list = json[TEXT("functions")];
 		for (auto &item: functions)
 		{
 			list.Push(item->ToJson());

@@ -3,22 +3,22 @@
 namespace GenesisCube
 {
 	
-	JSON::FJsonReader::FJsonReader(TIStream &source)
+	Json::FJsonReader::FJsonReader(TIStream &source)
 		: source(source), ch(TEXT('\0'))
 	{
 		if (source.bad()) return;
 		this->ch = source.get();
 	}
 	
-	JSON::FJsonReader::~FJsonReader()
+	Json::FJsonReader::~FJsonReader()
 	= default;
 	
-	bool JSON::FJsonReader::Eof() const
+	bool Json::FJsonReader::Eof() const
 	{
 		return this->source.eof();
 	}
 	
-	TString JSON::FJsonReader::ReadString(TCHAR stopChar)
+	TString Json::FJsonReader::ReadString(TCHAR stopChar)
 	{
 		TString buffer;
 		do
@@ -88,7 +88,7 @@ namespace GenesisCube
 		return buffer;
 	}
 	
-	bool JSON::FJsonReader::NextChar()
+	bool Json::FJsonReader::NextChar()
 	{
 		if (Eof())
 		{
@@ -99,18 +99,18 @@ namespace GenesisCube
 		return true;
 	}
 	
-	bool JSON::FJsonReader::UnnextChar()
+	bool Json::FJsonReader::UnnextChar()
 	{
 		this->source.unget();
 		return true;
 	}
 	
-	bool JSON::FJsonReader::Good() const
+	bool Json::FJsonReader::Good() const
 	{
 		return Eof();
 	}
 	
-	TSharedPtr<JSON::Json> JSON::FJsonReader::Next()
+	TSharedPtr<Json::Json> Json::FJsonReader::Next()
 	{
 		do
 		{
@@ -288,7 +288,7 @@ namespace GenesisCube
 		return MakeShared<Json>(nullptr);
 	}
 	
-	TSharedPtr<JSON::Json> JSON::FJsonReader::ReadArray()
+	TSharedPtr<Json::Json> Json::FJsonReader::ReadArray()
 	{
 		auto json = MakeShared<Json>();
 		do
@@ -308,7 +308,7 @@ namespace GenesisCube
 		return json;
 	}
 	
-	TSharedPtr<JSON::Json> JSON::FJsonReader::ReadObject()
+	TSharedPtr<Json::Json> Json::FJsonReader::ReadObject()
 	{
 		auto json = MakeShared<Json>();
 		do

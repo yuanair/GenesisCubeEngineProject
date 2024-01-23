@@ -26,8 +26,6 @@ namespace GenesisCube
 		
 		[[nodiscard]] inline GFloat *Clone() const noexcept override { return new GFloat(this->value); }
 		
-		GCLASS_BODY(GFloat)
-		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return ToTString(this->value); }
 		

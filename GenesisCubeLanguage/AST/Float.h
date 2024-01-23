@@ -18,11 +18,9 @@ namespace GenesisCube::AST
 	public:
 		
 		[[nodiscard]]
-		JSON::Json ToJson() const noexcept override { return token->ToJson(); }
+		Json::Json ToJson() const noexcept override { return token->ToJson(); }
 		
 		Float *Clone() const noexcept override { return new Float(); }
-		
-		GCLASS_BODY(Float)
 		
 	};
 	

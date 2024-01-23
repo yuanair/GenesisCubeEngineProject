@@ -7,12 +7,12 @@
 
 namespace GenesisCube::AST
 {
-	JSON::Json Infix::ToJson() const noexcept
+	Json::Json Infix::ToJson() const noexcept
 	{
-		JSON::Json json;
-		json[TEXT(" left")] = left ? left->ToJson() : JSON::Json(nullptr);
-		json[TEXT(" token")] = token ? token->ToJson() : JSON::Json(nullptr);
-		json[TEXT("right")] = right ? right->ToJson() : JSON::Json(nullptr);
+		Json::Json json;
+		json[TEXT(" left")] = left ? left->ToJson() : Json::Json(nullptr);
+		json[TEXT(" token")] = token ? token->ToJson() : Json::Json(nullptr);
+		json[TEXT("right")] = right ? right->ToJson() : Json::Json(nullptr);
 		return json;
 	}
 	

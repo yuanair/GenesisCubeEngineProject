@@ -30,8 +30,6 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline IllegalToken *Clone() const noexcept override { return new IllegalToken(value); }
-		
-		GCLASS_BODY(IllegalToken)
 	
 	public:
 		
@@ -60,8 +58,6 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline IdentifierToken *Clone() const noexcept override { return new IdentifierToken(value); }
-		
-		GCLASS_BODY(IdentifierToken)
 	
 	public:
 		
@@ -85,8 +81,6 @@ namespace GenesisCube::Token
 		[[nodiscard]]
 		inline EOFToken *Clone() const noexcept override { return new EOFToken(); }
 		
-		GCLASS_BODY(EOFToken)
-		
 	};
 	
 	///
@@ -104,8 +98,6 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline SemicolonToken *Clone() const noexcept override { return new SemicolonToken(); }
-		
-		GCLASS_BODY(SemicolonToken)
 		
 	};
 	

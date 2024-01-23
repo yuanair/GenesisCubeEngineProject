@@ -21,8 +21,7 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("=="); }
-	
-	GCLASS_BODY(EqualToken)
+		
 	};
 	
 	///
@@ -37,8 +36,7 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("!="); }
-	
-	GCLASS_BODY(UnequalToken)
+		
 	};
 	
 	///
@@ -53,8 +51,7 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("<"); }
-	
-	GCLASS_BODY(LessThanToken)
+		
 	};
 	
 	///
@@ -69,8 +66,7 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT(">"); }
-	
-	GCLASS_BODY(GreaterToken)
+		
 	};
 	
 	///
@@ -85,8 +81,7 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("<="); }
-	
-	GCLASS_BODY(LessThanEqualToken)
+		
 	};
 	
 	///
@@ -101,8 +96,7 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT(">="); }
-	
-	GCLASS_BODY(GreaterThanEqualToken)
+		
 	};
 	
 } // GenesisCube

@@ -18,12 +18,10 @@ namespace GenesisCube::AST
 	public:
 		
 		[[nodiscard]]
-		GenesisCube::JSON::Json ToJson() const noexcept override { return token->ToJson(); }
+		GenesisCube::Json::Json ToJson() const noexcept override { return token->ToJson(); }
 		
 		[[nodiscard]]
 		Integer *Clone() const noexcept override { return new Integer(); }
-		
-		GCLASS_BODY(Integer)
 		
 	};
 	

@@ -4,7 +4,7 @@
 #include "Json.h"
 
 
-namespace GenesisCube::JSON
+namespace GenesisCube::Json
 {
 	
 	///
@@ -26,8 +26,6 @@ namespace GenesisCube::JSON
 		
 		[[nodiscard]]
 		JArray *Clone() const noexcept override;
-		
-		GCLASS_BODY(JArray)
 		
 		[[nodiscard]]
 		TString ToString() const noexcept override;

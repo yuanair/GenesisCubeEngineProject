@@ -7,8 +7,6 @@
 
 void MainWindow::OnDropFiles(HDROP hDropInfo)
 {
-	JSON::Json &onDropFilesJson = this->program.language[TEXT("OnDropFiles")];
-	JSON::Json &errorTextJson = onDropFilesJson[TEXT("error texts")];
 	
 	TString message;
 	TString fileName;
@@ -22,7 +20,7 @@ void MainWindow::OnDropFiles(HDROP hDropInfo)
 	if (reader.GetFileCount() != 1)
 	{
 		Win32::MessageBoxT(
-			errorTextJson[TEXT("more files")].GetString(TEXT("more files")), FCore::showName, Win32::MessageBoxIconInfo
+			this->program.language->fnOnDropFilesErrorMoreFiles.Get(), FCore::showName, Win32::MessageBoxIconInfo
 		);
 		return;
 	}
@@ -33,7 +31,7 @@ void MainWindow::OnDropFiles(HDROP hDropInfo)
 	if (!tifStream.is_open())
 	{
 		Win32::MessageBoxT(
-			errorTextJson[TEXT("open file error")].GetString(TEXT("open file error")), FCore::showName,
+			this->program.language->fnOnDropFilesErrorOpenFile.Get(), FCore::showName,
 			Win32::MessageBoxIconError
 		);
 		return;
@@ -48,14 +46,17 @@ MainWindow::MainWindow(MyProgram &program)
 	bEnableOnChar = true;
 	
 	// 创建窗口
-	Create(*program.mainWindowClass, program.windowName, INT_MIN, INT_MIN, 400, 600, Win32::GetInstance());
+	Create(
+		*program.mainWindowClass, program.language->mainWindowName.Get(),
+		INT_MIN, INT_MIN, 400, 600, Win32::GetInstance()
+	);
 	
 	//
 	if (Bad())
 	{
 		Win32::MessageBoxT(
 			std::format(TEXT("{}::Create() Failed"), FFormatter::GetTypeName<Win32::FWindow>()),
-			program.windowName, Win32::MessageBoxIconError
+			FCore::showName, Win32::MessageBoxIconError
 		);
 		Win32::Exit(0);
 		return;
@@ -78,7 +79,7 @@ MainWindow::MainWindow(MyProgram &program)
 	// directX
 	ThrowIfFailed(FD2D1Helpers::CreateHwndRenderTarget(hwndRenderTarget, this->program.factory, *this));
 	
-	FImageData data(this->program.language[TEXT("background")][TEXT("image")].GetString(TEXT("unknown file")));
+	FImageData data(this->program.language->backGroundImage.Get());
 	ThrowIfFailed(
 		FD2D1Helpers::CreateBitmapFromImageData(
 			this->hwndRenderTarget.Get(), bitmap, data,
@@ -92,14 +93,14 @@ MainWindow::MainWindow(MyProgram &program)
 	SolidColorBrush(D2D1::ColorF(0.5f, 0.0f, 0.5f, 0.5f), uRect->fillBrush);
 	
 	showTextUI = ui.NewChild<UText>();
-	JSON::Json &showTextJson = program.language[TEXT("show text")];
-	JSON::Json &colorJson = showTextJson[TEXT("color")];
 	
 	SolidColorBrush(
-		D2D1::ColorF(colorJson[0].GetFloat(), colorJson[1].GetFloat(), colorJson[2].GetFloat()),
+		D2D1::ColorF(
+			(float) program.language->showTextColorR.Get(), (float) program.language->showTextColorG.Get(),
+			(float) program.language->showTextColorB.Get(), (float) program.language->showTextColorA.Get()),
 		showTextUI->defaultFillBrush
 	);
-	showTextUI->showText = showTextJson[TEXT("text")].GetString(TEXT("<show text>"));
+	showTextUI->showText = program.language->showText.Get();
 	
 	ThrowIfFailed(
 		this->program.writeFactory->CreateTextFormat(
@@ -137,6 +138,7 @@ void MainWindow::OnString(const TString &input)
 void MainWindow::OnTick(float deltaTime)
 {
 	FWindow::OnTick(deltaTime);
+	
 	hwndRenderTarget->BeginDraw();
 	
 	D2D1_SIZE_F renderTargetSize = hwndRenderTarget->GetSize();
@@ -178,7 +180,7 @@ void MainWindow::OnTick(float deltaTime)
 	
 	if (!tifStream.is_open()) return;
 	
-	SetForegroundWindow(program.yuanShenWindow);
+	program.yuanShenWindow.SetForegroundWindow();
 	
 	TChar vk;
 	do
@@ -191,16 +193,16 @@ void MainWindow::OnTick(float deltaTime)
 		}
 		if (vk >= 'A' && vk <= 'Z')
 		{
-			program.Output(std::format(TEXT("key: '{}'"), vk));
-			SeedKeyDown(program.yuanShenWindow, vk);
-			SeedKeyUp(program.yuanShenWindow, vk);
+			program.Output(std::format(TEXT("index: '{}'"), vk));
+			program.yuanShenWindow.SeedKeyDown(vk);
+			program.yuanShenWindow.SeedKeyUp(vk);
 		}
 		else if (vk >= 'a' && vk <= 'z')
 		{
-			program.Output(std::format(TEXT("key: '{}'"), vk));
+			program.Output(std::format(TEXT("index: '{}'"), vk));
 			vk = vk - 'a' + 'A';
-			SeedKeyDown(program.yuanShenWindow, vk);
-			SeedKeyUp(program.yuanShenWindow, vk);
+			program.yuanShenWindow.SeedKeyDown(vk);
+			program.yuanShenWindow.SeedKeyUp(vk);
 		}
 		else if (vk == ' ')
 		{
@@ -213,7 +215,7 @@ void MainWindow::OnTick(float deltaTime)
 		}
 		else
 		{
-			program.Output(std::format(TEXT("unknown key: '{}'"), vk));
+			program.Output(std::format(TEXT("unknown index: '{}'"), vk));
 		}
 	}
 	while (vk != TEXT(' '));
@@ -259,34 +261,19 @@ void MainWindow::SolidColorBrush(const D2D_COLOR_F &color, TComPtr<UUI::Brush> &
 	);
 }
 
-void MainWindow::BitmapBrush(ID2D1Bitmap *bitmap, TComPtr<UUI::Brush> &brush)
+void MainWindow::BitmapBrush(ID2D1Bitmap *pBitmap, TComPtr<UUI::Brush> &brush)
 {
 	if (Is<ID2D1BitmapBrush>(brush.Get()))
-		return ((ID2D1BitmapBrush *) brush.Get())->SetBitmap(bitmap);
+		return ((ID2D1BitmapBrush *) brush.Get())->SetBitmap(pBitmap);
 	ThrowIfFailed(
-		this->hwndRenderTarget->CreateBitmapBrush(bitmap, (ID2D1BitmapBrush **) brush.ReleaseAndGetAddressOf())
+		this->hwndRenderTarget->CreateBitmapBrush(pBitmap, (ID2D1BitmapBrush **) brush.ReleaseAndGetAddressOf())
 	);
 }
 
 void MyProgram::Tick()
 {
 	timer.Tick();
-	auto deltaTime = (float) timer.GetDeltaTime();
-	mainWindow->Tick(deltaTime);
-}
-
-void MyProgram::InitLocale()
-{
-	std::locale::global(std::locale("zh_CN.UTF-8"));
-}
-
-void MyProgram::InitJson()
-{
-	LoadJson(this->data, TEXT("Data\\data.json"));
-	LoadJson(
-		this->language,
-		TEXT("Data\\languages\\") + this->data[TEXT("language")].GetString(TEXT("en_us")) + TEXT(".json")
-	);
+	mainWindow->Tick(timer.GetDeltaTimeF());
 }
 
 void MyProgram::InitDirectX()
@@ -295,31 +282,14 @@ void MyProgram::InitDirectX()
 	ThrowIfFailed(FDWriteHelpers::CreateFactory(this->writeFactory));
 }
 
-void MyProgram::Start()
+MyProgram::MyProgram()
 {
-	InitLocale();
-	InitJson();
+	this->data = MakeUnique<DataJsonManagement>();
+	this->language = MakeUnique<LanguageJsonManagement>(data->language.Get());
 	InitDirectX();
 	
-	{
-		Win32::FFileFinder fileFinder;
-		WIN32_FIND_DATA fileData;
-		fileFinder.Find(fileData, TEXT("./Data/languages/*.json"));
-		do
-		{
-			Win32::MessageBoxT(std::format(TEXT("{}"), fileData.cFileName), FCore::showName);
-		}
-		while (fileFinder.Next(fileData));
-	}
-	
-	{
-		JSON::Json &mainWindowJson = this->language[TEXT("main window")];
-		FCore::showName = windowName = mainWindowJson[TEXT("window name")].GetString(TEXT("<error>"));
-		windowClassName = mainWindowJson[TEXT("window class name")].GetString(TEXT("Default Window Class Name"));
-	}
-	mainWindowClass = MakeUnique<Win32::FWindowClass>(windowClassName, Win32::GetInstance());
-	
-	if (windowClassName.empty()) windowClassName = TEXT("Default Window Class Name");
+	FCore::showName = this->language->mainWindowName.Get();
+	mainWindowClass = MakeUnique<Win32::FWindowClass>(this->language->mainWindowClassName.Get(), Win32::GetInstance());
 	
 	// 注册窗口类
 	if (!mainWindowClass->Register(
@@ -337,31 +307,17 @@ void MyProgram::Start()
 	mainWindow = MakeUnique<MainWindow>(*this);
 }
 
-void MyProgram::End()
-{
-
-}
-
-
-void MyProgram::LoadJson(JSON::Json &json, const TString &file)
-{
-	TIFStream ifStream(file);
-	if (!ifStream.is_open()) throw ENotFindException(TEXT("Cannot open file \"") + file + TEXT("\""));
-	JSON::FJsonReader jsonReader(ifStream);
-	json = *jsonReader.Next();
-	ifStream.close();
-}
+MyProgram::~MyProgram()
+= default;
 
 void MyProgram::ReloadYuanShenWindow()
 {
-	JSON::Json &boundWindowJson = this->language[TEXT("bound window")];
-	this->yuanShenWindow = Win32::FWindow::FindWindowFromName(
-		boundWindowJson[TEXT("window name")].GetString(TEXT("<error>")));
-	if (this->yuanShenWindow == nullptr)
+	this->yuanShenWindow.Bind(Win32::FWindow::FindWindowFromName(this->language->boundWindowName.Get()));
+	if (this->yuanShenWindow.Bad())
 	{
 		mainWindow->Stop();
 		Win32::MessageBoxT(
-			boundWindowJson[TEXT("error text")].GetString(TEXT("Unable to bind window")), FCore::showName,
+			this->language->boundWindowErrorNotFound.Get(), FCore::showName,
 			Win32::MessageBoxIconError
 		);
 		return;
@@ -369,4 +325,22 @@ void MyProgram::ReloadYuanShenWindow()
 }
 
 
+void JsonManagement::LoadJson(const TString &file)
+{
+	TIFStream ifStream(file, std::ios::in);
+	if (!ifStream.is_open()) throw ENotFindException(TEXT("Cannot open file \"") + file + TEXT("\""));
+	ifStream.imbue(std::locale(locName));
+	Json::FJsonReader jsonReader(ifStream);
+	json = *jsonReader.Next();
+	ifStream.close();
+}
 
+DataJsonManagement::DataJsonManagement()
+{
+	LoadJson(TEXT("Data\\data.json"));
+}
+
+LanguageJsonManagement::LanguageJsonManagement(const TString &language)
+{
+	LoadJson(TEXT("Data\\languages\\") + language + TEXT(".json"));
+}

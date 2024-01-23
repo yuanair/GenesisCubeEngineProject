@@ -1,14 +1,14 @@
 {
 	"$schema": "./../languageSchema.json",
 	"name": "zh_cn",
-	"displayName": "简体中文",
+	"display name": "简体中文",
 	"main window": {
 		"window name": "原神演奏器",
 		"window class name": "Genshin Impact Pianist Window Class Name"
 	},
 	"bound window": {
 		"window name": "原神",
-		"error text": "无法绑定“原神”窗口"
+		"error not found": "无法绑定“{}”窗口"
 	},
 	"background": {
 		"image": "./Data/images/background.png"
@@ -18,13 +18,14 @@
 		"color": [
 			0.0,
 			0.0,
-			0.0
+			0.0,
+			1.0
 		]
 	},
-	"OnDropFiles": {
+	"fnOnDropFiles": {
 		"error texts": {
 			"more files": "仅需一个文件",
-			"open file error": "无法打开文件"
+			"could not open file": "无法打开文件"
 		}
 	}
 }

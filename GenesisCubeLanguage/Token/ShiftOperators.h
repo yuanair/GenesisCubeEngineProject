@@ -21,9 +21,8 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT("<<"); }
-	
-	GCLASS_BODY(LeftShiftOperators)
-	
+		
+		
 	};
 	
 	///
@@ -38,9 +37,8 @@ namespace GenesisCube::Token
 		
 		[[nodiscard]]
 		inline TString ToString() const noexcept override { return TEXT(">>"); }
-	
-	GCLASS_BODY(RightShiftOperators)
-	
+		
+		
 	};
 	
 } // GenesisCube

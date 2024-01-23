@@ -148,8 +148,6 @@ namespace GenesisCube::Parser
 		/// \return 下一个运算符的优先级
 		[[nodiscard]]
 		inline auto PeekTokenPrecedence() const { return peekToken->GetPrecedence(); }
-		
-		GCLASS_BODY(Parser)
 	
 	public:
 		
